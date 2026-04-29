@@ -33,7 +33,7 @@ btn.onclick = function () {
 }
 
 viewResumeBtn.onclick = function () {
-    window.open('https://drive.google.com/file/d/1uNBYcBOw4pZxdlKn_AhPc7J5bo1tG7h2/view?usp=drivesdk', '_blank');
+    window.open('cv.pdf', '_blank');
 }
 
 sendMessage.onclick = function () {

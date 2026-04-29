@@ -282,3 +282,100 @@ button {
 .close:hover {
     color: #1e90ff;
 }
+/* PORTFOLIO */
+.portfolio {
+    text-align: center;
+    background: #0b2238;
+}
+
+.portfolio h2 {
+    color: #1e90ff;
+    margin-bottom: 15px;
+}
+
+.portfolio p {
+    color: #bbb;
+    margin-bottom: 25px;
+}
+
+.portfolio a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.portfolio a:hover {
+    background: #1c86ee;
+    transform: translateY(-3px);
+}
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 20px;
+    }
+
+    .navbar nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        max-width: 100%;
+    }
+
+    .hero-image img {
+        width: 150px;
+        height: 150px;
+        margin-top: 20px;
+    }
+
+    section {
+        padding: 50px 20px;
+    }
+
+    .about {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .about-img img {
+        width: 200px;
+        margin: auto;
+    }
+
+    .stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio {
+        padding: 50px 20px;
+    }
+
+    .modal-content {
+        margin: 40% auto;
+        width: 90%;
+    }
+
+    footer {
+        font-size: 14px;
+    }
+}
