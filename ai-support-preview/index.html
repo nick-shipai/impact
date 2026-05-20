@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Support Assistant | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="ai-support.css">
+    <link rel="icon" href="../images/icon.png">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <meta name="title" content="AI Support Assistant | IMPACTECH ACADEMY">
+    <meta name="description" content="AI-powered support assistant for IMPACTECH ACADEMY clients and visitors.">
+</head>
+
+<body>
+
+<main class="ai-support-page">
+
+    <section class="ai-chat-shell">
+
+        <div class="chat-panel">
+
+            <header class="chat-header">
+                <div class="bot-profile">
+                    <div class="bot-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+
+                    <div>
+                        <h1>IMPACTECH AI Support</h1>
+                        <p>
+                            <span class="status-dot"></span>
+                            Online
+                        </p>
+                    </div>
+                </div>
+
+                <div class="chat-actions">
+                    <button type="button" class="mini-btn" id="newChatBtn">
+                        <i class="fa-solid fa-plus"></i>
+                        New Chat
+                    </button>
+
+                    <button type="button" class="icon-btn" id="clearChatBtn" aria-label="Clear chat">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="chat-notice">
+                <strong>
+                    <i class="fa-solid fa-sparkles"></i>
+                    AI Assistant
+                </strong>
+
+                <span>
+                    Ask about services, pricing, checkout, courses, support, automation, and business help.
+                </span>
+            </div>
+
+            <section class="chat-body" id="chatBody">
+                <!-- Real AI messages will appear here using JavaScript/API -->
+            </section>
+
+            <div class="ai-tools-bar">
+                <button type="button" class="tool-btn" data-prompt="What services does IMPACTECH ACADEMY offer?">
+                    <i class="fa-solid fa-briefcase"></i>
+                    Services
+                </button>
+
+                <button type="button" class="tool-btn" data-prompt="Show me the pricing plans.">
+                    <i class="fa-solid fa-tags"></i>
+                    Pricing
+                </button>
+
+                <button type="button" class="tool-btn" data-prompt="How does service checkout work?">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Checkout
+                </button>
+
+                <button type="button" class="tool-btn" data-prompt="I need help with AI automation.">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    AI Automation
+                </button>
+
+                <button type="button" class="tool-btn" data-prompt="I want to buy a course.">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    Buy Course
+                </button>
+
+                <button type="button" class="tool-btn" data-prompt="I need contact support.">
+                    <i class="fa-solid fa-headset"></i>
+                    Support
+                </button>
+            </div>
+
+            <footer class="chat-footer">
+                <form class="input-wrap" id="chatForm">
+                    <button type="button" class="attach-btn" id="attachBtn" aria-label="Attach file">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </button>
+
+                    <input 
+                        type="text" 
+                        id="userInput" 
+                        placeholder="Ask IMPACTECH AI anything..." 
+                        autocomplete="off"
+                        required
+                    >
+
+                    <button type="submit" class="send-btn" id="sendBtn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Send
+                    </button>
+                </form>
+
+                <p>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Powered by IMPACTECH ACADEMY AI Support.
+                </p>
+            </footer>
+
+        </div>
+
+        <aside class="support-sidebar">
+
+            <div class="sidebar-card">
+                <h2>
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    AI Tools
+                </h2>
+
+                <button type="button" class="sidebar-tool" data-prompt="Explain IMPACTECH ACADEMY services.">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Service Explainer
+                </button>
+
+                <button type="button" class="sidebar-tool" data-prompt="Help me choose the best service plan.">
+                    <i class="fa-solid fa-layer-group"></i>
+                    Plan Selector
+                </button>
+
+                <button type="button" class="sidebar-tool" data-prompt="Calculate which package is best for my business.">
+                    <i class="fa-solid fa-calculator"></i>
+                    Package Helper
+                </button>
+
+                <button type="button" class="sidebar-tool" data-prompt="Explain AI automation for my business.">
+                    <i class="fa-solid fa-gears"></i>
+                    Automation Advisor
+                </button>
+
+                <button type="button" class="sidebar-tool" data-prompt="Help me write my project details for checkout.">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Project Brief Helper
+                </button>
+
+                <button type="button" class="sidebar-tool" data-prompt="Tell me how to contact support.">
+                    <i class="fa-solid fa-life-ring"></i>
+                    Support Guide
+                </button>
+            </div>
+
+            <div class="sidebar-card highlight-card">
+                <h2>
+                    <i class="fa-solid fa-bolt"></i>
+                    Quick Actions
+                </h2>
+
+                <a href="https://impactacademy.site/service-checkout" target="_blank" class="sidebar-btn">
+                    <i class="fa-solid fa-cart-arrow-down"></i>
+                    Go To Checkout
+                </a>
+
+                <a href="https://impactacademy.site/contact" target="_blank" class="sidebar-btn">
+                    <i class="fa-solid fa-envelope"></i>
+                    Contact Team
+                </a>
+
+                <a href="https://impactacademy.site/ai-virtual-assistant-course" target="_blank" class="sidebar-btn">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    Buy Course
+                </a>
+            </div>
+
+        </aside>
+
+    </section>
+
+</main>
+
+<script src="ai-support.js"></script>
+
+</body>
+</html>

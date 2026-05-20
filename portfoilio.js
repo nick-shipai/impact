@@ -68,3 +68,21 @@ window.onclick = function (event) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const aiChatWidget = document.getElementById("aiChatWidget");
+    const aiChatBubble = document.getElementById("aiChatBubble");
+    const closeAiChat = document.getElementById("closeAiChat");
+
+    if (!aiChatWidget || !aiChatBubble || !closeAiChat) {
+        console.error("AI chat widget elements not found");
+        return;
+    }
+
+    aiChatBubble.addEventListener("click", function () {
+        aiChatWidget.classList.add("active");
+    });
+
+    closeAiChat.addEventListener("click", function () {
+        aiChatWidget.classList.remove("active");
+    });
+});
