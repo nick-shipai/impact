@@ -27,9 +27,19 @@ const btn = document.querySelector(".outline"); // "Get In Touch" button
 const span = document.querySelector(".close");
 const viewResumeBtn = document.getElementById("viewResume");
 const sendMessage = document.getElementById("sendMessage");
+const hireUsBtn = document.getElementById("hire-us-btn");
+const hireUsBtn2 = document.getElementById("hire-us-btn2");
 // Open modal on button click
 btn.onclick = function () {
     modal.style.display = "block";
+}
+
+hireUsBtn.onclick = function () {
+    window.location.href = "./service-checkout"
+}
+
+hireUsBtn2.onclick = function () {
+    window.location.href = "./service-checkout"
 }
 
 viewResumeBtn.onclick = function () {
