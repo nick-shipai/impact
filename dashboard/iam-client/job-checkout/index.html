@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Checkout | IMPACTECH ACADEMY</title>
+
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="job-checkout.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+
+<div class="checkout-layout">
+
+  <aside class="checkout-side">
+    <div class="brand">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+      <h2>IMPACTECH</h2>
+    </div>
+
+    <div class="side-content">
+      <span>JOB CHECKOUT</span>
+      <h1>Complete payment to publish your job.</h1>
+      <p>Choose card payment or bank transfer. Your job will be published after payment confirmation.</p>
+    </div>
+
+    <div class="side-box">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <h3>Secure Checkout</h3>
+        <p>Your payment and billing information are protected.</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="checkout-main">
+
+    <div class="checkout-card">
+
+      <div class="checkout-header">
+        <div>
+          <h2>Job Payment</h2>
+          <p>Review your job payment details before continuing.</p>
+        </div>
+
+        <div class="checkout-badge">
+          <i class="fa-solid fa-lock"></i>
+          Secure
+        </div>
+      </div>
+
+      <section class="job-summary">
+        <div class="summary-icon">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+
+        <div>
+          <span>Job ID</span>
+          <h3 id="jobIdText">Loading job ID...</h3>
+          <p>Your payment reference is linked to this job ID.</p>
+        </div>
+      </section>
+
+      <form id="jobCheckoutForm">
+
+        <section class="checkout-section">
+          <div class="section-title">
+            <span>01</span>
+            <div>
+              <h3>Payment Method</h3>
+              <p>Select how you want to pay.</p>
+            </div>
+          </div>
+
+          <div class="payment-grid">
+
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="card" checked />
+              <div class="payment-inner">
+                <i class="fa-solid fa-credit-card"></i>
+                <h4>Card Payment</h4>
+                <p>Pay with Visa, Mastercard, or Verve.</p>
+              </div>
+            </label>
+
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="bank_transfer" />
+              <div class="payment-inner">
+                <i class="fa-solid fa-building-columns"></i>
+                <h4>Bank Transfer</h4>
+                <p>Transfer to our account and use your job ID as reference.</p>
+              </div>
+            </label>
+
+          </div>
+        </section>
+
+        <section class="checkout-section card-payment-box" id="cardPaymentBox">
+          <div class="section-title">
+            <span>02</span>
+            <div>
+              <h3>Card Details</h3>
+              <p>Enter your card information.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="input-box full">
+              <label>Cardholder Name</label>
+              <input type="text" name="cardName" placeholder="Name on card" />
+            </div>
+
+            <div class="input-box full">
+              <label>Card Number</label>
+              <input type="text" name="cardNumber" placeholder="1234 5678 9012 3456" />
+            </div>
+
+            <div class="input-box">
+              <label>Expiry Date</label>
+              <input type="text" name="expiryDate" placeholder="MM/YY" />
+            </div>
+
+            <div class="input-box">
+              <label>CVV</label>
+              <input type="text" name="cvv" placeholder="123" />
+            </div>
+          </div>
+        </section>
+
+        <section class="checkout-section bank-transfer-box" id="bankTransferBox">
+          <div class="section-title">
+            <span>02</span>
+            <div>
+              <h3>Bank Transfer Details</h3>
+              <p>Make your transfer using the job ID as payment reference.</p>
+            </div>
+          </div>
+
+          <div class="bank-box">
+            
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <div class="section-title">
+            <span>03</span>
+            <div>
+              <h3>Billing Address</h3>
+              <p>Use your saved billing address or enter a new one.</p>
+            </div>
+          </div>
+
+          <label class="billing-check">
+            <input type="checkbox" name="useSavedBillingAddress" checked />
+            <span>Use my billing address</span>
+          </label>
+
+          <div class="form-grid">
+            <div class="input-box">
+              <label>Billing Name</label>
+              <input type="text" name="billingName" placeholder="Your full name or company name" />
+            </div>
+
+            <div class="input-box">
+              <label>Phone Number</label>
+              <input type="text" name="billingPhone" placeholder="+234..." />
+            </div>
+
+            <div class="input-box full">
+              <label>Billing Address</label>
+              <textarea name="billingAddress" placeholder="Street, city, state, country"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="checkout-total">
+          <div>
+            <span>Total Amount</span>
+            <h2 id="totalAmount">$0</h2>
+            <p>Amount will be loaded from your checkout data.</p>
+          </div>
+
+          <button type="submit" class="pay-btn">
+            Continue Payment
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </section>
+
+      </form>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="job-checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="client.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="client-layout">
+
+    <aside class="client-sidebar">
+        <div class="sidebar-logo">
+            <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY">
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="client.html" class="active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="./post-jobs">
+                <i class="fa-solid fa-plus"></i>
+                <span>Post Job</span>
+            </a>
+
+            <a href="client-jobs.html">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>My Jobs</span>
+            </a>
+
+            <a href="client-proposals.html">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Proposals</span>
+            </a>
+
+            <a href="client-messages.html">
+                <i class="fa-solid fa-comments"></i>
+                <span>Messages</span>
+            </a>
+
+            <a href="client-contracts.html">
+                <i class="fa-solid fa-handshake"></i>
+                <span>Contracts</span>
+            </a>
+
+            <a href="client-payments.html">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+
+            <a href="client-settings.html">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="logout.html">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="client-main">
+
+        <header class="client-topbar">
+            <div class="breadcrumb">
+                <i class="fa-solid fa-house"></i>
+                <span>></span>
+                <p>Client Dashboard</p>
+                <span>></span>
+                <p>Overview</p>
+            </div>
+
+            <div class="topbar-actions">
+                <a href="./post-jobs" class="post-job-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Post a Job
+                </a>
+
+                <div class="client-profile">
+                    <span>-</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="client-hero">
+            <div>
+                <h1>Client Dashboard</h1>
+                <p>No client data loaded yet. Your posted jobs, proposals, and projects will appear here.</p>
+            </div>
+
+            <a href="./post-jobs" class="find-talent-btn">
+                <i class="fa-solid fa-plus"></i>
+                Post First Job
+            </a>
+        </section>
+
+        <section class="client-stats">
+            <div class="stat-card">
+                <h3>Active Jobs</h3>
+                <h2>0</h2>
+                <p>No active jobs yet</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Proposals</h3>
+                <h2>0</h2>
+                <p>No proposals yet</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Hired</h3>
+                <h2>0</h2>
+                <p>No freelancers hired</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Spent</h3>
+                <h2>$0</h2>
+                <p>No payments yet</p>
+            </div>
+        </section>
+
+        <section class="client-content">
+
+            <div class="content-header">
+                <div>
+                    <h2>My Posted Jobs</h2>
+                    <p>You have not posted any jobs yet.</p>
+                </div>
+
+                <a href="./post-jobs" class="small-post-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    New Job
+                </a>
+            </div>
+
+            <div class="client-tabs">
+                <a href="#" class="active">All Jobs <span>0</span></a>
+                <a href="#">Open <span>0</span></a>
+                <a href="#">In Progress <span>0</span></a>
+                <a href="#">Closed <span>0</span></a>
+            </div>
+
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+
+                <h3>No jobs posted yet</h3>
+                <p>
+                    When you post jobs, they will appear here. You will be able to view proposals,
+                    hire freelancers, message talent, and manage contracts.
+                </p>
+
+                <a href="./post-jobs" class="post-job-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Post Your First Job
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -268,13 +268,31 @@ function scrollBottom() {
         chatBody.scrollHeight;
 }
 
-
 function formatAIResponse(text) {
     if (!text) return "<p>No response.</p>";
+
+    text = String(text);
+
+    // Decode common HTML entities first
+    const txt = document.createElement("textarea");
+    txt.innerHTML = text;
+    text = txt.value;
+
+    // Remove ALL reasoning blocks safely
+    text = text.replace(
+        /<reasoning\b[^>]*>[\s\S]*?<\/reasoning>/gi,
+        ""
+    );
+
+    // Remove stray reasoning tags
+    text = text.replace(/<\/?reasoning\b[^>]*>/gi, "");
+
+    text = text.trim();
 
     let safe = escapeHtml(text);
 
     safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    safe = safe.replace(/\n/g, "<br>");
 
     const lines = safe.split("<br>");
     let html = "";
@@ -297,18 +315,14 @@ function formatAIResponse(text) {
                 listOpen = true;
             }
 
-            html += `<li>${clean.replace(/^•\s?|-+\s?/, "")}</li>`;
+            html += `<li>${clean.replace(/^[-•]\s*/, "")}</li>`;
         } else {
             if (listOpen) {
                 html += "</ul>";
                 listOpen = false;
             }
 
-            if (clean.includes("$49") || clean.includes("$149") || clean.includes("$299")) {
-                html += `<p class="ai-price-line">${linkify(clean)}</p>`;
-            } else {
-                html += `<p>${linkify(clean)}</p>`;
-            }
+            html += `<p>${linkify(clean)}</p>`;
         }
     });
 
@@ -391,8 +405,7 @@ function escapeHtml(text) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/\n/g, "<br>");
+        .replace(/'/g, "&#039;");
 }
 /* ===============================
    LONG TERM MEMORY
@@ -541,3 +554,4 @@ function addUniqueMemory(array, value, limit) {
 function clearLongTermMemory() {
     localStorage.removeItem("impactech_long_memory");
 }
+clearLongTermMemory()

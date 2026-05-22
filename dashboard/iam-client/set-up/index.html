@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Setup | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="set-up.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="setup-page">
+
+        <aside class="setup-side">
+            <div class="brand">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+                <h2>IMPACTECH</h2>
+            </div>
+
+            <div class="side-content">
+                <span>CLIENT SETUP</span>
+                <h1>Let’s set up your hiring account.</h1>
+                <p>
+                    Add your business details, hiring needs, payment preference,
+                    and project information so freelancers can understand your jobs better.
+                </p>
+            </div>
+
+            <div class="side-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <h3>Secure Setup</h3>
+                    <p>You can edit these details later from your client dashboard.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="setup-main">
+
+            <div class="setup-card">
+
+                <div class="setup-header">
+                    <div>
+                        <h2 id="stepTitle">Basic Information</h2>
+                        <p id="stepDescription">Tell us about you and your company.</p>
+                    </div>
+
+                    <div class="step-count">
+                        Step <span id="currentStepText">1</span> of <span id="totalStepText">8</span>
+                    </div>
+                </div>
+
+                <div class="progress-wrap">
+                    <div class="progress-info">
+                        <span id="progressPercent">0%</span>
+                        <span>Completed</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <form id="clientSetupForm">
+
+                    <!-- STEP 1 -->
+                    <section class="form-step active" data-title="Basic Information"
+                        data-description="Tell us about you and your company.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Full Name</label>
+                                <input type="text" name="fullName" placeholder="Enter your full name">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Work Email</label>
+                                <input type="email" name="email" placeholder="client@example.com">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" placeholder="+234...">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Country</label>
+                                <input type="text" name="country" placeholder="Nigeria">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 2 -->
+                    <section class="form-step" data-title="Company Details"
+                        data-description="Add your business or organization information.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Company Name</label>
+                                <input type="text" name="companyName" placeholder="Your company name">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Company Website</label>
+                                <input type="url" name="companyWebsite" placeholder="https://example.com">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Industry</label>
+                                <select name="industry">
+                                    <option value="">Select industry</option>
+                                    <option>Technology</option>
+                                    <option>Education</option>
+                                    <option>E-commerce</option>
+                                    <option>Health</option>
+                                    <option>Real Estate</option>
+                                    <option>Finance</option>
+                                    <option>Marketing</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Company Size</label>
+                                <select name="companySize">
+                                    <option value="">Select size</option>
+                                    <option>Only me</option>
+                                    <option>2 - 10</option>
+                                    <option>11 - 50</option>
+                                    <option>51 - 200</option>
+                                    <option>200+</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 3 -->
+                    <section class="form-step" data-title="Hiring Needs"
+                        data-description="Tell us the type of freelancers you want to hire.">
+                        <div class="check-grid">
+                            <label><input type="checkbox" name="services" value="Web Development"> Web
+                                Development</label>
+                            <label><input type="checkbox" name="services" value="Graphic Design"> Graphic Design</label>
+                            <label><input type="checkbox" name="services" value="Virtual Assistant"> Virtual
+                                Assistant</label>
+                            <label><input type="checkbox" name="services" value="AI Automation"> AI Automation</label>
+                            <label><input type="checkbox" name="services" value="Data Entry"> Data Entry</label>
+                            <label><input type="checkbox" name="services" value="Content Writing"> Content
+                                Writing</label>
+                            <label><input type="checkbox" name="services" value="Social Media"> Social Media</label>
+                            <label><input type="checkbox" name="services" value="Customer Support"> Customer
+                                Support</label>
+                        </div>
+                    </section>
+
+                    <!-- STEP 4 -->
+                    <section class="form-step" data-title="Project Information"
+                        data-description="Describe the type of job you want to post.">
+                        <div class="input-box full">
+                            <label>Project Title</label>
+                            <input type="text" name="projectTitle" placeholder="Example: I need a website designer">
+                        </div>
+
+                        <div class="input-box full">
+                            <label>Project Description</label>
+                            <textarea name="projectDescription"
+                                placeholder="Describe what you need help with..."></textarea>
+                        </div>
+                    </section>
+
+                    <!-- STEP 5 -->
+                    <section class="form-step" data-title="Budget & Timeline"
+                        data-description="Set your budget and expected delivery time.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Budget Type</label>
+                                <select name="budgetType">
+                                    <option value="">Select budget type</option>
+                                    <option>Hourly</option>
+                                    <option>Fixed Price</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Budget Amount</label>
+                                <input type="number" name="budgetAmount" placeholder="Example: 100">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Currency</label>
+                                <select name="currency">
+                                    <option>USD</option>
+                                    <option>NGN</option>
+                                    <option>GBP</option>
+                                    <option>EUR</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Timeline</label>
+                                <select name="timeline">
+                                    <option value="">Select timeline</option>
+                                    <option>ASAP</option>
+                                    <option>Within 1 week</option>
+                                    <option>Within 1 month</option>
+                                    <option>Flexible</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 6 -->
+                    <section class="form-step" data-title="Freelancer Preference"
+                        data-description="Choose what kind of talent you prefer.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Experience Level</label>
+                                <select name="experienceLevel">
+                                    <option value="">Select level</option>
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Expert</option>
+                                    <option>Any level</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Location Preference</label>
+                                <select name="locationPreference">
+                                    <option value="">Select preference</option>
+                                    <option>Worldwide</option>
+                                    <option>Nigeria only</option>
+                                    <option>Africa only</option>
+                                    <option>US/UK only</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Communication</label>
+                                <select name="communication">
+                                    <option value="">Select method</option>
+                                    <option>Chat</option>
+                                    <option>Email</option>
+                                    <option>Video call</option>
+                                    <option>Any</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Work Style</label>
+                                <select name="workStyle">
+                                    <option value="">Select style</option>
+                                    <option>One-time project</option>
+                                    <option>Long-term support</option>
+                                    <option>Part-time</option>
+                                    <option>Full-time</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 7 -->
+                    <section class="form-step" data-title="Payment Setup"
+                        data-description="Add preferred payment information. You can skip this for now.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Payment Method</label>
+                                <select name="paymentMethod">
+                                    <option value="">Select payment method</option>
+                                    <option>Card</option>
+                                    <option>Bank Transfer</option>
+                                    <option>PayPal</option>
+                                    <option>Crypto</option>
+                                    <option>Not ready yet</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Billing Name</label>
+                                <input type="text" name="billingName" placeholder="Billing full name">
+                            </div>
+
+                            <div class="input-box full">
+                                <label>Billing Address</label>
+                                <textarea name="billingAddress" placeholder="Enter billing address"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 8 -->
+                    <section class="form-step" data-title="Finish Setup"
+                        data-description="Review and complete your client setup.">
+                        <div class="finish-box">
+                            <div class="finish-panel">
+
+                                <div class="finish-icon">
+                                    <i class="fa-solid fa-rocket"></i>
+                                </div>
+
+                                <h3>You’re almost there</h3>
+
+                                <p>
+                                    Your client profile is ready to be saved. After finishing, you can post jobs,
+                                    review proposals, hire freelancers, and manage your projects from your dashboard.
+                                </p>
+
+                                <div class="finish-mini-grid">
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        <h4>Post Jobs</h4>
+                                        <span>Create hiring requests</span>
+                                    </div>
+
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-user-check"></i>
+                                        <h4>Hire Talent</h4>
+                                        <span>Review freelancers</span>
+                                    </div>
+
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                        <h4>Secure Setup</h4>
+                                        <span>Protected account data</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-box" id="summaryBox">
+                                    No setup data yet.
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="setup-actions">
+                        <button type="button" class="back-btn" id="backBtn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                        <button type="button" class="skip-btn" id="skipBtn">
+                            Skip
+                        </button>
+
+                        <button type="button" class="next-btn" id="nextBtn">
+                            Next
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <button type="submit" class="finish-btn" id="finishBtn">
+                            Finish Setup
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="set-up.js"></script>
+</body>
+
+</html>

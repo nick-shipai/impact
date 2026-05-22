@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Job | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="post-job.css" />
+    <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-card">
+            <div class="loader-ring"></div>
+            <h3>Publishing Job...</h3>
+            <p>Please wait while we prepare your job post.</p>
+        </div>
+    </div>
+
+    <div class="client-layout">
+
+        <aside class="client-sidebar">
+            <div class="sidebar-logo">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="client.html"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                <a href="post-job.html" class="active"><i class="fa-solid fa-plus"></i><span>Post Job</span></a>
+                <a href="client-jobs.html"><i class="fa-solid fa-briefcase"></i><span>My Jobs</span></a>
+                <a href="client-proposals.html"><i class="fa-solid fa-file-lines"></i><span>Proposals</span></a>
+                <a href="client-messages.html"><i class="fa-solid fa-comments"></i><span>Messages</span></a>
+                <a href="client-contracts.html"><i class="fa-solid fa-handshake"></i><span>Contracts</span></a>
+                <a href="client-payments.html"><i class="fa-solid fa-credit-card"></i><span>Payments</span></a>
+                <a href="client-settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="logout.html"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="client-main">
+
+            <header class="client-topbar">
+                <div class="breadcrumb">
+                    <i class="fa-solid fa-house"></i>
+                    <span>></span>
+                    <p>Client</p>
+                    <span>></span>
+                    <p>Post Job</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <a href="client-jobs.html" class="outline-btn">
+                        <i class="fa-solid fa-briefcase"></i>
+                        My Jobs
+                    </a>
+                    <div class="client-profile">C</div>
+                </div>
+            </header>
+
+            <section class="post-hero">
+                <div>
+                    <span>CREATE NEW JOB</span>
+                    <h1>Post a job and hire the right freelancer.</h1>
+                    <p>Fill the steps, review your job, choose visibility, then pay or save as draft.</p>
+                </div>
+
+                <div class="hero-price-card">
+                    <p>Total Payment</p>
+                    <h2 id="heroTotal">$0</h2>
+                    <small id="heroPlan">Free Post selected</small>
+                </div>
+            </section>
+
+            <section class="post-shell">
+
+                <div class="post-steps">
+                    <button class="step-tab active" data-step="0"><i class="fa-solid fa-circle-info"></i>
+                        Basics</button>
+                    <button class="step-tab" data-step="1"><i class="fa-solid fa-list-check"></i> Details</button>
+                    <button class="step-tab" data-step="2"><i class="fa-solid fa-code"></i> Skills</button>
+                    <button class="step-tab" data-step="3"><i class="fa-solid fa-money-bill"></i> Budget</button>
+                    <button class="step-tab" data-step="4"><i class="fa-solid fa-bolt"></i> Visibility</button>
+                    <button class="step-tab" data-step="5"><i class="fa-solid fa-credit-card"></i> Payment</button>
+                </div>
+
+                <div class="progress-area">
+                    <div>
+                        <strong id="progressText">Step 1 of 6</strong>
+                        <span id="progressPercent">16%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill"></div>
+                    </div>
+                </div>
+
+                <form id="postJobForm">
+
+                    <section class="form-step active">
+                        <h2>What do you want to post?</h2>
+                        <p class="step-desc">Start with the basic job information.</p>
+
+                        <div class="form-grid">
+                            <div class="input-box full">
+                                <label>Job Title</label>
+                                <input type="text" name="jobTitle"
+                                    placeholder="Example: I need a modern business website" required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Category</label>
+                                <select name="category" required>
+                                    <option value="">Select category</option>
+                                    <option>Web Development</option>
+                                    <option>Mobile App Development</option>
+                                    <option>UI/UX Design</option>
+                                    <option>Graphic Design</option>
+                                    <option>Virtual Assistant</option>
+                                    <option>AI Automation</option>
+                                    <option>Customer Support</option>
+                                    <option>Content Writing</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Job Type</label>
+                                <select name="jobType" required>
+                                    <option value="">Select type</option>
+                                    <option>One-time project</option>
+                                    <option>Ongoing project</option>
+                                    <option>Part-time</option>
+                                    <option>Full-time</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step">
+                        <h2>Job Details</h2>
+                        <p class="step-desc">Explain the work clearly so freelancers understand.</p>
+
+                        <div class="input-box full">
+                            <label>Job Description</label>
+                            <textarea name="description"
+                                placeholder="Describe the job, goal, pages/features needed, and expected result..."
+                                required></textarea>
+                        </div>
+
+                        <div class="input-box full">
+                            <label>Deliverables</label>
+                            <textarea name="deliverables"
+                                placeholder="Example: homepage, dashboard, payment page, admin panel..."
+                                required></textarea>
+                        </div>
+                    </section>
+
+                    <section class="form-step">
+                        <h2>Skills Needed</h2>
+                        <p class="step-desc">Choose up to 50 skills needed for this job.</p>
+
+                        <div class="skills-toolbar">
+                            <div class="input-box full">
+                                <label>Search Skills</label>
+                                <input type="text" id="skillSearch"
+                                    placeholder="Search skill like React, Firebase, UI/UX...">
+                            </div>
+
+                            <div class="selected-skills-count">
+                                <i class="fa-solid fa-code"></i>
+                                <span id="skillCount">0 skills selected</span>
+                            </div>
+                        </div>
+
+                        <div class="check-grid skills-grid" id="skillsGrid">
+                            <label><input type="checkbox" name="skills" value="HTML"> HTML</label>
+                            <label><input type="checkbox" name="skills" value="CSS"> CSS</label>
+                            <label><input type="checkbox" name="skills" value="JavaScript"> JavaScript</label>
+                            <label><input type="checkbox" name="skills" value="TypeScript"> TypeScript</label>
+                            <label><input type="checkbox" name="skills" value="React"> React</label>
+                            <label><input type="checkbox" name="skills" value="Next.js"> Next.js</label>
+                            <label><input type="checkbox" name="skills" value="Vue.js"> Vue.js</label>
+                            <label><input type="checkbox" name="skills" value="Angular"> Angular</label>
+                            <label><input type="checkbox" name="skills" value="Node.js"> Node.js</label>
+                            <label><input type="checkbox" name="skills" value="Express.js"> Express.js</label>
+                            <label><input type="checkbox" name="skills" value="Firebase"> Firebase</label>
+                            <label><input type="checkbox" name="skills" value="MongoDB"> MongoDB</label>
+                            <label><input type="checkbox" name="skills" value="MySQL"> MySQL</label>
+                            <label><input type="checkbox" name="skills" value="PostgreSQL"> PostgreSQL</label>
+                            <label><input type="checkbox" name="skills" value="PHP"> PHP</label>
+                            <label><input type="checkbox" name="skills" value="Laravel"> Laravel</label>
+                            <label><input type="checkbox" name="skills" value="Python"> Python</label>
+                            <label><input type="checkbox" name="skills" value="Django"> Django</label>
+                            <label><input type="checkbox" name="skills" value="Flask"> Flask</label>
+                            <label><input type="checkbox" name="skills" value="WordPress"> WordPress</label>
+                            <label><input type="checkbox" name="skills" value="Shopify"> Shopify</label>
+                            <label><input type="checkbox" name="skills" value="Webflow"> Webflow</label>
+                            <label><input type="checkbox" name="skills" value="UI/UX Design"> UI/UX Design</label>
+                            <label><input type="checkbox" name="skills" value="Figma"> Figma</label>
+                            <label><input type="checkbox" name="skills" value="Adobe XD"> Adobe XD</label>
+                            <label><input type="checkbox" name="skills" value="Graphic Design"> Graphic Design</label>
+                            <label><input type="checkbox" name="skills" value="Canva"> Canva</label>
+                            <label><input type="checkbox" name="skills" value="Logo Design"> Logo Design</label>
+                            <label><input type="checkbox" name="skills" value="Video Editing"> Video Editing</label>
+                            <label><input type="checkbox" name="skills" value="Motion Graphics"> Motion Graphics</label>
+                            <label><input type="checkbox" name="skills" value="Copywriting"> Copywriting</label>
+                            <label><input type="checkbox" name="skills" value="Content Writing"> Content Writing</label>
+                            <label><input type="checkbox" name="skills" value="SEO"> SEO</label>
+                            <label><input type="checkbox" name="skills" value="Social Media Management"> Social Media
+                                Management</label>
+                            <label><input type="checkbox" name="skills" value="Digital Marketing"> Digital
+                                Marketing</label>
+                            <label><input type="checkbox" name="skills" value="Email Marketing"> Email Marketing</label>
+                            <label><input type="checkbox" name="skills" value="Data Entry"> Data Entry</label>
+                            <label><input type="checkbox" name="skills" value="Virtual Assistance"> Virtual
+                                Assistance</label>
+                            <label><input type="checkbox" name="skills" value="Customer Support"> Customer
+                                Support</label>
+                            <label><input type="checkbox" name="skills" value="CRM Management"> CRM Management</label>
+                            <label><input type="checkbox" name="skills" value="AI Tools"> AI Tools</label>
+                            <label><input type="checkbox" name="skills" value="ChatGPT Prompting"> ChatGPT
+                                Prompting</label>
+                            <label><input type="checkbox" name="skills" value="Automation"> Automation</label>
+                            <label><input type="checkbox" name="skills" value="Zapier"> Zapier</label>
+                            <label><input type="checkbox" name="skills" value="Make.com"> Make.com</label>
+                            <label><input type="checkbox" name="skills" value="API Integration"> API Integration</label>
+                            <label><input type="checkbox" name="skills" value="Flutter"> Flutter</label>
+                            <label><input type="checkbox" name="skills" value="React Native"> React Native</label>
+                            <label><input type="checkbox" name="skills" value="Android Development"> Android
+                                Development</label>
+                            <label><input type="checkbox" name="skills" value="iOS Development"> iOS Development</label>
+                        </div>
+                    </section>
+
+                    <section class="form-step">
+                        <h2>Budget & Timeline</h2>
+                        <p class="step-desc">Set how much you want to pay.</p>
+
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Budget Type</label>
+                                <select name="budgetType" required>
+                                    <option value="">Select budget type</option>
+                                    <option>Fixed Price</option>
+                                    <option>Hourly</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Budget Amount</label>
+                                <input type="number" name="budgetAmount" placeholder="Example: 100" required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Currency</label>
+                                <select name="currency">
+                                    <option>USD</option>
+                                    <option>NGN</option>
+                                    <option>GBP</option>
+                                    <option>EUR</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Timeline</label>
+                                <select name="timeline" required>
+                                    <option value="">Select timeline</option>
+                                    <option>24 - 48 hours</option>
+                                    <option>3 - 7 days</option>
+                                    <option>1 - 2 weeks</option>
+                                    <option>1 month</option>
+                                    <option>Flexible</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-step">
+                        <h2>Job Visibility</h2>
+                        <p class="step-desc">Choose how much exposure this job should get.</p>
+
+                        <div class="plan-grid">
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Free Post" data-price="0" checked>
+                                <div>
+                                    <i class="fa-solid fa-eye"></i>
+                                    <h3>Free Post</h3>
+                                    <p>Normal visibility.</p>
+                                    <strong>$0</strong>
+                                </div>
+                            </label>
+
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Featured Job" data-price="10">
+                                <div>
+                                    <i class="fa-solid fa-star"></i>
+                                    <h3>Featured</h3>
+                                    <p>More freelancer attention.</p>
+                                    <strong>$10</strong>
+                                </div>
+                            </label>
+
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Urgent Boost" data-price="25">
+                                <div>
+                                    <i class="fa-solid fa-rocket"></i>
+                                    <h3>Urgent Boost</h3>
+                                    <p>Top placement with urgent badge.</p>
+                                    <strong>$25</strong>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="form-step">
+                        <h2>Review & Payment</h2>
+                        <p class="step-desc">Confirm what you want to post and choose payment method.</p>
+
+                        <div class="review-layout">
+                            <div class="summary-box" id="summaryBox"></div>
+
+                            <div class="payment-box">
+                                <h3>Payment Method</h3>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="Card Payment" checked>
+                                    <i class="fa-solid fa-credit-card"></i>
+                                    <div>
+                                        <strong>Card Payment</strong>
+                                        <p>Visa, Mastercard, Verve</p>
+                                    </div>
+                                </label>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="Bank Transfer">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                    <div>
+                                        <strong>Bank Transfer</strong>
+                                        <p>Manual confirmation</p>
+                                    </div>
+                                </label>
+
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="Wallet Balance">
+                                    <i class="fa-solid fa-wallet"></i>
+                                    <div>
+                                        <strong>Wallet Balance</strong>
+                                        <p>Use platform wallet</p>
+                                    </div>
+                                </label>
+
+                                <div class="pay-total">
+                                    <span>You will pay</span>
+                                    <strong id="paymentTotal">$0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-actions">
+                        <button type="button" id="backBtn" class="back-btn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                        <button type="button" id="draftBtn" class="draft-btn">
+                            Save Draft
+                        </button>
+
+                        <button type="button" id="nextBtn" class="next-btn">
+                            Next
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <button type="submit" id="publishBtn" class="publish-btn">
+                            Publish Job
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <div class="job-review-modal" id="jobReviewModal">
+        <div class="job-review-card">
+            <div class="review-icon">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+
+            <span>JOB UNDER REVIEW</span>
+            <h2>Your job was submitted successfully</h2>
+            <p>
+                Your free job post is now under review. Our team will check it before making it visible to freelancers.
+            </p>
+
+            <div class="review-actions">
+                <a href="../client-jobs" class="review-main-btn">
+                    View My Jobs
+                    <i class="fa-solid fa-briefcase"></i>
+                </a>
+
+                <a href="../../iam-client/" class="review-light-btn">
+                    Go Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="post-job.js"></script>
+</body>
+
+</html>

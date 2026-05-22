@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="signup.css" />
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="signup-bg"></div>
+
+    <main class="signup-page">
+
+        <section class="signup-left">
+            <a href="../index.html" class="signup-logo">
+                IMPACTECH ACADEMY
+            </a>
+
+            <div class="signup-badge">
+                <i class="fa-solid fa-bolt"></i>
+                Learn. Build. Earn. Grow.
+            </div>
+
+            <h1>
+                Join IMPACTECH ACADEMY and start building your future today.
+            </h1>
+
+            <p>
+                Create your free account to access digital skills, freelancing opportunities,
+                business solutions, AI support, job posting tools, online learning, career growth,
+                and powerful resources designed to help you succeed.
+            </p>
+
+            <div class="signup-features">
+                <div><i class="fa-solid fa-graduation-cap"></i><span>Learn practical digital and tech skills</span></div>
+                <div><i class="fa-solid fa-briefcase"></i><span>Find freelancing and remote work opportunities</span></div>
+                <div><i class="fa-solid fa-users"></i><span>Connect with businesses, clients, and professionals</span></div>
+                <div><i class="fa-solid fa-bullhorn"></i><span>Post jobs, hire talent, and grow your business</span></div>
+                <div><i class="fa-solid fa-robot"></i><span>Access smart AI tools, support, and automation guidance</span></div>
+                <div><i class="fa-solid fa-chart-line"></i><span>Grow your income, skills, confidence, and online presence</span></div>
+            </div>
+
+            <div class="signup-stats">
+                <div>
+                    <h3>Skills</h3>
+                    <p>Tech, AI, business & freelancing</p>
+                </div>
+                <div>
+                    <h3>Jobs</h3>
+                    <p>Post jobs or get hired</p>
+                </div>
+                <div>
+                    <h3>Growth</h3>
+                    <p>Build your digital career</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="signup-card">
+
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Start your journey with IMPACTECH ACADEMY.</p>
+            </div>
+
+            <div id="formMessage" class="form-message" style="display:none;"></div>
+
+            <form id="signupForm">
+                <div class="input-group">
+                    <label for="fullname">Full Name</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="fullname" placeholder="Enter your full name" required>
+                    </div>
+                    <small id="fullnameError" class="field-error"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email address" required>
+                    </div>
+                    <small id="emailError" class="field-error"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="accountType">Account Type</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <select id="accountType" required>
+                            <option value="">Choose account type</option>
+                            <option value="student">Student / Learner</option>
+                            <option value="freelancer">Freelancer / Worker</option>
+                            <option value="business">Business / Job Poster</option>
+                        </select>
+                    </div>
+                    <small id="accountTypeError" class="field-error"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Create a strong password" required>
+                    </div>
+                    <small id="passwordError" class="field-error"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    <small id="confirmPasswordError" class="field-error"></small>
+                </div>
+
+                <label class="terms">
+                    <input type="checkbox" id="termsAccepted" required>
+                    <span>
+                        I agree to IMPACTECH ACADEMY terms, privacy policy, and account rules.
+                    </span>
+                </label>
+                <small id="termsError" class="field-error"></small>
+
+                <button type="submit" class="signup-btn">
+                    Create My Account
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <button class="google-btn" type="button">
+                <i class="fa-brands fa-google"></i>
+                Continue with Google
+            </button>
+
+            <p class="signin-text">
+                Already have an account?
+                <a href="signin.html">Sign in here</a>
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="signup.js"></script>
+</body>
+</html>
