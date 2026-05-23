@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="emailverification.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="verify-bg"></div>
+
+    <main class="verify-page">
+
+        <section class="verify-card">
+
+            <a href="../index.html" class="verify-logo">
+                IMPACTECH ACADEMY
+            </a>
+
+            <div class="verify-status-icon loading" id="statusIcon">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+
+            <div class="verify-badge" id="statusBadge">
+                <i class="fa-solid fa-shield-halved"></i>
+                Checking secure verification link
+            </div>
+
+            <h1 id="verifyTitle">Verifying Your Email</h1>
+
+            <p id="verifyText">
+                Please wait while we confirm your account. This helps us protect your dashboard and keep your account secure.
+            </p>
+
+            <div class="verify-loader" id="verifyLoader">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="verify-info-box" id="infoBox">
+                <i class="fa-solid fa-lock"></i>
+                <span>Do not close this page while verification is running.</span>
+            </div>
+
+            <div class="verify-actions" id="verifyActions" style="display:none;">
+                <a href="../signin" class="primary-btn" id="signinBtn">
+                    Go To Sign In
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+                <a href="../signup" class="secondary-btn" id="signupBtn">
+                    Create New Account
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="emailverification.js"></script>
+</body>
+
+</html>

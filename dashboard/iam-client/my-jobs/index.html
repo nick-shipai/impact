@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Dashboard | IMPACTECH ACADEMY</title>
+    <title>My Jobs | IMPACTECH ACADEMY</title>
 
-    <link rel="stylesheet" href="client.css">
+    <link rel="stylesheet" href="my-jobs.css">
     <link rel="icon" href="https://impactacademy.site/images/icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -20,7 +20,7 @@
         </div>
 
         <nav class="sidebar-menu">
-            <a href="client.html" class="active">
+            <a href="../../iam-client/">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
             </a>
@@ -30,7 +30,7 @@
                 <span>Post Job</span>
             </a>
 
-            <a href="./my-jobs">
+            <a href="" class="active">
                 <i class="fa-solid fa-briefcase"></i>
                 <span>My Jobs</span>
             </a>
@@ -75,9 +75,9 @@
             <div class="breadcrumb">
                 <i class="fa-solid fa-house"></i>
                 <span>></span>
-                <p>Client Dashboard</p>
+                <p>Client</p>
                 <span>></span>
-                <p>Overview</p>
+                <p>My Jobs</p>
             </div>
 
             <div class="topbar-actions">
@@ -94,33 +94,33 @@
 
         <section class="client-hero">
             <div>
-                <h1>Client Dashboard</h1>
-                <p>No client data loaded yet. Your posted jobs, proposals, and projects will appear here.</p>
+                <h1>My Jobs</h1>
+                <p>Your posted jobs will appear here after loading. You can track review status, proposals, contracts, and payments.</p>
             </div>
 
             <a href="./post-jobs" class="find-talent-btn">
                 <i class="fa-solid fa-plus"></i>
-                Post First Job
+                Post New Job
             </a>
         </section>
 
         <section class="client-stats">
             <div class="stat-card">
-                <h3>Active Jobs</h3>
+                <h3>Total Jobs</h3>
                 <h2>0</h2>
-                <p>No active jobs yet</p>
+                <p>No jobs loaded yet</p>
             </div>
 
             <div class="stat-card">
-                <h3>Proposals</h3>
+                <h3>Open Jobs</h3>
                 <h2>0</h2>
-                <p>No proposals yet</p>
+                <p>No open jobs yet</p>
             </div>
 
             <div class="stat-card">
-                <h3>Hired</h3>
+                <h3>In Progress</h3>
                 <h2>0</h2>
-                <p>No freelancers hired</p>
+                <p>No active contracts</p>
             </div>
 
             <div class="stat-card">
@@ -134,7 +134,7 @@
 
             <div class="content-header">
                 <div>
-                    <h2>My Posted Jobs</h2>
+                    <h2>Posted Jobs</h2>
                     <p>You have not posted any jobs yet.</p>
                 </div>
 
@@ -157,9 +157,11 @@
                 </div>
 
                 <h3>No jobs posted yet</h3>
+
                 <p>
-                    When you post jobs, they will appear here. You will be able to view proposals,
-                    hire freelancers, message talent, and manage contracts.
+                    When your jobs are loaded or when you post a new job, they will show here.
+                    You will be able to view proposals, hire freelancers, manage contracts,
+                    and track payments.
                 </p>
 
                 <a href="./post-jobs" class="post-job-btn">
@@ -173,6 +175,6 @@
     </main>
 
 </div>
-<script src="client.js"></script>
+<script src="my-jobs.js"></script>
 </body>
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="signin.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="signin-bg"></div>
+
+    <main class="signin-page">
+
+        <section class="signin-left">
+            <a href="../index.html" class="signin-logo">
+                IMPACTECH ACADEMY
+            </a>
+
+            <div class="signin-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                Welcome back to growth
+            </div>
+
+            <h1>
+                Sign in and continue building your digital future.
+            </h1>
+
+            <p>
+                Access your dashboard, continue learning, manage jobs, connect with clients,
+                explore opportunities, and keep growing with IMPACTECH ACADEMY.
+            </p>
+
+            <div class="signin-features">
+                <div>
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Continue your learning journey</span>
+                </div>
+
+                <div>
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Manage jobs and opportunities</span>
+                </div>
+
+                <div>
+                    <i class="fa-solid fa-robot"></i>
+                    <span>Access smart AI support tools</span>
+                </div>
+
+                <div>
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Track your growth and progress</span>
+                </div>
+            </div>
+
+            <div class="signin-stats">
+                <div>
+                    <h3>Learn</h3>
+                    <p>Build real skills</p>
+                </div>
+
+                <div>
+                    <h3>Work</h3>
+                    <p>Find opportunities</p>
+                </div>
+
+                <div>
+                    <h3>Grow</h3>
+                    <p>Scale your future</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="signin-card">
+
+            <div class="form-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your IMPACTECH ACADEMY account.</p>
+            </div>
+
+            <div id="formMessage" class="form-message" style="display:none;"></div>
+
+            <form id="signinForm">
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email address" required>
+                    </div>
+                    <small id="emailError" class="field-error"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <small id="passwordError" class="field-error"></small>
+                </div>
+
+                <div class="signin-options">
+                    <label class="remember">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="forgot-password.html">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="signin-btn">
+                    Sign In
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <button class="google-btn" type="button">
+                <i class="fa-brands fa-google"></i>
+                Continue with Google
+            </button>
+
+            <p class="signup-text">
+                Don’t have an account?
+                <a href="../signup/">Create account</a>
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="signin.js"></script>
+</body>
+
+</html>

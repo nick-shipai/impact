@@ -177,9 +177,9 @@ signupForm.addEventListener("submit", async function (e) {
 
         showMessage("Account created successfully! Redirecting...", "success");
 
-        setTimeout(() => {
-            window.location.href = data.redirectUrl;
-        }, 1200);
+        showVerifyModal(email);
+        signupForm.reset();
+        hideMessage();
 
     } catch (error) {
         console.error("Signup error:", error);
@@ -197,3 +197,29 @@ signupForm.addEventListener("submit", async function (e) {
         signupBtn.innerHTML = originalBtnText;
     }
 });
+function showVerifyModal(email) {
+    const verifyModal = document.getElementById("verifyModal");
+    const verifyEmailText = document.getElementById("verifyEmailText");
+
+    if (verifyEmailText) {
+        verifyEmailText.textContent = email;
+    }
+
+    if (verifyModal) {
+        verifyModal.classList.add("active");
+    }
+}
+
+const closeVerifyModal = document.getElementById("closeVerifyModal");
+
+if (closeVerifyModal) {
+    closeVerifyModal.addEventListener("click", function () {
+        const verifyModal = document.getElementById("verifyModal");
+
+        if (verifyModal) {
+            verifyModal.classList.remove("active");
+        }
+
+        window.location.href = "signin.html";
+    });
+}

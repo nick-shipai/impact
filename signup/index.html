@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,8 +8,7 @@
 
     <link rel="stylesheet" href="signup.css" />
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -38,12 +38,18 @@
             </p>
 
             <div class="signup-features">
-                <div><i class="fa-solid fa-graduation-cap"></i><span>Learn practical digital and tech skills</span></div>
-                <div><i class="fa-solid fa-briefcase"></i><span>Find freelancing and remote work opportunities</span></div>
-                <div><i class="fa-solid fa-users"></i><span>Connect with businesses, clients, and professionals</span></div>
-                <div><i class="fa-solid fa-bullhorn"></i><span>Post jobs, hire talent, and grow your business</span></div>
-                <div><i class="fa-solid fa-robot"></i><span>Access smart AI tools, support, and automation guidance</span></div>
-                <div><i class="fa-solid fa-chart-line"></i><span>Grow your income, skills, confidence, and online presence</span></div>
+                <div><i class="fa-solid fa-graduation-cap"></i><span>Learn practical digital and tech skills</span>
+                </div>
+                <div><i class="fa-solid fa-briefcase"></i><span>Find freelancing and remote work opportunities</span>
+                </div>
+                <div><i class="fa-solid fa-users"></i><span>Connect with businesses, clients, and professionals</span>
+                </div>
+                <div><i class="fa-solid fa-bullhorn"></i><span>Post jobs, hire talent, and grow your business</span>
+                </div>
+                <div><i class="fa-solid fa-robot"></i><span>Access smart AI tools, support, and automation
+                        guidance</span></div>
+                <div><i class="fa-solid fa-chart-line"></i><span>Grow your income, skills, confidence, and online
+                        presence</span></div>
             </div>
 
             <div class="signup-stats">
@@ -147,13 +153,38 @@
 
             <p class="signin-text">
                 Already have an account?
-                <a href="signin.html">Sign in here</a>
+                <a href="../signin/">Sign in here</a>
             </p>
 
         </section>
 
-    </main>
 
+    </main>
+    <div class="verify-modal" id="verifyModal">
+        <div class="verify-modal-box">
+            <div class="verify-icon">
+                <i class="fa-solid fa-envelope-circle-check"></i>
+            </div>
+
+            <h2>Verify Your Email</h2>
+
+            <p>
+                Your account has been created successfully. We sent a verification link to:
+            </p>
+
+            <strong id="verifyEmailText">your email</strong>
+
+            <p class="verify-small">
+                Please check your inbox or spam folder and verify your account before signing in.
+            </p>
+
+            <button type="button" id="closeVerifyModal" class="verify-btn">
+                Okay, I’ll Verify
+                <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </div>
     <script src="signup.js"></script>
 </body>
+
 </html>
