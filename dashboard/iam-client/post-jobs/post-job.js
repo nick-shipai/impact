@@ -130,7 +130,11 @@ function initPostJobPage(user) {
             timeline: data.get("timeline") || "Not added",
             plan: selectedPlan ? selectedPlan.value : "Free Post",
             planPrice: selectedPlan ? Number(selectedPlan.dataset.price) : 0,
-            paymentMethod: selectedPayment ? selectedPayment.value : "Card Payment"
+            paymentMethod: selectedPayment ? selectedPayment.value : "Card Payment",
+            experienceLevel: data.get("experienceLevel") || "Not added",
+            locationPreference: data.get("locationPreference") || "Not added",
+            communication: data.get("communication") || "Not added",
+            proposalLimit: data.get("proposalLimit") || "Unlimited",
         };
     }
 
@@ -184,6 +188,20 @@ function initPostJobPage(user) {
       <small>Timeline</small>
       <strong>${escapeHtml(data.timeline)}</strong>
     </div>
+
+    <div class="summary-item">
+  <small>Freelancer Preference</small>
+  <strong>
+    ${escapeHtml(data.experienceLevel)} • 
+    ${escapeHtml(data.locationPreference)} • 
+    ${escapeHtml(data.communication)}
+  </strong>
+</div>
+
+<div class="summary-item">
+  <small>Proposal Limit</small>
+  <strong>${escapeHtml(data.proposalLimit)}</strong>
+</div>
 
     <div class="summary-item">
       <small>Visibility Plan</small>
@@ -289,6 +307,10 @@ function initPostJobPage(user) {
             budgetAmount: Number(data.budgetAmount),
             currency: data.currency,
             timeline: data.timeline,
+            experienceLevel: data.experienceLevel,
+            locationPreference: data.locationPreference,
+            communication: data.communication,
+            proposalLimit: data.proposalLimit,
 
             visibilityPlan: data.plan,
             visibilityPrice: data.planPrice,
