@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Freelancer Dashboard | IMPACTECH ACADEMY</title>
+
+  <link rel="stylesheet" href="freelancer.css" />
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+<div class="client-layout">
+
+  <aside class="client-sidebar">
+    <div class="sidebar-logo">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="../freelancer/" class="active">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="../freelancer/find-jobs">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Find Jobs</span>
+      </a>
+
+      <a href="../freelancer/my-proposals">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>My Proposals</span>
+      </a>
+
+      <a href="../freelancer/contracts">
+        <i class="fa-solid fa-handshake"></i>
+        <span>Contracts</span>
+      </a>
+
+      <a href="../freelancer/messages">
+        <i class="fa-solid fa-comments"></i>
+        <span>Messages</span>
+      </a>
+
+      <a href="../freelancer/notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+      </a>
+
+      <a href="../freelancer/earnings">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Earnings</span>
+      </a>
+
+      <a href="../freelancer/settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="logout.html">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="client-main">
+
+    <header class="client-topbar">
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i>
+        <span>></span>
+        <p>Freelancer</p>
+        <span>></span>
+        <p>Dashboard</p>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="../freelancer/find-jobs" class="post-job-btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Find Jobs
+        </a>
+
+        <div class="client-profile">
+          <span>M</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="client-hero">
+      <div>
+        <h1>Freelancer Dashboard</h1>
+        <p>Track your jobs, proposals, earnings, and work activity from one clean dashboard.</p>
+      </div>
+
+      <a href="../freelancer/find-jobs" class="find-talent-btn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Browse Jobs
+      </a>
+    </section>
+
+    <section class="client-stats">
+      <div class="stat-card">
+        <h3>Active Contracts</h3>
+        <h2>0</h2>
+        <p>No active contract yet</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Proposals Sent</h3>
+        <h2>0</h2>
+        <p>No proposal sent yet</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Pending Approval</h3>
+        <h2>0</h2>
+        <p>No pending jobs yet</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Earnings</h3>
+        <h2>$0</h2>
+        <p>No payment received yet</p>
+      </div>
+    </section>
+
+    <section class="client-content">
+
+      <div class="content-header">
+        <div>
+          <h2>Work Overview</h2>
+          <p>Your active work, approvals, completed jobs, and inactive jobs will show here.</p>
+        </div>
+
+        <a href="../freelancer/find-jobs" class="small-post-btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Find Work
+        </a>
+      </div>
+
+      <div class="client-tabs">
+        <a href="#" class="active">Active <span>0</span></a>
+        <a href="#">For Approval <span>0</span></a>
+        <a href="#">Inactive <span>0</span></a>
+        <a href="#">Completed <span>0</span></a>
+      </div>
+
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-file-contract"></i>
+        </div>
+
+        <h3>No active work yet</h3>
+        <p>
+          You do not have any active freelance work right now. Start exploring available jobs,
+          send proposals, and your accepted contracts will appear here.
+        </p>
+
+        <a href="../freelancer/find-jobs" class="post-job-btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Find Jobs
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+<script src="freelancer.js"></script>
+</body>
+</html>

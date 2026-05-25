@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | IMPACTECH ACADEMY</title>
+
+  <link rel="stylesheet" href="settings.css" />
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+  <div class="client-layout">
+
+    <aside class="client-sidebar">
+      <div class="sidebar-logo">
+        <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY">
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="../../iam-client/"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="../post-jobs/"><i class="fa-solid fa-plus"></i><span>Post Job</span></a>
+        <a href="../my-jobs/"><i class="fa-solid fa-briefcase"></i><span>My Jobs</span></a>
+        <a href="../proposals/"><i class="fa-solid fa-file-lines"></i><span>Proposals</span></a>
+        <a href="../messages/"><i class="fa-solid fa-comments"></i><span>Messages</span></a>
+        <a href="../contracts/"><i class="fa-solid fa-handshake"></i><span>Contracts</span></a>
+        <a href="../payments/"><i class="fa-solid fa-credit-card"></i><span>Payments</span></a>
+        <a href="../settings/" class="active"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="logout.html"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+      </div>
+    </aside>
+
+    <main class="client-main">
+
+      <header class="client-topbar">
+        <div class="breadcrumb">
+          <i class="fa-solid fa-house"></i>
+          <span>></span>
+          <p>Client Dashboard</p>
+          <span>></span>
+          <p>Settings</p>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="../post-jobs/" class="post-job-btn">
+            <i class="fa-solid fa-plus"></i>
+            Post a Job
+          </a>
+
+          <div class="client-profile">
+            <span>C</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="settings-hero">
+        <div>
+          <span class="hero-badge"><i class="fa-solid fa-shield-halved"></i> Account Control Center</span>
+          <h1>Settings</h1>
+          <p>Manage your profile, security, notifications, payments, privacy, and client workspace preferences.</p>
+        </div>
+
+        <a href="#" class="save-btn">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Save Changes
+        </a>
+      </section>
+
+      <section class="settings-grid">
+
+        <aside class="settings-menu">
+          <a href="#/profile" data-settings-tab="profile" class="active"><i class="fa-solid fa-user"></i> Profile Settings</a>
+          <a href="#/security" data-settings-tab="security"><i class="fa-solid fa-lock"></i> Security</a>
+          <a href="#/notifications" data-settings-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications</a>
+          <a href="#/billing" data-settings-tab="billing"><i class="fa-solid fa-credit-card"></i> Billing & Payments</a>
+          <a href="#/jobs" data-settings-tab="jobs"><i class="fa-solid fa-briefcase"></i> Job Preferences</a>
+          <a href="#/privacy" data-settings-tab="privacy"><i class="fa-solid fa-eye"></i> Privacy</a>
+          <a href="#/appearance" data-settings-tab="appearance"><i class="fa-solid fa-palette"></i> Appearance</a>
+          <a href="#/support" data-settings-tab="support"><i class="fa-solid fa-circle-info"></i> Support</a>
+        </aside>
+
+        <div class="settings-content">
+
+          <section class="settings-card profile-card settings-page active" data-settings-page="profile">
+            <div class="section-title">
+              <div>
+                <h2>Profile Information</h2>
+                <p>Update your personal and company profile details.</p>
+              </div>
+              <span class="status-pill verified"><i class="fa-solid fa-check"></i> Verified</span>
+            </div>
+
+            <div class="profile-preview">
+              <div class="avatar-big">C</div>
+              <div>
+                <h3>Client Account</h3>
+                <p>Upload or update your profile photo.</p>
+              </div>
+              <button class="outline-btn">Change Photo</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>First Name</label>
+                <input type="text" id="firstNameInput" placeholder="Enter first name">
+              </div>
+
+              <div class="field">
+                <label>Last Name</label>
+                <input type="text" id="lastNameInput" placeholder="Enter last name">
+              </div>
+
+              <div class="field">
+                <label>Email Address</label>
+                <input type="email" id="emailInput" placeholder="client@email.com" readonly>
+              </div>
+
+              <div class="field">
+                <label>Phone Number</label>
+                <input type="text" id="phoneInput" placeholder="+234 000 000 0000">
+              </div>
+
+              <div class="field full">
+                <label>Company / Brand Name</label>
+                <input type="text" id="companyInput" placeholder="Impact Academy">
+              </div>
+
+              <div class="field full">
+                <label>Bio / About Client</label>
+                <textarea id="bioInput" placeholder="Tell freelancers about your company, work style, and hiring goals."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="security">
+            <div class="section-title">
+              <div>
+                <h2>Security Settings</h2>
+                <p>Protect your account and login activity.</p>
+              </div>
+            </div>
+
+            <div class="setting-list">
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-key"></i></div>
+                <div>
+                  <h3>Password</h3>
+                  <p>Change your account password regularly.</p>
+                </div>
+                <button class="outline-btn">Update</button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div>
+                  <h3>Two-Factor Authentication</h3>
+                  <p>Add extra protection before account access.</p>
+                </div>
+                <span class="status-pill warning">Off</span>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div>
+                  <h3>Login History</h3>
+                  <p>Review recent devices and sessions.</p>
+                </div>
+                <button class="outline-btn">View</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="notifications">
+            <div class="section-title">
+              <div>
+                <h2>Notification Preferences</h2>
+                <p>Choose what updates you want to receive.</p>
+              </div>
+            </div>
+
+            <div class="toggle-list">
+              <label class="toggle-row">
+                <div>
+                  <h3>New proposal alerts</h3>
+                  <p>Get notified when freelancers apply to your jobs.</p>
+                </div>
+                <input type="checkbox" checked>
+                <span></span>
+              </label>
+
+              <label class="toggle-row">
+                <div>
+                  <h3>Job approval updates</h3>
+                  <p>Receive updates when admin reviews your job posts.</p>
+                </div>
+                <input type="checkbox" checked>
+                <span></span>
+              </label>
+
+              <label class="toggle-row">
+                <div>
+                  <h3>Payment reminders</h3>
+                  <p>Get reminders for pending or failed payments.</p>
+                </div>
+                <input type="checkbox">
+                <span></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="billing">
+            <div class="section-title">
+              <div>
+                <h2>Billing & Payment</h2>
+                <p>Manage payment method, escrow, and invoices.</p>
+              </div>
+            </div>
+
+            <div class="payment-grid">
+              <div class="payment-box">
+                <i class="fa-brands fa-cc-visa"></i>
+                <h3>Card Payment</h3>
+                <p>No card added yet.</p>
+                <button class="outline-btn">Add Card</button>
+              </div>
+
+              <div class="payment-box">
+                <i class="fa-solid fa-building-columns"></i>
+                <h3>Bank Transfer</h3>
+                <p>Connect bank payment later.</p>
+                <button class="outline-btn">Setup</button>
+              </div>
+
+              <div class="payment-box">
+                <i class="fa-solid fa-shield"></i>
+                <h3>Escrow Protection</h3>
+                <p>Secure client and freelancer payments.</p>
+                <button class="outline-btn">Manage</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="jobs">
+            <div class="section-title">
+              <div>
+                <h2>Job Preferences</h2>
+                <p>Control how you post jobs and receive freelancer proposals.</p>
+              </div>
+            </div>
+
+            <div class="setting-list">
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-filter"></i></div>
+                <div>
+                  <h3>Proposal Quality Filter</h3>
+                  <p>Only show proposals from freelancers with strong profiles.</p>
+                </div>
+                <span class="status-pill verified">On</span>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                  <h3>Preferred Delivery Speed</h3>
+                  <p>Choose freelancers based on timeline and availability.</p>
+                </div>
+                <button class="outline-btn">Manage</button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-users"></i></div>
+                <div>
+                  <h3>Freelancer Level</h3>
+                  <p>Choose whether you prefer beginners, intermediate, or experts.</p>
+                </div>
+                <button class="outline-btn">Edit</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="privacy">
+            <div class="section-title">
+              <div>
+                <h2>Privacy Settings</h2>
+                <p>Control what freelancers can see about your account.</p>
+              </div>
+            </div>
+
+            <div class="toggle-list">
+              <label class="toggle-row">
+                <div>
+                  <h3>Show company name</h3>
+                  <p>Allow freelancers to see your company or brand name.</p>
+                </div>
+                <input type="checkbox" checked>
+                <span></span>
+              </label>
+
+              <label class="toggle-row">
+                <div>
+                  <h3>Show online status</h3>
+                  <p>Let freelancers know when you are active.</p>
+                </div>
+                <input type="checkbox">
+                <span></span>
+              </label>
+
+              <label class="toggle-row">
+                <div>
+                  <h3>Hide email address</h3>
+                  <p>Your email stays private and protected from freelancers.</p>
+                </div>
+                <input type="checkbox" checked>
+                <span></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="appearance">
+            <div class="section-title">
+              <div>
+                <h2>Appearance</h2>
+                <p>Customize how your dashboard feels.</p>
+              </div>
+            </div>
+
+            <div class="payment-grid">
+              <div class="payment-box">
+                <i class="fa-solid fa-sun"></i>
+                <h3>Light Mode</h3>
+                <p>Clean bright dashboard look.</p>
+                <button class="outline-btn">Active</button>
+              </div>
+
+              <div class="payment-box">
+                <i class="fa-solid fa-moon"></i>
+                <h3>Dark Mode</h3>
+                <p>Coming soon.</p>
+                <button class="outline-btn">Soon</button>
+              </div>
+
+              <div class="payment-box">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h3>Modern UI</h3>
+                <p>Your current Impact style.</p>
+                <button class="outline-btn">Selected</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card settings-page" data-settings-page="support">
+            <div class="section-title">
+              <div>
+                <h2>Support</h2>
+                <p>Get help with your account, jobs, payments, and freelancers.</p>
+              </div>
+            </div>
+
+            <div class="setting-list">
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-headset"></i></div>
+                <div>
+                  <h3>Contact Support</h3>
+                  <p>Reach the Impact Academy support team.</p>
+                </div>
+                <button class="outline-btn">Open</button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <div>
+                  <h3>Help Center</h3>
+                  <p>Learn how jobs, proposals, contracts, and payments work.</p>
+                </div>
+                <button class="outline-btn">View</button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div>
+                  <h3>Email Support</h3>
+                  <p>Send a message when you need account or payment help.</p>
+                </div>
+                <button class="outline-btn">Message</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card danger-card">
+            <div class="section-title">
+              <div>
+                <h2>Danger Zone</h2>
+                <p>Actions here can affect your account permanently.</p>
+              </div>
+            </div>
+
+            <div class="danger-actions">
+              <button class="danger-btn"><i class="fa-solid fa-trash"></i> Delete Account</button>
+              <button class="outline-btn"><i class="fa-solid fa-download"></i> Export Data</button>
+            </div>
+          </section>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+
+</html>

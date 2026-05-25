@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Job | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="view-job.css" />
+    <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+    <main class="view-job-page">
+
+        <header class="job-topbar">
+            <a href="../find-jobs/" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to jobs
+            </a>
+
+            <div class="top-actions">
+                <button id="saveJobBtn" class="save-btn" type="button">
+                    <i class="fa-regular fa-bookmark"></i>
+                    Save
+                </button>
+
+                <button id="submitProposalBtn" class="apply-btn" type="button">
+                    Submit Proposal
+                    <i class="fa-regular fa-paper-plane"></i>
+                </button>
+            </div>
+        </header>
+
+        <section id="jobLoadingState" class="job-hero loading">
+            <div class="job-icon-card skeleton-circle"></div>
+
+            <div class="job-hero-content">
+                <span class="skeleton-line small"></span>
+                <span class="skeleton-line title"></span>
+
+                <div class="job-tags">
+                    <span class="skeleton-pill"></span>
+                    <span class="skeleton-pill"></span>
+                    <span class="skeleton-pill"></span>
+                    <span class="skeleton-pill"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="jobErrorState" class="state-card" style="display: none;">
+            <div class="state-icon error">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2>Unable to load job</h2>
+            <p>The job details could not be loaded. Please go back and try again.</p>
+            <a href="find-jobs.html">Back to jobs</a>
+        </section>
+
+        <section id="jobContent" style="display: none;">
+
+            <section class="job-hero">
+                <div class="job-icon-card">
+                    <i id="jobMainIcon" class="fa-solid fa-briefcase"></i>
+                </div>
+
+                <div class="job-hero-content">
+                    <span class="posted-date">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span id="jobPostedDate"></span>
+                    </span>
+
+                    <h1 id="jobTitle"></h1>
+
+                    <div id="jobTags" class="job-tags"></div>
+                </div>
+            </section>
+
+            <section class="job-tabs">
+                <a href="#overview" class="active">Overview</a>
+                <a href="#skills">Skills</a>
+                <a href="#budget">Budget</a>
+                <a href="#client">Client</a>
+                <a href="#description">Description</a>
+            </section>
+
+            <section class="job-layout">
+
+                <div class="job-main-content">
+
+                    <div id="overview" class="content-card">
+                        <h2>Project Overview</h2>
+                        <div id="jobOverview" class="dynamic-text"></div>
+                    </div>
+
+                    <div id="description" class="content-card">
+                        <h2>Job Description</h2>
+                        <div id="jobDescription" class="dynamic-text"></div>
+                    </div>
+
+                    <div id="skills" class="content-card">
+                        <h2>Required Skills</h2>
+                        <div id="jobSkills" class="skill-pills"></div>
+                    </div>
+
+                </div>
+
+                <aside class="job-side-content">
+
+                    <div id="budget" class="side-card">
+                        <h3>Job Details</h3>
+
+                        <div class="side-info">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                            <div>
+                                <small>Budget</small>
+                                <strong id="jobBudget"></strong>
+                            </div>
+                        </div>
+
+                        <div class="side-info">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <div>
+                                <small>Job Type</small>
+                                <strong id="jobType"></strong>
+                            </div>
+                        </div>
+
+                        <div class="side-info">
+                            <i class="fa-solid fa-signal"></i>
+                            <div>
+                                <small>Experience</small>
+                                <strong id="jobExperience"></strong>
+                            </div>
+                        </div>
+
+                        <div class="side-info">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div>
+                                <small>Category</small>
+                                <strong id="jobCategory"></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="client" class="side-card">
+                        <h3>About Client</h3>
+
+                        <div class="client-box">
+                            <div id="clientAvatar" class="client-avatar"></div>
+
+                            <div>
+                                <strong id="clientName"></strong>
+                                <p id="clientVerifiedText"></p>
+                            </div>
+                        </div>
+
+                        <p id="clientNote" class="client-note"></p>
+                    </div>
+
+                    <button id="sideSubmitProposalBtn" class="side-apply-btn" type="button">
+                        Submit a Proposal
+                        <i class="fa-regular fa-paper-plane"></i>
+                    </button>
+
+                </aside>
+
+            </section>
+
+        </section>
+
+        <!-- AI INTERVIEW PROPOSAL MODAL -->
+        <section id="proposalModalOverlay" class="proposal-modal-overlay">
+            <div class="proposal-modal">
+
+                <div class="proposal-modal-header">
+                    <h2>Submit a Proposal</h2>
+
+                    <button id="closeProposalModal" type="button" class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="proposal-modal-body">
+
+                    <aside class="proposal-left-panel">
+                        <div class="modal-job-head">
+                            <div class="modal-job-icon">
+                                <i id="modalJobIcon" class="fa-solid fa-briefcase"></i>
+                            </div>
+
+                            <div>
+                                <h3 id="modalJobTitle">Loading job...</h3>
+                                <p id="modalJobCategory">Loading category...</p>
+                            </div>
+                        </div>
+
+                        <div id="modalJobTags" class="modal-job-tags"></div>
+
+                        <div class="modal-job-meta">
+                            <div>
+                                <i class="fa-solid fa-globe"></i>
+                                <span id="modalJobLocation">Global - Any Location</span>
+                            </div>
+
+                            <div>
+                                <i class="fa-solid fa-user-tie"></i>
+                                <span id="modalJobExperience">Freelancers & Agencies</span>
+                            </div>
+
+                            <div>
+                                <i class="fa-regular fa-calendar"></i>
+                                <span id="modalJobTimeline">Ongoing Project</span>
+                            </div>
+                        </div>
+
+                        <div class="modal-budget-box">
+                            <div>
+                                <span>Budget</span>
+                                <strong id="modalJobBudget">$0</strong>
+                            </div>
+
+                            <div>
+                                <span>Estimated total earnings</span>
+                                <strong id="modalJobEarnings">$0</strong>
+                            </div>
+
+                            <div>
+                                <span>Job Type</span>
+                                <strong id="modalJobType">Fixed Price</strong>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <section class="proposal-right-panel">
+
+                        <div class="ai-interview-card">
+                            <div class="ai-interview-top">
+                                <div>
+                                    <h3>Live Chat Screening Interview</h3>
+                                    <span>
+                                        <i class="fa-solid fa-circle"></i>
+                                        Available Now
+                                    </span>
+                                </div>
+
+                                <button id="startInterviewBtn" type="button">
+                                    Start Live Chat Interview
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+
+                            <div class="ai-interview-body">
+                                <div class="ai-chat-icon">
+                                    <i class="fa-regular fa-comments"></i>
+                                </div>
+
+                                <h4>Complete AI Live Chat Interview to Apply</h4>
+
+                                <p>
+                                    This job requires you to complete a live chat interview to apply.
+                                    The interview will be conducted by Impact Academy AI system to see
+                                    if you are qualified. This only takes a few minutes.
+                                </p>
+                            </div>
+                        </div>
+
+                    </section>
+
+                </div>
+
+                <div class="proposal-modal-footer">
+                    <button id="cancelProposalModal" type="button" class="modal-cancel-btn">
+                        Cancel
+                    </button>
+
+                    <button id="sendProposalBtn" type="button" class="modal-submit-btn" disabled>
+                        Submit Proposal
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LIVE AI INTERVIEW CHAT MODAL -->
+        <section id="aiInterviewModalOverlay" class="ai-chat-modal-overlay">
+            <div class="ai-chat-modal">
+
+                <div class="ai-chat-modal-header">
+                    <h2>Submit a Proposal</h2>
+
+                    <button id="closeAiInterviewModal" type="button" class="ai-chat-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="ai-chat-modal-body">
+
+                    <div class="ai-chat-fixed-top">
+                        <button id="backToJobDetailsBtn" type="button" class="ai-chat-back-btn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Go back to Job Details
+                        </button>
+
+                        <div class="ai-chat-box-header">
+                            <h3>Live Chat Screening Interview</h3>
+                            <span>
+                                <i class="fa-solid fa-circle"></i>
+                                Available Now
+                            </span>
+                        </div>
+                    </div>
+
+                    <div id="aiChatMessages" class="ai-chat-messages">
+                        <div class="ai-chat-waiting">
+                            <i class="fa-solid fa-comments"></i>
+                            <span>Interview messages will appear here.</span>
+                        </div>
+                    </div>
+
+                    <div class="ai-chat-input-box">
+                        <textarea id="aiInterviewMessageInput" placeholder="Send a message" disabled></textarea>
+
+                        <div class="ai-chat-actions">
+                            <button id="sendInterviewMessageBtn" type="button" disabled>
+                                Send
+                            </button>
+
+                            <button id="chatSubmitProposalBtn" class="chat-submit-proposal-btn" type="button" disabled>
+                                Submit Proposal
+                                <i class="fa-regular fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="view-job.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Freelancer Setup | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="set-up.css" />
+    <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+    <div class="setup-page">
+
+        <aside class="setup-side">
+            <div class="brand">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH" />
+                <h2>IMPACTECH</h2>
+            </div>
+
+            <div class="side-content">
+                <span>FREELANCER SETUP</span>
+                <h1>Build your freelancer profile.</h1>
+                <p>
+                    Add your profile details, upload your CV, select your skills,
+                    and prepare your account to start applying for jobs.
+                </p>
+            </div>
+
+            <div class="side-box">
+                <i class="fa-solid fa-user-check"></i>
+                <div>
+                    <h3>Professional Profile</h3>
+                    <p>You can update your freelancer profile later from your dashboard.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="setup-main">
+
+            <div class="setup-card">
+
+                <div class="setup-header">
+                    <div>
+                        <h2 id="stepTitle">Basic Information</h2>
+                        <p id="stepDescription">Your name and email are loaded from your account.</p>
+                    </div>
+
+                    <div class="step-count">
+                        Step <span id="currentStepText">1</span> of <span id="totalStepText">3</span>
+                    </div>
+                </div>
+
+                <div class="progress-wrap">
+                    <div class="progress-info">
+                        <span id="progressPercent">33%</span>
+                        <span>Completed</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <form id="freelancerSetupForm">
+
+                    <!-- STEP 1 -->
+                    <section class="form-step active" data-title="Basic Information"
+                        data-description="Your name and email are loaded from your account.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Full Name</label>
+                                <input type="text" name="fullName" value="John David" readonly>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Email Address</label>
+                                <input type="email" name="email" value="user@example.com" readonly>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Date Of Birth</label>
+                                <input type="date" name="dob">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" placeholder="+234...">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Country</label>
+                                <select name="country" id="countrySelect">
+                                    <option value="">Loading countries...</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>State</label>
+                                <select name="state" id="stateSelect" disabled>
+                                    <option value="">Select country first</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>City</label>
+                                <input type="text" name="city" placeholder="Lagos">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 2 -->
+                    <section class="form-step" data-title="Upload CV" data-description="Upload your CV or resume.">
+                        <div class="upload-box">
+                            <input type="file" id="cvUpload" name="cv" accept=".pdf,.doc,.docx" hidden>
+
+                            <label for="cvUpload" class="upload-label">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <h3>Upload CV / Resume</h3>
+                                <p>PDF, DOC, DOCX accepted</p>
+                                <span id="fileName">No file selected</span>
+                            </label>
+                        </div>
+                        <div class="ai-cv-box" id="aiCvBox">
+                            <div class="ai-cv-icon">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+
+                            <div>
+                                <h3>AI CV Assistant</h3>
+                                <p id="aiCvText">
+                                    Upload your CV and click Next. Our AI will read it and help fill your skills, work
+                                    experience, education, and profile details.
+                                </p>
+
+                                <div class="ai-cv-loader" id="aiCvLoader">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 3 -->
+                    <section class="form-step" data-title="Job Category"
+                        data-description="Choose the kind of jobs you want.">
+                        <div class="option-grid">
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Web Development"><span><i class="fa-solid fa-code"></i> Web
+                                    Development</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Mobile App Development"><span><i class="fa-solid fa-mobile-screen"></i>
+                                    Mobile App Development</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Graphic Design"><span><i class="fa-solid fa-pen-nib"></i> Graphic
+                                    Design</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="UI UX Design"><span><i class="fa-solid fa-layer-group"></i> UI/UX
+                                    Design</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Virtual Assistant"><span><i class="fa-solid fa-headset"></i> Virtual
+                                    Assistant</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Customer Support"><span><i class="fa-solid fa-comments"></i> Customer
+                                    Support</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Content Writing"><span><i class="fa-solid fa-file-lines"></i> Content
+                                    Writing</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Copywriting"><span><i class="fa-solid fa-bullhorn"></i>
+                                    Copywriting</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Data Entry"><span><i class="fa-solid fa-keyboard"></i> Data
+                                    Entry</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="AI Automation"><span><i class="fa-solid fa-robot"></i> AI
+                                    Automation</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Social Media Management"><span><i class="fa-solid fa-share-nodes"></i> Social
+                                    Media</span></label>
+                            <label class="option-card"><input type="checkbox" name="category"
+                                    value="Video Editing"><span><i class="fa-solid fa-video"></i> Video
+                                    Editing</span></label>
+                        </div>
+                    </section>
+
+                    <!-- STEP 4 -->
+                    <section class="form-step" data-title="Skills" data-description="Select all skills you have.">
+                        <div class="skill-box">
+                            <label><input type="checkbox" name="skills" value="HTML"><span>HTML</span></label>
+                            <label><input type="checkbox" name="skills" value="CSS"><span>CSS</span></label>
+                            <label><input type="checkbox" name="skills"
+                                    value="JavaScript"><span>JavaScript</span></label>
+                            <label><input type="checkbox" name="skills" value="React"><span>React</span></label>
+                            <label><input type="checkbox" name="skills" value="Node.js"><span>Node.js</span></label>
+                            <label><input type="checkbox" name="skills" value="Firebase"><span>Firebase</span></label>
+                            <label><input type="checkbox" name="skills" value="Canva"><span>Canva</span></label>
+                            <label><input type="checkbox" name="skills" value="Figma"><span>Figma</span></label>
+                            <label><input type="checkbox" name="skills" value="Excel"><span>Excel</span></label>
+                            <label><input type="checkbox" name="skills" value="Google Sheets"><span>Google
+                                    Sheets</span></label>
+                            <label><input type="checkbox" name="skills" value="CRM"><span>CRM</span></label>
+                            <label><input type="checkbox" name="skills" value="Email Support"><span>Email
+                                    Support</span></label>
+                            <label><input type="checkbox" name="skills" value="Live Chat"><span>Live Chat</span></label>
+                            <label><input type="checkbox" name="skills"
+                                    value="Copywriting"><span>Copywriting</span></label>
+                            <label><input type="checkbox" name="skills" value="Data Entry"><span>Data
+                                    Entry</span></label>
+                            <label><input type="checkbox" name="skills" value="ChatGPT"><span>ChatGPT</span></label>
+                            <label><input type="checkbox" name="skills"
+                                    value="Automation"><span>Automation</span></label>
+                            <label><input type="checkbox" name="skills" value="Social Media"><span>Social
+                                    Media</span></label>
+                        </div>
+
+                        <div class="input-box full space-top">
+                            <label>Add Other Skills</label>
+                            <textarea name="otherSkills" placeholder="Add extra skills here..."></textarea>
+                        </div>
+                    </section>
+
+                    <!-- STEP 5 -->
+                    <section class="form-step" data-title="Work Experience"
+                        data-description="Add your previous work experience.">
+                        <div id="experienceList" class="dynamic-list">
+                            <div class="dynamic-card">
+                                <div class="form-grid">
+                                    <div class="input-box"><label>Job Title</label><input type="text" name="jobTitle[]"
+                                            placeholder="Frontend Developer"></div>
+                                    <div class="input-box"><label>Company</label><input type="text" name="company[] "
+                                            placeholder="Company name"></div>
+                                    <div class="input-box"><label>Start Date</label><input type="month"
+                                            name="workStart[]"></div>
+                                    <div class="input-box"><label>End Date</label><input type="month" name="workEnd[]">
+                                    </div>
+                                    <div class="input-box full"><label>Description</label><textarea
+                                            name="workDescription[]" placeholder="What did you do there?"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-more-btn" id="addExperienceBtn">
+                            <i class="fa-solid fa-plus"></i> Add More Experience
+                        </button>
+                    </section>
+
+                    <!-- STEP 6 -->
+                    <section class="form-step" data-title="Education"
+                        data-description="Add your school or training background.">
+                        <div id="schoolList" class="dynamic-list">
+                            <div class="dynamic-card">
+                                <div class="form-grid">
+                                    <div class="input-box"><label>School Name</label><input type="text"
+                                            name="schoolName[]" placeholder="School / University"></div>
+                                    <div class="input-box"><label>Course / Degree</label><input type="text"
+                                            name="course[]" placeholder="Computer Science"></div>
+                                    <div class="input-box"><label>Start Date</label><input type="month"
+                                            name="schoolStart[]"></div>
+                                    <div class="input-box"><label>End Date</label><input type="month"
+                                            name="schoolEnd[]"></div>
+                                    <div class="input-box full"><label>Extra Note</label><textarea name="schoolNote[]"
+                                            placeholder="Certificate, grade, achievement..."></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-more-btn" id="addSchoolBtn">
+                            <i class="fa-solid fa-plus"></i> Add More School
+                        </button>
+                    </section>
+
+                    <!-- STEP 7 -->
+                    <section class="form-step" data-title="Profile Details"
+                        data-description="Finish your freelancer profile.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Experience Level</label>
+                                <select name="experienceLevel">
+                                    <option value="">Select experience level</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Expert">Expert</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Hourly Rate</label>
+                                <input type="number" name="hourlyRate" placeholder="15">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Availability</label>
+                                <select name="availability">
+                                    <option value="">Select availability</option>
+                                    <option value="Available Now">Available Now</option>
+                                    <option value="Not Available Yet">Not Available Yet</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Portfolio Link</label>
+                                <input type="url" name="portfolio" placeholder="https://yourportfolio.com">
+                            </div>
+
+                            <div class="input-box full">
+                                <label>Short Bio</label>
+                                <textarea name="bio" placeholder="Tell clients about yourself..."></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-actions">
+                        <button type="button" class="back-btn" id="backBtn">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+
+                        <button type="button" class="next-btn" id="nextBtn">
+                            Next <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <section class="review-screen" id="reviewScreen">
+                    <div class="review-head">
+                        <div>
+                            <span>FINAL REVIEW</span>
+                            <h2>Review your freelancer profile</h2>
+                            <p>Check everything before saving. Click edit to go back and update any section.</p>
+                        </div>
+
+                        <button type="button" class="review-close-btn" id="reviewCloseBtn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back to setup
+                        </button>
+                    </div>
+
+                    <div class="review-grid" id="reviewGrid"></div>
+
+                    <div class="review-actions">
+                        <button type="button" class="back-btn" id="reviewEditBtn">
+                            <i class="fa-solid fa-pen"></i>
+                            Edit Profile
+                        </button>
+
+                        <button type="button" class="next-btn" id="saveFreelancerSetupBtn">
+                            Save Freelancer Setup
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+    <div class="redirect-loader" id="redirectLoader">
+        <div class="redirect-loader-card">
+            <div class="redirect-spinner"></div>
+            <h3>Saving your freelancer profile</h3>
+            <p>Please wait while we prepare your dashboard...</p>
+        </div>
+    </div>
+    <script src="set-up.js"></script>
+</body>
+
+</html>

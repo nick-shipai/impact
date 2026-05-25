@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Jobs | IMPACTECH ACADEMY</title>
+
+  <link rel="stylesheet" href="find-jobs.css" />
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+<div class="client-layout">
+
+  <aside class="client-sidebar">
+    <div class="sidebar-logo">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="../../freelancer/">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="../freelancer/find-jobs" class="active">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Find Jobs</span>
+      </a>
+
+      <a href="../freelancer/my-proposals">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>My Proposals</span>
+      </a>
+
+      <a href="../freelancer/contracts">
+        <i class="fa-solid fa-handshake"></i>
+        <span>Contracts</span>
+      </a>
+
+      <a href="../freelancer/messages">
+        <i class="fa-solid fa-comments"></i>
+        <span>Messages</span>
+      </a>
+
+      <a href="../freelancer/notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+      </a>
+
+      <a href="../freelancer/earnings">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Earnings</span>
+      </a>
+
+      <a href="../freelancer/settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="logout.html">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="client-main">
+
+    <header class="client-topbar">
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i>
+        <span>></span>
+        <p>Freelancer</p>
+        <span>></span>
+        <p>Find Jobs</p>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="../freelancer/my-proposals" class="post-job-btn">
+          <i class="fa-solid fa-file-lines"></i>
+          My Proposals
+        </a>
+
+        <div class="client-profile">
+          <span>M</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="find-hero">
+      <div>
+        <span class="hero-badge">
+          <i class="fa-solid fa-bolt"></i>
+          Freelance Marketplace
+        </span>
+
+        <h1>Find Jobs That Match Your Skill</h1>
+        <p>
+          Browse approved client jobs, review budgets, check timelines, and send clean proposals to projects you can handle.
+        </p>
+      </div>
+
+      <div class="hero-mini-card">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3 id="availableJobsCount">0</h3>
+        <p>Available jobs</p>
+      </div>
+    </section>
+
+    <section class="search-panel">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="jobSearchInput" type="text" placeholder="Search jobs, skills, category..." />
+      </div>
+
+      <div class="filter-row">
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option value="Web Development">Web Development</option>
+          <option value="Virtual Assistant">Virtual Assistant</option>
+          <option value="Writing">Writing</option>
+          <option value="Design">Design</option>
+          <option value="Marketing">Marketing</option>
+        </select>
+
+        <select id="budgetFilter">
+          <option value="">Budget Type</option>
+          <option value="Fixed Price">Fixed Price</option>
+          <option value="Hourly">Hourly</option>
+        </select>
+
+        <select id="experienceFilter">
+          <option value="">Experience Level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Expert">Expert</option>
+        </select>
+
+        <button id="filterJobsBtn" type="button">
+          <i class="fa-solid fa-sliders"></i>
+          Filter
+        </button>
+      </div>
+    </section>
+
+    <section class="jobs-layout">
+
+      <aside class="jobs-sidebar">
+        <div class="filter-card">
+          <h3>Quick Filters</h3>
+
+          <label>
+            <input type="checkbox" class="quick-filter" value="fixed" />
+            Fixed price jobs
+          </label>
+
+          <label>
+            <input type="checkbox" class="quick-filter" value="hourly" />
+            Hourly jobs
+          </label>
+
+          <label>
+            <input type="checkbox" class="quick-filter" value="beginner" />
+            Beginner friendly
+          </label>
+
+          <label>
+            <input type="checkbox" class="quick-filter" value="remote" />
+            Remote work
+          </label>
+
+          <label>
+            <input type="checkbox" class="quick-filter" value="recent" />
+            Recently posted
+          </label>
+        </div>
+
+        <div class="filter-card">
+          <h3>Job Tips</h3>
+          <p>
+            Apply only to jobs you can complete well. Read the description, explain your value, and avoid copy-paste proposals.
+          </p>
+        </div>
+      </aside>
+
+      <section class="jobs-content">
+
+        <div class="jobs-content-header">
+          <div>
+            <h2>Available Jobs</h2>
+            <p id="jobsSubtitle">Loading approved client jobs from server...</p>
+          </div>
+
+          <select id="sortJobs">
+            <option value="newest">Newest First</option>
+            <option value="highest_budget">Highest Budget</option>
+            <option value="best_match">Best Match</option>
+          </select>
+        </div>
+
+        <div id="jobsLoadingState" class="empty-state">
+          <div class="empty-icon">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+
+          <h3>Loading jobs...</h3>
+          <p>Please wait while we fetch real approved jobs from the server.</p>
+        </div>
+
+        <div id="jobsEmptyState" class="empty-state" style="display: none;">
+          <div class="empty-icon">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+
+          <h3>No jobs available yet</h3>
+          <p>
+            Approved client jobs will appear here once they are loaded from the server.
+          </p>
+        </div>
+
+        <div id="jobCardList" class="job-card-list"></div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script src="find-jobs.js"></script>
+</body>
+</html>
