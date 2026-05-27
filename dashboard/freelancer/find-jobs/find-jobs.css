@@ -1097,3 +1097,22 @@ a {
   font-size: 13px;
   font-weight: 900;
 }
+.adsterra-container {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.adsterra-container iframe {
+  border: none;
+  border-radius: 14px;
+  max-width: 100%;
+}
+
+.monetag-ad-slot {
+  width: 100%;
+  overflow: hidden;
+}

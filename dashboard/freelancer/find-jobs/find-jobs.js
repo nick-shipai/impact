@@ -264,16 +264,48 @@ function renderJobs(jobs) {
     let html = createJobCard(job);
 
     if ((index + 1) % 4 === 0) {
-      html += createSponsoredAdCard();
+      html += createSponsoredAdCard(index);
     }
 
     return html;
   }).join("");
 }
 
-function createSponsoredAdCard() {
+function createSponsoredAdCard(index = 0) {
+  const adId = `adsterra-slot-${index}`;
+
+  setTimeout(() => {
+    const container = document.getElementById(adId);
+
+    if (!container || container.dataset.loaded) return;
+
+    container.dataset.loaded = "true";
+
+    const optionsScript = document.createElement("script");
+
+    optionsScript.innerHTML = `
+      atOptions = {
+        'key' : '1861361b791c986f9a927974e0eef766',
+        'format' : 'iframe',
+        'height' : 60,
+        'width' : 468,
+        'params' : {}
+      };
+    `;
+
+    const invokeScript = document.createElement("script");
+
+    invokeScript.src = "https://www.highperformanceformat.com/1861361b791c986f9a927974e0eef766/invoke.js";
+    invokeScript.async = true;
+
+    container.appendChild(optionsScript);
+    container.appendChild(invokeScript);
+
+  }, 100);
+
   return `
     <article class="sponsored-ad-card">
+
       <div class="sponsored-top">
         <span>
           <i class="fa-solid fa-bullhorn"></i>
@@ -286,10 +318,16 @@ function createSponsoredAdCard() {
       <div class="sponsored-body">
 
         <div class="monetag-ad-slot">
-          <div id="monetag-vignette-container"></div>
+
+          <div 
+            id="${adId}" 
+            class="adsterra-container"
+          ></div>
+
         </div>
 
       </div>
+
     </article>
   `;
 }
