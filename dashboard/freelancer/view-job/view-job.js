@@ -1,4 +1,4 @@
-const API_URL = "https://ai-impact-server.vercel.app";
+const API_URL = "https://backend.impactacademy.site";
 let APPLICATION_STATUS = null;
 let CURRENT_JOB_DATA = null;
 

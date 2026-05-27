@@ -1,4 +1,4 @@
-const SIGNIN_API_URL = "https://ai-impact-server.vercel.app/api/signin";
+const SIGNIN_API_URL = "https://backend.impactacademy.site/api/signin";
 
 const signinForm = document.getElementById("signinForm");
 const formMessage = document.getElementById("formMessage");

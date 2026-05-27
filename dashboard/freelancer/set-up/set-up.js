@@ -1,4 +1,4 @@
-const API_URL = "https://ai-impact-server.vercel.app";
+const API_URL = "https://backend.impactacademy.site";
 const steps = document.querySelectorAll(".form-step");
 const stepTitle = document.getElementById("stepTitle");
 const stepDescription = document.getElementById("stepDescription");

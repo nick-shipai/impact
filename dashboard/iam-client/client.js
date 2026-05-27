@@ -1,4 +1,4 @@
-const API_URL = "https://ai-impact-server.vercel.app";
+const API_URL = "https://backend.impactacademy.site";
 function setPageSkeletonLoading() {
     document.querySelector(".client-profile").innerHTML = `<span class="profile-skeleton"></span>`;
 

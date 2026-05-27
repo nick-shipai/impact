@@ -1,4 +1,4 @@
-const API_URL = "https://ai-impact-server.vercel.app/api/signup";
+const API_URL = "https://backend.impactacademy.site/api/signup";
 
 const signupForm = document.getElementById("signupForm");
 const formMessage = document.getElementById("formMessage");
@@ -220,6 +220,6 @@ if (closeVerifyModal) {
             verifyModal.classList.remove("active");
         }
 
-        window.location.href = "signin.html";
+        window.location.href = "./signin";
     });
 }

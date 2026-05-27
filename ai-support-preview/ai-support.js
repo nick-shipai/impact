@@ -1,4 +1,4 @@
-const API_URL = "https://ai-impact-server.vercel.app/api/chat";
+const API_URL = "https://backend.impactacademy.site/api/chat";
 
 const chatBody = document.getElementById("chatBody");
 const chatForm = document.getElementById("chatForm");

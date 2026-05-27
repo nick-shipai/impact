@@ -1,4 +1,4 @@
-const VERIFY_API_URL = "https://ai-impact-server.vercel.app/api/auth/verify-email";
+const VERIFY_API_URL = "https://backend.impactacademy.site/api/auth/verify-email";
 
 const statusIcon = document.getElementById("statusIcon");
 const statusBadge = document.getElementById("statusBadge");
