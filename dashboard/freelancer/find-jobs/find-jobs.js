@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const auth = await AuthenticateUser();
 
   if (!auth.success) {
-    window.location.href = "../../signin.html";
+    window.location.href = "../../signin";
     return;
   }
 
@@ -260,7 +260,41 @@ function renderJobs(jobs) {
     subtitle.textContent = `${jobs.length} approved job${jobs.length === 1 ? "" : "s"} available for freelancers.`;
   }
 
-  list.innerHTML = jobs.map((job) => createJobCard(job)).join("");
+  list.innerHTML = jobs.map((job, index) => {
+    let html = createJobCard(job);
+
+    if ((index + 1) % 4 === 0) {
+      html += createSponsoredAdCard();
+    }
+
+    return html;
+  }).join("");
+}
+
+function createSponsoredAdCard() {
+  return `
+    <article class="sponsored-ad-card">
+      <div class="sponsored-top">
+        <span>
+          <i class="fa-solid fa-bullhorn"></i>
+          Sponsored
+        </span>
+
+        <small>Ad</small>
+      </div>
+
+      <div class="sponsored-body">
+        <h3>Sponsored Opportunity</h3>
+        <p>
+          Discover tools, offers, and services that may help freelancers find better jobs and grow faster.
+        </p>
+
+        <div class="monetag-ad-slot">
+          <span>Sponsored content loading...</span>
+        </div>
+      </div>
+    </article>
+  `;
 }
 
 /* =========================
@@ -283,7 +317,7 @@ function createJobCard(job) {
     <article class="job-card" data-job-id="${escapeHTML(jobId)}">
       <div class="job-card-top">
         <div>
-          <span class="job-pill">${escapeHTML(category || "Approved Job")}</span>
+          <span class="job-pill normal">${escapeHTML(category || "Approved Job")}</span>
 
           <h3>${escapeHTML(title)}</h3>
 
@@ -296,11 +330,10 @@ function createJobCard(job) {
       </div>
 
       <div class="job-tags">
-        ${
-          skills.length
-            ? skills.map((skill) => `<span>${escapeHTML(skill)}</span>`).join("")
-            : `<span>No skills listed</span>`
-        }
+        ${skills.length
+      ? skills.map((skill) => `<span>${escapeHTML(skill)}</span>`).join("")
+      : `<span>No skills listed</span>`
+    }
       </div>
 
       <div class="job-info-grid">

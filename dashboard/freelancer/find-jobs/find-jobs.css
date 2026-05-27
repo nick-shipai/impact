@@ -1035,3 +1035,65 @@ a {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   SPONSORED ADS
+========================= */
+
+.sponsored-ad-card {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border);
+  background:
+    linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(37, 99, 235, 0.08)),
+    white;
+}
+
+.sponsored-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sponsored-top span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sponsored-top small {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.sponsored-body h3 {
+  color: var(--dark);
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.sponsored-body p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.monetag-ad-slot {
+  min-height: 90px;
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  border-radius: 20px;
+  background: rgba(255, 251, 235, 0.7);
+  display: grid;
+  place-items: center;
+  color: #b45309;
+  font-size: 13px;
+  font-weight: 900;
+}

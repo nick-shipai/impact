@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Proposal | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="view-proposal.css" />
+    <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+    <main class="view-job-page">
+
+        <header class="view-topbar">
+            <a href="../proposals/" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back
+            </a>
+
+            <div class="top-logo">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+                <span>IMPACTECH ACADEMY</span>
+            </div>
+        </header>
+
+        <section class="job-hero">
+            <div>
+                <span class="job-status" id="proposalStatus"></span>
+                <h1 id="jobTitle"></h1>
+                <p id="proposalSummary"></p>
+            </div>
+
+            <div class="hero-actions">
+                <button class="accept-btn" id="acceptProposalBtn">
+                    <i class="fa-solid fa-check"></i>
+                    Accept Proposal
+                </button>
+
+                <button class="reject-btn" id="rejectProposalBtn">
+                    <i class="fa-solid fa-ban"></i>
+                    Reject
+                </button>
+            </div>
+        </section>
+
+        <section class="job-grid">
+
+            <div class="main-card">
+
+                <div class="card-header">
+                    <div>
+                        <h2>Job Details</h2>
+                        <p id="jobDetailsSubtitle"></p>
+                    </div>
+
+                    <span class="budget-pill" id="jobBudget"></span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <h4>Job Type</h4>
+                        <p id="jobType"></p>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fa-solid fa-clock"></i>
+                        <h4>Duration</h4>
+                        <p id="jobDuration"></p>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <h4>Experience</h4>
+                        <p id="jobExperience"></p>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <h4>Location</h4>
+                        <p id="jobLocation"></p>
+                    </div>
+                </div>
+
+                <div class="section-block">
+                    <h3>Job Description</h3>
+                    <p id="jobDescription"></p>
+                </div>
+
+                <div class="section-block">
+                    <h3>Required Skills</h3>
+                    <div class="skill-list" id="jobSkills"></div>
+                </div>
+
+                <div class="section-block">
+                    <h3>Deliverables</h3>
+                    <ul class="deliverables" id="jobDeliverables"></ul>
+                </div>
+
+            </div>
+
+            <aside class="side-card">
+
+                <div class="freelancer-box">
+                    <div class="avatar" id="freelancerAvatar"></div>
+
+                    <div>
+                        <h3 id="freelancerName"></h3>
+                        <p id="freelancerTitle"></p>
+                    </div>
+                </div>
+
+                <div class="score-card">
+                    <h4>AI Interview Score</h4>
+                    <h2 id="aiScore"></h2>
+                    <p id="aiScoreText"></p>
+                </div>
+
+                <div class="mini-info">
+                    <div>
+                        <span>Proposal Status</span>
+                        <strong id="sideProposalStatus"></strong>
+                    </div>
+
+                    <div>
+                        <span>Submitted</span>
+                        <strong id="proposalSubmittedAt"></strong>
+                    </div>
+
+                    <div>
+                        <span>Expected Pay</span>
+                        <strong id="expectedPay"></strong>
+                    </div>
+                </div>
+
+                <button class="message-btn" id="sendMessageBtn">
+                    <i class="fa-solid fa-comments"></i>
+                    Send Message
+                </button>
+
+            </aside>
+
+        </section>
+
+        <section class="proposal-card">
+
+            <div class="card-header">
+                <div>
+                    <h2>Freelancer Proposal</h2>
+                    <p id="proposalSubtitle"></p>
+                </div>
+            </div>
+
+            <p class="proposal-text" id="proposalText"></p>
+
+        </section>
+
+        <section class="decision-modal" id="decisionModal">
+            <div class="decision-box">
+                <button class="decision-close" id="closeDecisionModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="decision-icon" id="decisionIcon">
+                    <i class="fa-solid fa-circle-question"></i>
+                </div>
+
+                <h2 id="decisionTitle">Confirm Action</h2>
+                <p id="decisionText"></p>
+
+                <textarea id="decisionReason" placeholder="Reason / message to freelancer..."></textarea>
+
+                <div class="decision-actions">
+                    <button class="cancel-decision-btn" id="cancelDecisionBtn">
+                        Cancel
+                    </button>
+
+                    <button class="confirm-decision-btn" id="confirmDecisionBtn">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="view-proposal.js"></script>
+</body>
+
+</html>

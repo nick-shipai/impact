@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../signin.html";
+        window.location.href = "../../signin";
         return;
     }
 
@@ -161,6 +161,8 @@ function setProposalLoading() {
     const oldList = document.querySelector(".proposal-list");
     const oldError = document.querySelector(".proposal-error");
 
+    document.body.classList.add("page-skeleton-active");
+
     if (skeleton) skeleton.style.display = "grid";
     if (emptyState) emptyState.style.display = "none";
     if (oldList) oldList.remove();
@@ -194,15 +196,26 @@ function renderProposals(proposals, counts = {}) {
     if (skeleton) skeleton.style.display = "none";
     if (oldList) oldList.remove();
 
-    updateStats(proposals, counts);
+    document.body.classList.remove("page-skeleton-active");
+
+    const sortedProposals = Array.isArray(proposals)
+        ? [...proposals].sort((a, b) => {
+            const timeA = getProposalTime(a);
+            const timeB = getProposalTime(b);
+
+            return timeB - timeA;
+        })
+        : [];
+
+    updateStats(sortedProposals, counts);
     updateTabs({
-        total: proposals.length,
-        pending: counts.pendingCount ?? countStatus(proposals, "pending"),
-        passed: counts.passedCount ?? proposals.filter(p => p.proposal?.interviewPassed).length,
-        rejected: counts.rejectedCount ?? countStatus(proposals, "rejected")
+        total: sortedProposals.length,
+        pending: counts.pendingCount ?? countStatus(sortedProposals, "pending"),
+        passed: counts.passedCount ?? sortedProposals.filter(p => p.proposal?.interviewPassed).length,
+        rejected: counts.rejectedCount ?? countStatus(sortedProposals, "rejected")
     });
 
-    if (!proposals.length) {
+    if (!sortedProposals.length) {
         if (emptyState) emptyState.style.display = "grid";
         return;
     }
@@ -212,9 +225,20 @@ function renderProposals(proposals, counts = {}) {
     const list = document.createElement("div");
     list.className = "proposal-list";
 
-    list.innerHTML = proposals.map(item => {
-        const proposalId = escapeHtml(item.proposalId || "");
-        const jobId = escapeHtml(item.job?.jobId || "");
+    list.innerHTML = sortedProposals.map(item => {
+        const proposalId = escapeHtml(
+            item.proposalId ||
+            item.proposal?.proposalId ||
+            item.proposal?.id ||
+            ""
+        );
+
+        const jobId = escapeHtml(
+            item.job?.jobId ||
+            item.proposal?.jobId ||
+            ""
+        );
+
         const jobTitle = escapeHtml(item.job?.jobTitle || "Untitled Job");
         const category = escapeHtml(item.job?.category || "No category");
 
@@ -226,6 +250,7 @@ function renderProposals(proposals, counts = {}) {
 
         const coverLetter = escapeHtml(item.proposal?.coverLetter || "No cover letter provided.");
         const status = String(item.proposal?.status || "pending").toLowerCase();
+
         const aiScore = Number(item.proposal?.aiScore || item.proposal?.interviewScore || 0);
         const aiReview = escapeHtml(item.proposal?.aiReview || "No AI review available yet.");
         const interviewPassed = !!item.proposal?.interviewPassed;
@@ -233,7 +258,8 @@ function renderProposals(proposals, counts = {}) {
         const proposedBudget = Number(item.proposal?.proposedBudget || 0);
         const currency = escapeHtml(item.job?.currency || "USD");
         const deliveryTime = escapeHtml(item.proposal?.deliveryTime || "Not set");
-        const submittedAt = formatDate(item.timestamps?.submittedAt);
+
+        const submittedAt = formatDate(getProposalTime(item));
 
         const avatar = profilePic
             ? `<img src="${escapeHtml(profilePic)}" alt="${fullname}" class="freelancer-avatar-img">`
@@ -292,21 +318,174 @@ function renderProposals(proposals, counts = {}) {
                 </div>
 
                 <div class="proposal-actions">
-                    <a href="./proposal-details.html?proposalId=${encodeURIComponent(proposalId)}&jobId=${encodeURIComponent(jobId)}" class="primary-action">
-                        <i class="fa-solid fa-eye"></i>
-                        View Proposal
+                    <a 
+                      href="../view-proposal/?proposalId=${encodeURIComponent(proposalId)}&jobId=${encodeURIComponent(jobId)}" 
+                      class="primary-action"
+                    >
+                      <i class="fa-solid fa-eye"></i>
+                      View Proposal
                     </a>
 
                     <a href="../messages/?freelancer=${encodeURIComponent(item.freelancer?.uid || "")}" class="secondary-action">
                         <i class="fa-solid fa-message"></i>
                         Message
                     </a>
+
+                    ${status === "rejected" || status === "accepted" || status === "approved"
+                        ? `
+                        <button class="danger-action disabled" disabled>
+                            <i class="fa-solid fa-lock"></i>
+                            ${cleanText(status)}
+                        </button>
+                    `
+                        : `
+                        <button
+                            class="danger-action"
+                            onclick="openRejectModal('${proposalId}', '${jobId}', '${escapeHtml(item.freelancer?.uid || "")}', this)"
+                        >
+                            <i class="fa-solid fa-xmark"></i>
+                            Reject
+                        </button>
+                    `
+                    }
                 </div>
             </article>
         `;
     }).join("");
 
     content.appendChild(list);
+}
+
+function getProposalTime(item = {}) {
+    const possibleTime =
+        item.timestamps?.submittedAt ||
+        item.proposal?.submittedAt ||
+        item.proposal?.createdAt ||
+        item.proposal?.timestamps?.submittedAt ||
+        item.proposal?.meta?.createdAt ||
+        item.submittedAt ||
+        item.createdAt ||
+        0;
+
+    if (!possibleTime) return 0;
+
+    if (typeof possibleTime === "number") {
+        return possibleTime;
+    }
+
+    const parsed = new Date(possibleTime).getTime();
+
+    return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+let pendingRejectData = null;
+
+function openRejectModal(proposalId, jobId, freelancerUid, button) {
+    if (!proposalId || !jobId || !freelancerUid) {
+        alert("Missing proposal details");
+        return;
+    }
+
+    pendingRejectData = {
+        proposalId,
+        jobId,
+        freelancerUid,
+        button
+    };
+
+    const modal = document.getElementById("rejectModal");
+    const reason = document.getElementById("rejectReason");
+
+    if (reason) reason.value = "";
+    if (modal) modal.classList.add("active");
+}
+
+function closeRejectModal() {
+    const modal = document.getElementById("rejectModal");
+
+    if (modal) modal.classList.remove("active");
+
+    pendingRejectData = null;
+}
+
+async function confirmRejectProposal() {
+    const confirmBtn = document.getElementById("confirmRejectBtn");
+    const reasonInput = document.getElementById("rejectReason");
+
+    if (!pendingRejectData) return;
+
+    const {
+        proposalId,
+        jobId,
+        freelancerUid,
+        button
+    } = pendingRejectData;
+
+    try {
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Rejecting...
+            `;
+        }
+
+        if (button) {
+            button.disabled = true;
+            button.classList.add("disabled");
+            button.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Rejecting...
+            `;
+        }
+
+        const response = await fetch(`${API_URL}/api/client/proposal-decision`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                proposalId,
+                jobId,
+                freelancerUid,
+                decision: "rejected",
+                reason: reasonInput?.value?.trim() || "Client rejected this proposal"
+            })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Failed to reject proposal");
+        }
+
+        closeRejectModal();
+
+        await loadClientProposals();
+
+    } catch (error) {
+        console.error("REJECT PROPOSAL ERROR:", error);
+        alert(error.message || "Failed to reject proposal");
+
+        if (button) {
+            button.disabled = false;
+            button.classList.remove("disabled");
+            button.innerHTML = `
+                <i class="fa-solid fa-xmark"></i>
+                Reject
+            `;
+        }
+
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = `
+                <i class="fa-solid fa-ban"></i>
+                Reject Proposal
+            `;
+        }
+    }
 }
 
 /* =========================
@@ -358,6 +537,7 @@ function showProposalError(message) {
     const skeleton = document.querySelector(".proposal-skeleton-list");
     const emptyState = document.querySelector(".empty-state");
     const content = document.querySelector(".client-content");
+    document.body.classList.remove("page-skeleton-active");
 
     if (skeleton) skeleton.style.display = "none";
     if (emptyState) emptyState.style.display = "none";

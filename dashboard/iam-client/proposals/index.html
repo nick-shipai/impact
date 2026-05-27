@@ -290,6 +290,40 @@
   </main>
 
 </div>
+<div class="reject-modal" id="rejectModal">
+  <div class="reject-modal-card">
+    <button class="reject-modal-close" onclick="closeRejectModal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="reject-modal-icon">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <h2>Reject Proposal?</h2>
+
+    <p>
+      Are you sure you want to reject this proposal?
+      This action will mark the freelancer’s proposal as rejected.
+    </p>
+
+    <textarea
+      id="rejectReason"
+      placeholder="Optional reason for rejection..."
+    ></textarea>
+
+    <div class="reject-modal-actions">
+      <button class="modal-cancel-btn" onclick="closeRejectModal()">
+        Cancel
+      </button>
+
+      <button class="modal-reject-btn" id="confirmRejectBtn" onclick="confirmRejectProposal()">
+        <i class="fa-solid fa-ban"></i>
+        Reject Proposal
+      </button>
+    </div>
+  </div>
+</div>
 <script src="proposals.js"></script>
 </body>
 </html>

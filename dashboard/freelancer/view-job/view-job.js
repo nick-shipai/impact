@@ -1076,7 +1076,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../signin.html";
+        window.location.href = "../../signin";
         return;
     }
 
