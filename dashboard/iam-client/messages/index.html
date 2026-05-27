@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="messages.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="client-layout">
+
+        <aside class="client-sidebar">
+            <div class="sidebar-logo">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY">
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="../../iam-client/">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="../post-jobs/">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Post Job</span>
+                </a>
+
+                <a href="../my-jobs/">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>My Jobs</span>
+                </a>
+
+                <a href="../proposals/">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Proposals</span>
+                </a>
+
+                <a href="../messages/" class="active">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+
+                <a href="../contracts/">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Contracts</span>
+                </a>
+
+                <a href="../payments/">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Payments</span>
+                </a>
+
+                <a href="../settings/">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="logout.html">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="client-main">
+
+            <header class="client-topbar">
+                <div class="breadcrumb">
+                    <i class="fa-solid fa-house"></i>
+                    <span>></span>
+                    <p>Client</p>
+                    <span>></span>
+                    <p>Messages</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <a href="../post-jobs/" class="post-job-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Post a Job
+                    </a>
+
+                    <div class="client-profile">
+                        <span>-</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="client-hero">
+                <div>
+                    <h1>Messages</h1>
+                    <p>Chat with freelancers, discuss project details, send files, and start video calls when your
+                        messaging system is connected.</p>
+                </div>
+
+                <a href="../proposals/" class="find-talent-btn">
+                    <i class="fa-solid fa-user-check"></i>
+                    View Proposals
+                </a>
+            </section>
+
+            <section class="messages-shell">
+
+                <aside class="chat-list-panel">
+                    <div class="chat-list-header">
+                        <div>
+                            <h2>Inbox</h2>
+                            <p>No messages loaded yet</p>
+                        </div>
+
+                        <button class="new-chat-btn" type="button">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search messages..." disabled>
+                    </div>
+
+                    <div class="chat-tabs">
+                        <button class="active" type="button">All</button>
+                        <button type="button">Unread</button>
+                        <button type="button">Archived</button>
+                    </div>
+
+                    <div class="empty-chat-list">
+                        <div class="empty-mini-icon">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h3>No conversations yet</h3>
+                        <p>Your freelancer conversations will appear here after loading.</p>
+                    </div>
+                </aside>
+
+                <section class="chat-window-panel">
+
+                    <div class="chat-window-top">
+                        <div class="chat-user">
+                            <div class="chat-avatar" id="chatAvatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div>
+                                <h3 id="chatFreelancerName">Loading freelancer...</h3>
+                                <p>
+                                    <span class="status-dot"></span>
+                                    <span id="chatFreelancerStatus">Connecting...</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="chat-actions">
+                            <button type="button" title="Voice call" disabled>
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+
+                            <button type="button" title="Video call" disabled>
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+
+                            <button type="button" title="More options" disabled>
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-body" id="chatBody">
+                        <div class="chat-empty-state">
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                            </div>
+
+                            <h3>Loading chat...</h3>
+                            <p>Please wait while we load the freelancer details.</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-composer">
+                        <button type="button" class="composer-icon" disabled>
+                            <i class="fa-solid fa-paperclip"></i>
+                        </button>
+
+                        <textarea id="messageInput" placeholder="Type your message..." rows="1" disabled></textarea>
+
+                        <button type="button" class="composer-icon" disabled>
+                            <i class="fa-solid fa-face-smile"></i>
+                        </button>
+
+                        <button type="button" class="send-btn" id="sendMessageBtn" disabled>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                </section>
+
+        </main>
+
+    </div>
+    <script src="messages.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | IMPACTECH ACADEMY</title>
+
+  <link rel="stylesheet" href="messages.css" />
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+  <div class="client-layout">
+
+    <aside class="client-sidebar">
+      <div class="sidebar-logo">
+        <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="../../freelancer/">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="../find-jobs/">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Find Jobs</span>
+        </a>
+
+        <a href="../my-proposals/">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>My Proposals</span>
+        </a>
+
+        <a href="../contracts/">
+          <i class="fa-solid fa-handshake"></i>
+          <span>Contracts</span>
+        </a>
+
+        <a href="../messages/" class="active">
+          <i class="fa-solid fa-comments"></i>
+          <span>Messages</span>
+        </a>
+
+        <a href="../notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span>Notifications</span>
+        </a>
+
+        <a href="../earnings">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Earnings</span>
+        </a>
+
+        <a href="../settings">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="logout.html">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="client-main">
+
+      <header class="client-topbar">
+        <div class="breadcrumb">
+          <i class="fa-solid fa-house"></i>
+          <span>></span>
+          <p>Freelancer</p>
+          <span>></span>
+          <p>Messages</p>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="../freelancer/find-jobs" class="post-job-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Find Jobs
+          </a>
+
+          <div class="client-profile">
+            <span>-</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="messages-hero">
+        <div>
+          <span class="hero-badge">
+            <i class="fa-solid fa-comments"></i>
+            Freelancer Inbox
+          </span>
+
+          <h1>Messages</h1>
+          <p>
+            Manage client conversations, discuss job details, and keep your project communication clean in one place.
+          </p>
+        </div>
+
+        <div class="hero-mini-card">
+          <i class="fa-solid fa-message"></i>
+          <h3>0</h3>
+          <p>Loaded chats</p>
+        </div>
+      </section>
+
+      <section class="messages-layout">
+
+        <aside class="inbox-panel">
+          <div class="inbox-header">
+            <div>
+              <h2>Inbox</h2>
+              <p>Messages will load when JS is connected</p>
+            </div>
+
+            <button type="button" class="icon-button" disabled>
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+
+          <div class="inbox-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search conversations..." disabled />
+          </div>
+
+          <div class="inbox-tabs">
+            <button type="button" class="active" disabled>All</button>
+            <button type="button" disabled>Unread</button>
+            <button type="button" disabled>Clients</button>
+          </div>
+
+          <div class="inbox-empty">
+            <div class="empty-mini-icon">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+
+            <h3>No conversations loaded</h3>
+            <p>Your client conversations will appear here from the server.</p>
+          </div>
+        </aside>
+
+        <section class="chat-panel">
+          <div class="chat-topbar">
+            <div class="chat-user">
+              <div class="chat-avatar">
+                <i class="fa-solid fa-user-tie"></i>
+              </div>
+
+              <div>
+                <h3>Select a client conversation</h3>
+                <p>
+                  <span class="status-dot"></span>
+                  Waiting for chat
+                </p>
+              </div>
+            </div>
+
+            <div class="chat-actions">
+              <button type="button" title="Voice call" disabled>
+                <i class="fa-solid fa-phone"></i>
+              </button>
+
+              <button type="button" title="Video call" disabled>
+                <i class="fa-solid fa-video"></i>
+              </button>
+
+              <button type="button" title="More options" disabled>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-body">
+            <div class="chat-empty">
+              <div class="empty-icon">
+                <i class="fa-solid fa-message"></i>
+              </div>
+
+              <h3>No chat selected</h3>
+              <p>
+                Select a client from your inbox to view messages. No fake data is loaded on this page.
+              </p>
+            </div>
+          </div>
+
+          <div class="chat-composer">
+            <button type="button" class="composer-btn" disabled>
+              <i class="fa-solid fa-paperclip"></i>
+            </button>
+
+            <textarea placeholder="Type your message..." rows="1" disabled></textarea>
+
+            <button type="button" class="composer-btn" disabled>
+              <i class="fa-solid fa-face-smile"></i>
+            </button>
+
+            <button type="button" class="send-btn" disabled>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </section>
+
+      </section>
+
+    </main>
+  </div>
+  <script src="messages.js"></script>
+</body>
+</html>

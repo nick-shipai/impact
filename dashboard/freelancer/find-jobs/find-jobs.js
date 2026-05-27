@@ -287,8 +287,9 @@ function createSponsoredAdCard(index = 0) {
       atOptions = {
         'key' : '1861361b791c986f9a927974e0eef766',
         'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
+        // make iframe responsive to its container
+        'height' : '100%',
+        'width' : '100%',
         'params' : {}
       };
     `;
