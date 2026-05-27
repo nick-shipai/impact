@@ -286,17 +286,7 @@ function createSponsoredAdCard() {
       <div class="sponsored-body">
 
         <div class="monetag-ad-slot">
-          <script>
-          (function(s){
-            s.dataset.zone='11063726',
-            s.src='https://nap5k.com/tag.min.js'
-          })(
-            [document.documentElement, document.body]
-              .filter(Boolean)
-              .pop()
-              .appendChild(document.createElement('script'))
-          )
-          </script>
+          <div id="monetag-vignette-container"></div>
         </div>
 
       </div>
