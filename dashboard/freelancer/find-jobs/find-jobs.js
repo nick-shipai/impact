@@ -284,14 +284,21 @@ function createSponsoredAdCard() {
       </div>
 
       <div class="sponsored-body">
-        <h3>Sponsored Opportunity</h3>
-        <p>
-          Discover tools, offers, and services that may help freelancers find better jobs and grow faster.
-        </p>
 
         <div class="monetag-ad-slot">
-          <span>Sponsored content loading...</span>
+          <script>
+          (function(s){
+            s.dataset.zone='11063726',
+            s.src='https://nap5k.com/tag.min.js'
+          })(
+            [document.documentElement, document.body]
+              .filter(Boolean)
+              .pop()
+              .appendChild(document.createElement('script'))
+          )
+          </script>
         </div>
+
       </div>
     </article>
   `;
