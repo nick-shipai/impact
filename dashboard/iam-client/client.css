@@ -835,3 +835,101 @@ a {
         grid-template-columns: 1fr;
     }
 }
+/* =========================
+   WORKING COLLAPSE SIDEBAR
+   Default: icons only
+   Hover: full menu
+========================= */
+
+@media (min-width: 851px) {
+    .client-sidebar {
+        width: 86px !important;
+        padding: 24px 10px !important;
+        overflow: hidden !important;
+        transition: width 0.3s ease, padding 0.3s ease !important;
+    }
+
+    .client-sidebar:hover {
+        width: 250px !important;
+        padding: 24px 16px !important;
+    }
+
+    .client-main {
+        width: calc(100% - 86px) !important;
+        margin-left: 86px !important;
+        transition: width 0.3s ease, margin-left 0.3s ease !important;
+    }
+
+    .client-sidebar:hover + .client-main,
+    .client-sidebar:hover ~ .client-main {
+        width: calc(100% - 250px) !important;
+        margin-left: 250px !important;
+    }
+
+    .sidebar-logo {
+        justify-content: center !important;
+    }
+
+    .client-sidebar:hover .sidebar-logo {
+        justify-content: center !important;
+    }
+
+    .sidebar-logo img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sidebar-menu a,
+    .sidebar-bottom a {
+        justify-content: center !important;
+        gap: 0 !important;
+        padding: 14px 0 !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        transition: all 0.25s ease !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a,
+    .client-sidebar:hover .sidebar-bottom a {
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        padding: 13px 14px !important;
+    }
+
+    .sidebar-menu a i,
+    .sidebar-bottom a i {
+        width: 42px !important;
+        min-width: 42px !important;
+        text-align: center !important;
+        font-size: 17px !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a i,
+    .client-sidebar:hover .sidebar-bottom a i {
+        width: 22px !important;
+        min-width: 22px !important;
+    }
+
+    .sidebar-menu a span,
+    .sidebar-bottom a span {
+        display: inline-block !important;
+        max-width: 0 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateX(-10px) !important;
+        overflow: hidden !important;
+        transition:
+            max-width 0.25s ease,
+            opacity 0.22s ease,
+            transform 0.25s ease,
+            visibility 0.25s ease !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a span,
+    .client-sidebar:hover .sidebar-bottom a span {
+        max-width: 180px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+    }
+}

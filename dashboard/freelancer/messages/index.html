@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -91,26 +92,6 @@
         </div>
       </header>
 
-      <section class="messages-hero">
-        <div>
-          <span class="hero-badge">
-            <i class="fa-solid fa-comments"></i>
-            Freelancer Inbox
-          </span>
-
-          <h1>Messages</h1>
-          <p>
-            Manage client conversations, discuss job details, and keep your project communication clean in one place.
-          </p>
-        </div>
-
-        <div class="hero-mini-card">
-          <i class="fa-solid fa-message"></i>
-          <h3>0</h3>
-          <p>Loaded chats</p>
-        </div>
-      </section>
-
       <section class="messages-layout">
 
         <aside class="inbox-panel">
@@ -148,6 +129,9 @@
 
         <section class="chat-panel">
           <div class="chat-topbar">
+            <button type="button" id="mobileBackBtn" class="mobile-back-btn">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
             <div class="chat-user">
               <div class="chat-avatar">
                 <i class="fa-solid fa-user-tie"></i>
@@ -167,7 +151,7 @@
                 <i class="fa-solid fa-phone"></i>
               </button>
 
-              <button type="button" title="Video call" disabled>
+              <button type="button" id="videoCallBtn" title="Video call" disabled>
                 <i class="fa-solid fa-video"></i>
               </button>
 
@@ -211,6 +195,155 @@
 
     </main>
   </div>
+  <!-- FULL SCREEN VIDEO CALL UI -->
+  <div class="video-call-overlay" id="videoCallOverlay" aria-hidden="true">
+    <section class="video-call-screen" role="dialog" aria-modal="true" aria-label="Video call">
+
+      <div class="call-bg-glow glow-one"></div>
+      <div class="call-bg-glow glow-two"></div>
+
+      <header class="call-screen-topbar">
+        <div class="call-person-card">
+          <div class="call-person-avatar" id="callPersonAvatar">
+            <span>CL</span>
+          </div>
+
+          <div class="call-person-info">
+            <span class="call-live-badge"><i></i> Encrypted room</span>
+            <h3 id="callModalTitle">Video call</h3>
+            <p id="callModalStatus">Connecting...</p>
+          </div>
+        </div>
+
+        <div class="call-top-actions">
+          <button type="button" class="call-round-btn" id="switchCameraBtn" title="Switch camera">
+            <span class="call-svg-icon switch-camera-icon"></span>
+          </button>
+
+          <button type="button" class="call-round-btn" id="expandCallBtn" title="Focus mode">
+            <span class="call-svg-icon expand-icon"></span>
+          </button>
+
+          <button type="button" class="call-round-btn close-call-btn" id="closeCallModalBtn" title="Close">
+            <span class="call-svg-icon close-icon"></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="call-stage">
+        <section class="remote-video-stage" id="remoteVideoStage">
+          <video id="remoteVideo" autoplay playsinline></video>
+
+          <div class="video-off-state" id="remoteVideoPlaceholder">
+            <div class="video-off-avatar" id="remoteCallAvatar">CL</div>
+            <h2 id="remoteCallName">Client</h2>
+            <p id="remoteCallText">Waiting for the other person to join.</p>
+          </div>
+
+          <div class="call-quality-pill" id="callQualityPill">
+            <span class="quality-dot"></span>
+            <b id="callTimer">00:00</b>
+          </div>
+        </section>
+
+        <aside class="call-side-panel">
+          <div class="local-video-card" id="localVideoCard">
+            <video id="localVideo" autoplay playsinline muted></video>
+
+            <div class="local-video-off" id="localVideoOff">
+              <span class="call-svg-icon camera-off-icon"></span>
+              <b>Camera off</b>
+            </div>
+
+            <span class="mini-label">You</span>
+          </div>
+
+          <div class="call-info-card">
+            <span class="call-info-kicker">Meeting tools</span>
+            <h4>Clean full-screen call</h4>
+            <p>Mute, camera, speaker, switch view and focus mode are ready.</p>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="call-control-dock">
+        <button type="button" class="call-control-btn" id="toggleMicBtn" title="Mic">
+          <span class="call-svg-icon mic-icon"></span>
+          <small>Mic</small>
+        </button>
+
+        <button type="button" class="call-control-btn" id="toggleCamBtn" title="Camera">
+          <span class="call-svg-icon video-icon"></span>
+          <small>Camera</small>
+        </button>
+
+        <button type="button" class="call-control-btn" id="toggleSpeakerBtn" title="Speaker">
+          <span class="call-svg-icon speaker-icon"></span>
+          <small>Speaker</small>
+        </button>
+
+        <button type="button" class="call-control-btn end-call-btn" id="endCallBtn" title="End call">
+          <span class="call-svg-icon phone-down-icon"></span>
+          <small>End</small>
+        </button>
+      </footer>
+    </section>
+  </div>
+
+  <!-- INCOMING CALL MODAL -->
+  <div class="incoming-call-overlay" id="incomingCallOverlay" aria-hidden="true">
+    <div class="incoming-call-card">
+      <div class="incoming-rings">
+        <span></span><span></span><span></span>
+
+        <div class="incoming-avatar" id="incomingCallerAvatar">
+          <span>CL</span>
+        </div>
+      </div>
+
+      <span class="call-pill">Incoming video call</span>
+      <h3 id="incomingCallerName">Client is calling</h3>
+      <p>Answer when you are ready to join the room.</p>
+
+      <div class="incoming-actions">
+        <button type="button" class="reject-call-btn" id="rejectIncomingCallBtn">
+          <span class="call-svg-icon phone-down-icon"></span>
+          Reject
+        </button>
+
+        <button type="button" class="answer-call-btn" id="answerIncomingCallBtn">
+          <span class="call-svg-icon video-icon"></span>
+          Answer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOMING CALL MODAL -->
+  <div class="incoming-call-overlay" id="incomingCallOverlay">
+    <div class="incoming-call-card">
+      <div class="incoming-avatar" id="incomingCallerAvatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+
+      <span class="call-pill">Incoming video call</span>
+      <h3 id="incomingCallerName">Someone is calling...</h3>
+      <p>Answer to start camera and microphone</p>
+
+      <div class="incoming-actions">
+        <button type="button" class="reject-call-btn" id="rejectIncomingCallBtn">
+          <i class="fa-solid fa-phone-slash"></i>
+          Reject
+        </button>
+
+        <button type="button" class="answer-call-btn" id="answerIncomingCallBtn">
+          <i class="fa-solid fa-video"></i>
+          Answer
+        </button>
+      </div>
+    </div>
+  </div>
   <script src="messages.js"></script>
 </body>
+
 </html>

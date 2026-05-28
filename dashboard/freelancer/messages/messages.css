@@ -1149,3 +1149,970 @@ input:disabled {
     opacity: 1;
   }
 }
+/* =========================
+   WORKING COLLAPSE SIDEBAR
+   Default: icons only
+   Hover: full menu
+========================= */
+
+@media (min-width: 851px) {
+    .client-sidebar {
+        width: 86px !important;
+        padding: 24px 10px !important;
+        overflow: hidden !important;
+        transition: width 0.3s ease, padding 0.3s ease !important;
+    }
+
+    .client-sidebar:hover {
+        width: 250px !important;
+        padding: 24px 16px !important;
+    }
+
+    .client-main {
+        width: calc(100% - 86px) !important;
+        margin-left: 86px !important;
+        transition: width 0.3s ease, margin-left 0.3s ease !important;
+    }
+
+    .client-sidebar:hover + .client-main,
+    .client-sidebar:hover ~ .client-main {
+        width: calc(100% - 250px) !important;
+        margin-left: 250px !important;
+    }
+
+    .sidebar-logo {
+        justify-content: center !important;
+    }
+
+    .client-sidebar:hover .sidebar-logo {
+        justify-content: center !important;
+    }
+
+    .sidebar-logo img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sidebar-menu a,
+    .sidebar-bottom a {
+        justify-content: center !important;
+        gap: 0 !important;
+        padding: 14px 0 !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        transition: all 0.25s ease !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a,
+    .client-sidebar:hover .sidebar-bottom a {
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        padding: 13px 14px !important;
+    }
+
+    .sidebar-menu a i,
+    .sidebar-bottom a i {
+        width: 42px !important;
+        min-width: 42px !important;
+        text-align: center !important;
+        font-size: 17px !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a i,
+    .client-sidebar:hover .sidebar-bottom a i {
+        width: 22px !important;
+        min-width: 22px !important;
+    }
+
+    .sidebar-menu a span,
+    .sidebar-bottom a span {
+        display: inline-block !important;
+        max-width: 0 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateX(-10px) !important;
+        overflow: hidden !important;
+        transition:
+            max-width 0.25s ease,
+            opacity 0.22s ease,
+            transform 0.25s ease,
+            visibility 0.25s ease !important;
+    }
+
+    .client-sidebar:hover .sidebar-menu a span,
+    .client-sidebar:hover .sidebar-bottom a span {
+        max-width: 180px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+    }
+}
+.mobile-back-btn {
+  display: none;
+}
+
+@media (max-width: 700px) {
+
+  .messages-layout {
+    display: block;
+    max-height: none !important;
+  }
+
+  .inbox-panel {
+    min-height: calc(100vh - 120px);
+  }
+
+  .chat-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    width: 100%;
+    height: 100vh !important;
+    max-height: none !important;
+
+    border-radius: 0 !important;
+
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+
+    transition: 0.28s ease;
+  }
+
+  body.mobile-chat-open .chat-panel {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.mobile-chat-open {
+    overflow: hidden;
+  }
+
+  .chat-topbar {
+    min-height: 78px;
+    padding: 14px 16px !important;
+
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  .mobile-back-btn {
+    width: 44px;
+    height: 44px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: var(--soft-blue);
+    color: var(--primary);
+
+    display: grid;
+    place-items: center;
+
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .chat-actions {
+    width: auto !important;
+    margin-left: auto;
+  }
+
+  .chat-actions button {
+    width: 40px;
+    height: 40px;
+    flex: unset !important;
+  }
+
+  .chat-body {
+    height: calc(100vh - 78px - 82px);
+    min-height: 0 !important;
+    padding: 18px !important;
+  }
+
+  .chat-composer {
+    min-height: 82px;
+    padding: 12px !important;
+  }
+
+  .message-bubble {
+    max-width: 86%;
+  }
+}
+/* =========================
+   FULL SCREEN VIDEO CALL UI
+========================= */
+
+.chat-video-icon,
+.call-svg-icon {
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.chat-video-icon::before,
+.call-svg-icon::before,
+.call-svg-icon::after {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.chat-video-icon::before,
+.video-icon::before {
+  width: 16px;
+  height: 12px;
+  left: 1px;
+  top: 5px;
+  border: 2px solid currentColor;
+  border-radius: 5px;
+}
+
+.chat-video-icon::after,
+.video-icon::after {
+  width: 8px;
+  height: 9px;
+  right: 0;
+  top: 6.5px;
+  background: currentColor;
+  clip-path: polygon(0 25%, 100% 0, 100% 100%, 0 75%);
+}
+
+.mic-icon::before {
+  width: 10px;
+  height: 15px;
+  left: 6px;
+  top: 1px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+}
+
+.mic-icon::after {
+  width: 16px;
+  height: 10px;
+  left: 3px;
+  top: 9px;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  border-radius: 0 0 999px 999px;
+}
+
+.mic-off-icon::before,
+.video-off-icon::before,
+.camera-off-icon::before {
+  width: 18px;
+  height: 2px;
+  left: 2px;
+  top: 10px;
+  background: currentColor;
+  border-radius: 999px;
+  transform: rotate(-42deg);
+}
+
+.speaker-icon::before {
+  width: 8px;
+  height: 10px;
+  left: 2px;
+  top: 6px;
+  background: currentColor;
+  clip-path: polygon(0 25%, 45% 25%, 100% 0, 100% 100%, 45% 75%, 0 75%);
+}
+
+.speaker-icon::after {
+  width: 9px;
+  height: 14px;
+  right: 1px;
+  top: 4px;
+  border-right: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.phone-down-icon::before {
+  width: 18px;
+  height: 10px;
+  left: 2px;
+  top: 7px;
+  border: 3px solid currentColor;
+  border-top: none;
+  border-radius: 0 0 999px 999px;
+  transform: rotate(180deg);
+}
+
+.close-icon::before,
+.close-icon::after {
+  width: 18px;
+  height: 2px;
+  left: 2px;
+  top: 10px;
+  background: currentColor;
+  border-radius: 999px;
+}
+
+.close-icon::before { transform: rotate(45deg); }
+.close-icon::after { transform: rotate(-45deg); }
+
+.expand-icon::before {
+  width: 17px;
+  height: 17px;
+  left: 2px;
+  top: 2px;
+  border: 2px solid currentColor;
+  border-radius: 5px;
+}
+
+.expand-icon::after {
+  width: 7px;
+  height: 7px;
+  right: 1px;
+  top: 1px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+.switch-camera-icon::before {
+  width: 18px;
+  height: 13px;
+  left: 2px;
+  top: 5px;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+}
+
+.switch-camera-icon::after {
+  width: 8px;
+  height: 8px;
+  left: 7px;
+  top: 7.5px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.video-call-overlay,
+.incoming-call-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: none;
+  background: rgba(2, 6, 23, 0.92);
+  backdrop-filter: blur(22px);
+}
+
+.video-call-overlay.active,
+.incoming-call-overlay.active {
+  display: flex;
+}
+
+.video-call-screen {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  padding: 22px;
+  overflow: hidden;
+  color: white;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.34), transparent 30%),
+    radial-gradient(circle at 88% 14%, rgba(6, 182, 212, 0.22), transparent 30%),
+    linear-gradient(145deg, #020617 0%, #0f172a 50%, #111827 100%);
+}
+
+.call-bg-glow {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.glow-one {
+  left: -130px;
+  bottom: 10%;
+  background: var(--primary);
+}
+
+.glow-two {
+  right: -120px;
+  top: 18%;
+  background: var(--secondary);
+}
+
+.call-screen-topbar,
+.call-stage,
+.call-control-dock {
+  position: relative;
+  z-index: 2;
+}
+
+.call-screen-topbar {
+  height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.call-person-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.call-person-avatar,
+.video-off-avatar,
+.incoming-avatar {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  font-weight: 950;
+}
+
+.call-person-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 22px;
+}
+
+.call-person-avatar img,
+.video-off-avatar img,
+.incoming-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.call-person-info {
+  min-width: 0;
+}
+
+.call-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.call-live-badge i,
+.quality-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.14);
+}
+
+.call-person-info h3 {
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-top: 4px;
+}
+
+.call-person-info p {
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.call-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.call-round-btn,
+.call-control-btn,
+.reject-call-btn,
+.answer-call-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.72);
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  transition: 0.22s ease;
+}
+
+.call-round-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+}
+
+.call-round-btn:hover,
+.call-control-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(37, 99, 235, 0.28);
+}
+
+.close-call-btn:hover {
+  background: rgba(239, 68, 68, 0.28);
+}
+
+.call-stage {
+  height: calc(100dvh - 82px - 104px - 40px);
+  min-height: 430px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 18px;
+}
+
+.video-call-screen.focus-mode .call-stage {
+  grid-template-columns: 1fr;
+}
+
+.video-call-screen.focus-mode .call-side-panel {
+  display: none;
+}
+
+.remote-video-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px;
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+}
+
+.remote-video-stage video,
+.local-video-card video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #020617;
+}
+
+.video-off-state {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at center, rgba(37, 99, 235, 0.24), transparent 35%),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.84), rgba(2, 6, 23, 0.96));
+}
+
+.remote-video-stage.has-video .video-off-state,
+.local-video-card.has-video .local-video-off {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.video-off-avatar {
+  width: 118px;
+  height: 118px;
+  border-radius: 38px;
+  font-size: 34px;
+  margin-bottom: 8px;
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.34);
+}
+
+.video-off-state h2 {
+  font-size: clamp(30px, 5vw, 60px);
+  line-height: 1;
+  letter-spacing: -1.7px;
+}
+
+.video-off-state p {
+  max-width: 520px;
+  color: #cbd5e1;
+  font-weight: 750;
+}
+
+.call-quality-pill {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  backdrop-filter: blur(12px);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.call-side-panel {
+  display: grid;
+  grid-template-rows: minmax(210px, 0.72fr) auto;
+  gap: 18px;
+  min-width: 0;
+}
+
+.local-video-card,
+.call-info-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.24);
+}
+
+.local-video-card {
+  position: relative;
+  min-height: 210px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.local-video-off {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  background: linear-gradient(145deg, #0f172a, #020617);
+  color: #cbd5e1;
+  transition: 0.2s ease;
+}
+
+.local-video-off .call-svg-icon {
+  width: 34px;
+  height: 34px;
+  color: #93c5fd;
+}
+
+.mini-label {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 3;
+  background: rgba(2, 6, 23, 0.72);
+  color: white;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.call-info-card {
+  border-radius: 30px;
+  padding: 22px;
+}
+
+.call-info-kicker {
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.call-info-card h4 {
+  color: white;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  margin-top: 6px;
+}
+
+.call-info-card p {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.65;
+  margin-top: 8px;
+}
+
+.call-control-dock {
+  min-height: 86px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.call-control-btn {
+  min-width: 84px;
+  height: 64px;
+  border-radius: 23px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #dbeafe;
+  font-weight: 950;
+}
+
+.call-control-btn small {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.call-control-btn.off {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+.call-control-btn.end-call-btn {
+  color: white;
+  background: linear-gradient(135deg, #ef4444, #be123c);
+  border: none;
+  box-shadow: 0 18px 42px rgba(239, 68, 68, 0.34);
+}
+
+.incoming-call-overlay {
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.incoming-call-card {
+  position: relative;
+  width: min(440px, 100%);
+  border-radius: 36px;
+  padding: 34px;
+  text-align: center;
+  color: white;
+  background:
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.30), transparent 34%),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.incoming-rings {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+}
+
+.incoming-rings > span {
+  position: absolute;
+  inset: 12px;
+  border-radius: 36px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  animation: callRing 1.9s infinite ease-out;
+}
+
+.incoming-rings > span:nth-child(2) { animation-delay: 0.35s; }
+.incoming-rings > span:nth-child(3) { animation-delay: 0.7s; }
+
+.incoming-avatar {
+  position: relative;
+  z-index: 2;
+  width: 86px;
+  height: 86px;
+  border-radius: 30px;
+  font-size: 26px;
+  box-shadow: 0 20px 60px rgba(37, 99, 235, 0.38);
+}
+
+.call-pill {
+  display: inline-flex;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.18);
+  color: #bfdbfe;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.incoming-call-card h3 {
+  font-size: 28px;
+  margin-top: 14px;
+  letter-spacing: -0.7px;
+}
+
+.incoming-call-card p {
+  color: #cbd5e1;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.incoming-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.reject-call-btn,
+.answer-call-btn {
+  flex: 1;
+  height: 54px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-weight: 950;
+}
+
+.reject-call-btn {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.answer-call-btn {
+  background: linear-gradient(135deg, #22c55e, #06b6d4);
+  border: none;
+  color: white;
+}
+
+@keyframes callRing {
+  from { transform: scale(0.82); opacity: 0.9; }
+  to { transform: scale(1.55); opacity: 0; }
+}
+
+@media (max-width: 920px) {
+  .video-call-screen {
+    padding: 14px;
+  }
+
+  .call-stage {
+    grid-template-columns: 1fr;
+    height: calc(100dvh - 82px - 104px - 28px);
+  }
+
+  .call-side-panel {
+    position: absolute;
+    right: 22px;
+    bottom: 118px;
+    width: 150px;
+    z-index: 5;
+    display: block;
+  }
+
+  .local-video-card {
+    min-height: 190px;
+    border-radius: 24px;
+  }
+
+  .call-info-card {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .call-screen-topbar {
+    height: 72px;
+    margin-bottom: 12px;
+  }
+
+  .call-person-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+  }
+
+  .call-person-info h3 {
+    font-size: 17px;
+  }
+
+  .call-live-badge,
+  .call-person-info p {
+    font-size: 11px;
+  }
+
+  .call-round-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 15px;
+  }
+
+  .call-top-actions {
+    gap: 7px;
+  }
+
+  .call-stage {
+    min-height: 0;
+    height: calc(100dvh - 72px - 92px - 24px);
+  }
+
+  .remote-video-stage {
+    border-radius: 26px;
+  }
+
+  .video-off-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 30px;
+    font-size: 28px;
+  }
+
+  .video-off-state h2 {
+    font-size: 34px;
+  }
+
+  .video-off-state p {
+    font-size: 13px;
+  }
+
+  .call-side-panel {
+    right: 18px;
+    bottom: 106px;
+    width: 122px;
+  }
+
+  .local-video-card {
+    min-height: 150px;
+    border-radius: 22px;
+  }
+
+  .call-control-dock {
+    min-height: 80px;
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .call-control-btn {
+    min-width: 67px;
+    height: 58px;
+    border-radius: 20px;
+  }
+
+  .call-control-btn small {
+    font-size: 10px;
+  }
+
+  .incoming-actions {
+    flex-direction: column;
+  }
+}
+.video-call-screen.swap-view .remote-video-stage {
+  grid-column: auto;
+}
+
+.video-call-screen.swap-view .remote-video-stage video {
+  transform: scaleX(-1);
+}
+
+.local-video-card video {
+  transform: scaleX(-1);
+}
+
+.call-control-btn.off {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+}

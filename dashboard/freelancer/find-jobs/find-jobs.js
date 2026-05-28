@@ -284,15 +284,14 @@ function createSponsoredAdCard(index = 0) {
     const optionsScript = document.createElement("script");
 
     optionsScript.innerHTML = `
-      atOptions = {
-        'key' : '1861361b791c986f9a927974e0eef766',
-        'format' : 'iframe',
-        // make iframe responsive to its container
-        'height' : '100%',
-        'width' : '100%',
-        'params' : {}
-      };
-    `;
+  atOptions = {
+    'key' : '1861361b791c986f9a927974e0eef766',
+    'format' : 'iframe',
+    'height' : 60,
+    'width' : 500,
+    'params' : {}
+  };
+`;
 
     const invokeScript = document.createElement("script");
 
