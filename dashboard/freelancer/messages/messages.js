@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     console.log("Authenticated user:", auth.user);
 
+    initLightbox();
     initMessagesPage(auth.user);
 });
 
@@ -73,6 +74,13 @@ let LAST_MESSAGE_COUNT = 0;
 let TYPING_TIMER = null;
 let TYPING_STATUS_TIMER = null;
 let LAST_TYPING_STATE = false;
+let SELECTED_IMAGE_FILES = [];
+let SELECTED_IMAGE_URLS = [];
+let LIGHTBOX_IMAGES = [];
+let LIGHTBOX_INDEX  = 0;
+let LB_TOUCH_X      = 0;
+let CALL_STARTED_AT = null;
+let CALL_TIMER_INTERVAL = null;
 
 function initMessagesPage(user) {
     CURRENT_USER = user;
@@ -469,6 +477,12 @@ async function sendMessage() {
 
     if (!input || !CURRENT_RECEIVER_UID) return;
 
+    // If images selected, send as image message
+    if (SELECTED_IMAGE_FILES.length > 0) {
+        await sendImageMessage();
+        return;
+    }
+
     const message = input.value.trim();
     if (!message) return;
 
@@ -509,6 +523,7 @@ async function sendMessage() {
 
         CURRENT_CONVERSATION_ID = data.conversationId;
 
+        cancelImagePreview();
         await loadInbox(false);
 
     } catch (error) {
@@ -572,14 +587,36 @@ function renderMessageBubble(msg) {
     const isMine = msg.senderUid === CURRENT_USER?.uid;
     const isRead = !!msg.read;
 
+    let content = "";
+    let isImageMsg = false;
+
+    if (msg.type === "images" || msg.type === "mixed") {
+        isImageMsg = true;
+        const images = Array.isArray(msg.images) ? msg.images : [];
+        const gridClass = images.length === 1 ? "count-1"
+            : images.length === 2 ? "count-2"
+            : images.length === 3 ? "count-3"
+            : images.length === 4 ? "count-4"
+            : "count-many";
+        content = `<div class="chat-images-grid ${gridClass}">
+            ${images.map(img => `<img src="${escapeHTML(img)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this)">`).join("")}
+          </div>`;
+        if (msg.message) content += `<p>${escapeHTML(msg.message)}</p>`;
+    } else if (msg.type === "image") {
+        isImageMsg = true;
+        const image = msg.imageUrl || (Array.isArray(msg.images) ? msg.images[0] : "");
+        content = `<img src="${escapeHTML(image)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this)">`;
+        if (msg.message) content += `<p>${escapeHTML(msg.message)}</p>`;
+    } else {
+        content = `<p>${escapeHTML(msg.message || "")}</p>`;
+    }
+
     return `
     <div class="message-row ${isMine ? "mine" : "theirs"}">
-      <div class="message-bubble">
-        <p>${escapeHTML(msg.message || "")}</p>
-
+      <div class="message-bubble ${isImageMsg ? "image-bubble" : ""}">
+        ${content}
         <div class="message-meta">
           <span>${formatMessageTime(msg.createdAt)}</span>
-
           ${isMine
             ? `<span class="css-checks ${isRead ? "seen" : ""}" aria-label="${isRead ? "Seen" : "Sent"}"></span>`
             : ""
@@ -589,10 +626,6 @@ function renderMessageBubble(msg) {
     </div>
   `;
 }
-
-/* =========================
-   HEADER
-========================= */
 function renderChatHeader(user) {
     const avatar = document.querySelector(".chat-avatar");
     const name = document.querySelector(".chat-user h3");
@@ -707,6 +740,8 @@ function bindMessageEvents() {
     if (mobileBackBtn) {
         mobileBackBtn.addEventListener("click", closeMobileChat);
     }
+
+    bindImageUpload();
 
     if (input) {
         input.addEventListener("input", function () {
@@ -1820,4 +1855,273 @@ function cleanupCallCompletely(message = "Call ended") {
     setTimeout(() => {
         closeVideoCallModal?.();
     }, 1000);
+}
+
+/* =========================
+   IMAGE UPLOAD
+========================= */
+function bindImageUpload() {
+    const fileInput = document.getElementById("chatImageInput");
+    const uploadBtn = document.getElementById("uploadImageBtn");
+
+    if (!fileInput || !uploadBtn) return;
+
+    uploadBtn.addEventListener("click", () => {
+        if (uploadBtn.disabled) return;
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+
+        const validFiles = [];
+        const validUrls  = [];
+
+        for (const file of files) {
+            if (!file.type.startsWith("image/")) continue;
+            validFiles.push(file);
+            validUrls.push(URL.createObjectURL(file));
+        }
+
+        if (!validFiles.length) { alert("Only images are allowed"); return; }
+
+        SELECTED_IMAGE_FILES = validFiles;
+        SELECTED_IMAGE_URLS  = validUrls;
+
+        showImagePreview(validUrls);
+
+        // enable send btn whenever images are staged
+        const sendBtn = document.querySelector(".send-btn");
+        if (sendBtn) sendBtn.disabled = false;
+
+        // reset file input so same file can be re-picked
+        fileInput.value = "";
+    });
+}
+
+function showImagePreview(urls) {
+    const container = document.getElementById("imagePreviewContainer");
+    if (!container) return;
+
+    const count = urls.length;
+    const label = count === 1 ? "1 image" : `${count} images`;
+
+    container.innerHTML = `
+        <div class="image-preview-grid">
+            ${urls.map((url, index) => `
+                <div class="image-preview-box">
+                    <img src="${url}" alt="preview" />
+                    <button class="cancel-preview" onclick="removePreviewImage(${index})" title="Remove">\u2715</button>
+                </div>
+            `).join("")}
+            ${count > 1 ? `<span class="image-preview-count">${label} selected</span>` : ""}
+        </div>
+    `;
+}
+
+function removePreviewImage(index) {
+    SELECTED_IMAGE_FILES.splice(index, 1);
+    SELECTED_IMAGE_URLS.splice(index, 1);
+
+    if (!SELECTED_IMAGE_URLS.length) {
+        cancelImagePreview();
+        return;
+    }
+
+    showImagePreview(SELECTED_IMAGE_URLS);
+}
+
+function cancelImagePreview() {
+    SELECTED_IMAGE_FILES = [];
+    SELECTED_IMAGE_URLS  = [];
+    removeImagePreview();
+
+    const sendBtn = document.querySelector(".send-btn");
+    const input   = document.querySelector(".chat-composer textarea");
+    if (sendBtn && input) sendBtn.disabled = input.value.trim().length < 1;
+}
+
+function removeImagePreview() {
+    const container = document.getElementById("imagePreviewContainer");
+    if (container) container.innerHTML = "";
+}
+
+async function sendImageMessage() {
+    if (!SELECTED_IMAGE_FILES.length || !CURRENT_RECEIVER_UID) return;
+
+    const formData = new FormData();
+    formData.append("receiverUid", CURRENT_RECEIVER_UID);
+    SELECTED_IMAGE_FILES.forEach(file => formData.append("images", file));
+
+    const previewUrls = [...SELECTED_IMAGE_URLS];
+
+    // Clear tray immediately
+    cancelImagePreview();
+
+    // Optimistic bubble
+    appendMessage({
+        messageId : "temp_" + Date.now(),
+        senderUid : CURRENT_USER?.uid,
+        receiverUid: CURRENT_RECEIVER_UID,
+        type      : "images",
+        images    : previewUrls,
+        createdAt : Date.now(),
+        sending   : true
+    });
+
+    showUploadProgress();
+
+    try {
+        const response = await fetch(`${API_URL}/api/messages/send`, {
+            method: "POST",
+            credentials: "include",
+            body: formData
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!data.success) {
+            hideUploadProgress();
+            alert(data.message || "Image failed to send");
+            return;
+        }
+
+        hideUploadProgress();
+        await loadMessages(CURRENT_CONVERSATION_ID);
+        await loadInbox(false);
+
+    } catch (error) {
+        console.error("sendImageMessage error:", error);
+        hideUploadProgress();
+        alert("Image upload failed");
+    }
+}
+
+function showUploadProgress() {
+    let strip = document.getElementById("uploadProgressStrip");
+    if (!strip) {
+        const wrapper = document.querySelector(".chat-composer-wrapper");
+        if (!wrapper) return;
+        strip = document.createElement("div");
+        strip.id = "uploadProgressStrip";
+        strip.className = "upload-progress-strip";
+        strip.innerHTML = `
+            <div class="upload-spinner"></div>
+            <div class="upload-progress-track">
+                <div class="upload-progress-fill"></div>
+            </div>
+            <span class="upload-progress-label">Uploading\u2026</span>
+        `;
+        const composer = wrapper.querySelector(".chat-composer");
+        wrapper.insertBefore(strip, composer);
+    }
+    strip.classList.add("visible");
+}
+
+function hideUploadProgress() {
+    const strip = document.getElementById("uploadProgressStrip");
+    if (strip) {
+        strip.classList.remove("visible");
+        setTimeout(() => { if (strip.parentNode) strip.remove(); }, 350);
+    }
+}
+
+/* =========================
+   IMAGE LIGHTBOX
+========================= */
+
+function initLightbox() {
+    if (document.getElementById("imageLightbox")) return;
+
+    const el = document.createElement("div");
+    el.id = "imageLightbox";
+    el.className = "image-lightbox";
+    el.innerHTML = [
+        '<div class="lightbox-backdrop"></div>',
+        '<button class="lightbox-close" aria-label="Close">\u00d7</button>',
+        '<button class="lightbox-prev lb-hidden" id="lightboxPrev" aria-label="Previous">&#8249;</button>',
+        '<button class="lightbox-next lb-hidden" id="lightboxNext" aria-label="Next">&#8250;</button>',
+        '<div class="lightbox-stage"><img id="lightboxImg" src="" alt="" draggable="false"></div>',
+        '<div class="lightbox-counter" id="lightboxCounter">1 / 1</div>'
+    ].join("");
+    document.body.appendChild(el);
+
+    el.querySelector(".lightbox-backdrop").addEventListener("click", closeLightbox);
+    el.querySelector(".lightbox-close").addEventListener("click", closeLightbox);
+    el.querySelector("#lightboxPrev").addEventListener("click", function () { lightboxMove(-1); });
+    el.querySelector("#lightboxNext").addEventListener("click", function () { lightboxMove(1); });
+
+    document.addEventListener("keydown", function (e) {
+        if (!document.getElementById("imageLightbox")?.classList.contains("active")) return;
+        if (e.key === "Escape")     closeLightbox();
+        if (e.key === "ArrowLeft")  lightboxMove(-1);
+        if (e.key === "ArrowRight") lightboxMove(1);
+    });
+
+    el.addEventListener("touchstart", function (e) {
+        LB_TOUCH_X = e.touches[0].clientX;
+    }, { passive: true });
+
+    el.addEventListener("touchend", function (e) {
+        const diff = LB_TOUCH_X - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 48) lightboxMove(diff > 0 ? 1 : -1);
+    }, { passive: true });
+}
+
+function openLightboxFromImg(imgEl) {
+    const chatBody =
+        document.querySelector(".chat-body");
+
+    let images = [imgEl.src];
+    let idx    = 0;
+
+    if (chatBody) {
+        const all = Array.from(chatBody.querySelectorAll(".chat-image"));
+        if (all.length) {
+            images = all.map(function (el) { return el.src; });
+            const found = all.indexOf(imgEl);
+            idx = found >= 0 ? found : 0;
+        }
+    }
+
+    openLightbox(images, idx);
+}
+
+function openLightbox(images, startIndex) {
+    initLightbox();
+    LIGHTBOX_IMAGES = images;
+    LIGHTBOX_INDEX  = typeof startIndex === "number" ? startIndex : 0;
+    _lbShow(LIGHTBOX_INDEX);
+    document.getElementById("imageLightbox").classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function _lbShow(index) {
+    const img     = document.getElementById("lightboxImg");
+    const counter = document.getElementById("lightboxCounter");
+    const prev    = document.getElementById("lightboxPrev");
+    const next    = document.getElementById("lightboxNext");
+    if (!img) return;
+
+    img.style.animation = "none";
+    void img.offsetHeight;
+    img.style.animation = "";
+
+    img.src = LIGHTBOX_IMAGES[index];
+    if (counter) counter.textContent = (index + 1) + " / " + LIGHTBOX_IMAGES.length;
+    if (prev)    prev.classList.toggle("lb-hidden", index === 0);
+    if (next)    next.classList.toggle("lb-hidden", index === LIGHTBOX_IMAGES.length - 1);
+}
+
+function lightboxMove(dir) {
+    const n = LIGHTBOX_INDEX + dir;
+    if (n < 0 || n >= LIGHTBOX_IMAGES.length) return;
+    LIGHTBOX_INDEX = n;
+    _lbShow(LIGHTBOX_INDEX);
+}
+
+function closeLightbox() {
+    document.getElementById("imageLightbox")?.classList.remove("active");
+    document.body.style.overflow = "";
 }

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Proposals | IMPACTECH ACADEMY</title>
+
+  <link rel="stylesheet" href="my-proposals.css" />
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+  <div class="client-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="client-sidebar">
+
+      <div class="sidebar-logo">
+        <img
+          src="https://impactacademy.site/images/icon.png"
+          alt="IMPACTECH ACADEMY" />
+      </div>
+
+      <nav class="sidebar-menu">
+
+        <a href="../../freelancer/">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="../find-jobs">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Find Jobs</span>
+        </a>
+
+        <a href="../my-proposals" class="active">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>My Proposals</span>
+        </a>
+
+        <a href="../contracts">
+          <i class="fa-solid fa-handshake"></i>
+          <span>Contracts</span>
+        </a>
+
+        <a href="../messages">
+          <i class="fa-solid fa-comments"></i>
+          <span>Messages</span>
+        </a>
+
+        <a href="../notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span>Notifications</span>
+        </a>
+
+        <a href="../earnings">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Earnings</span>
+        </a>
+
+        <a href="../settings">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="../logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="client-main">
+
+      <!-- TOPBAR -->
+      <header class="client-topbar">
+
+        <div class="breadcrumb">
+          <i class="fa-solid fa-house"></i>
+          <span>></span>
+          <p>Freelancer</p>
+          <span>></span>
+          <p>My Proposals</p>
+        </div>
+
+        <div class="topbar-actions">
+
+          <a href="../find-jobs" class="post-job-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Find Jobs
+          </a>
+
+          <div class="client-profile">
+            <span>M</span>
+          </div>
+
+        </div>
+
+      </header>
+
+      <!-- HERO -->
+      <section class="find-hero">
+
+        <div>
+
+          <span class="hero-badge">
+            <i class="fa-solid fa-file-lines"></i>
+            Proposals Tracker
+          </span>
+
+          <h1>Track Your Proposals</h1>
+
+          <p>
+            View all your submitted proposals,
+            monitor their status,
+            and follow up on active applications with clients.
+          </p>
+
+        </div>
+
+        <div class="hero-stats-grid">
+
+          <div class="hero-stat-card">
+            <i class="fa-solid fa-paper-plane"></i>
+            <h3 id="totalProposals">0</h3>
+            <p>Total Sent</p>
+          </div>
+
+          <div class="hero-stat-card active-stat">
+            <i class="fa-solid fa-clock"></i>
+            <h3 id="pendingProposals">0</h3>
+            <p>Pending</p>
+          </div>
+
+          <div class="hero-stat-card success-stat">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3 id="acceptedProposals">0</h3>
+            <p>Accepted</p>
+          </div>
+
+          <div class="hero-stat-card">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <h3 id="rejectedProposals">0</h3>
+            <p>Rejected</p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- SEARCH -->
+      <section class="search-panel">
+
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+          <input
+            id="proposalSearchInput"
+            type="text"
+            placeholder="Search proposals by job title, client..." />
+        </div>
+
+        <div class="filter-row">
+
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+            <option value="withdrawn">Withdrawn</option>
+          </select>
+
+          <select id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Virtual Assistant">Virtual Assistant</option>
+            <option value="Writing">Writing</option>
+            <option value="Design">Design</option>
+            <option value="Marketing">Marketing</option>
+          </select>
+
+          <select id="dateFilter">
+            <option value="">Any Date</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+
+          <button id="filterProposalsBtn" type="button">
+            <i class="fa-solid fa-sliders"></i>
+            Filter
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- CONTENT -->
+      <section class="jobs-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="jobs-sidebar">
+
+          <div class="filter-card">
+
+            <h3>Quick Filters</h3>
+
+            <label>
+              <input
+                type="checkbox"
+                class="quick-filter"
+                value="pending" />
+              Pending review
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="quick-filter"
+                value="accepted" />
+              Accepted
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="quick-filter"
+                value="rejected" />
+              Rejected
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="quick-filter"
+                value="withdrawn" />
+              Withdrawn
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="quick-filter"
+                value="recent" />
+              Recently submitted
+            </label>
+
+          </div>
+
+          <div class="filter-card">
+
+            <h3>Proposal Tips</h3>
+
+            <p>
+              Follow up on pending proposals after 3–5 days.
+              Keep your cover letter short, specific,
+              and tailored to each job you apply for.
+            </p>
+
+          </div>
+
+          <div class="filter-card stats-side-card">
+
+            <h3>Your Stats</h3>
+
+            <div class="side-stat-row">
+              <span>
+                <i class="fa-solid fa-chart-line"></i>
+                Response Rate
+              </span>
+
+              <b id="responseRate">0%</b>
+            </div>
+
+            <div class="side-stat-row">
+              <span>
+                <i class="fa-solid fa-trophy"></i>
+                Win Rate
+              </span>
+
+              <b id="winRate">0%</b>
+            </div>
+
+            <div class="side-stat-row">
+              <span>
+                <i class="fa-solid fa-clock"></i>
+                Avg. Response Time
+              </span>
+
+              <b id="avgResponseTime">—</b>
+            </div>
+
+          </div>
+
+        </aside>
+
+        <!-- PROPOSALS -->
+        <section class="jobs-content">
+
+          <div class="jobs-content-header">
+
+            <div>
+              <h2>My Proposals</h2>
+
+              <p id="proposalsSubtitle">
+                Loading your submitted proposals...
+              </p>
+            </div>
+
+            <select id="sortProposals">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="highest_bid">Highest Bid</option>
+            </select>
+
+          </div>
+
+          <!-- LOADING -->
+          <div id="proposalsLoadingState" class="empty-state">
+
+            <div class="empty-icon">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+
+            <h3>Loading proposals...</h3>
+
+            <p>
+              Please wait while we fetch your submitted proposals.
+            </p>
+
+          </div>
+
+          <!-- EMPTY -->
+          <div id="proposalsEmptyState" class="empty-state">
+
+            <div class="empty-icon">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+
+            <h3>No proposals yet</h3>
+
+            <p>
+              You haven't submitted any proposals yet.
+              Browse available jobs and start applying.
+            </p>
+
+            <a href="../find-jobs" class="retry-btn">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Browse Jobs
+            </a>
+
+          </div>
+
+          <!-- PROPOSAL LIST -->
+          <div
+            id="proposalsContainer"
+            class="proposal-card-list">
+          </div>
+
+        </section>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="my-proposals.js"></script>
+
+</body>
+
+</html>

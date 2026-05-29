@@ -174,10 +174,13 @@
             </div>
           </div>
 
+          <div class="chat-composer-wrapper">
+          <div id="imagePreviewContainer"></div>
           <div class="chat-composer">
-            <button type="button" class="composer-btn" disabled>
+            <button type="button" class="composer-btn" id="uploadImageBtn" disabled>
               <i class="fa-solid fa-paperclip"></i>
             </button>
+            <input type="file" id="chatImageInput" accept="image/*" multiple style="display:none">
 
             <textarea placeholder="Type your message..." rows="1" disabled></textarea>
 

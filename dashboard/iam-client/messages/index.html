@@ -186,20 +186,30 @@
                         </div>
                     </div>
 
-                    <div class="chat-composer">
-                        <button type="button" class="composer-icon" disabled>
-                            <i class="fa-solid fa-paperclip"></i>
-                        </button>
+                    <div class="chat-composer-wrapper">
 
-                        <textarea id="messageInput" placeholder="Type your message..." rows="1" disabled></textarea>
+                        <div id="imagePreviewContainer"></div>
 
-                        <button type="button" class="composer-icon" disabled>
-                            <i class="fa-solid fa-face-smile"></i>
-                        </button>
+                        <div class="chat-composer">
 
-                        <button type="button" class="send-btn" id="sendMessageBtn" disabled>
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
+                            <input type="file" id="chatImageInput" accept="image/*" multiple hidden>
+
+                            <button type="button" class="composer-icon" id="uploadImageBtn">
+                                <i class="fa-solid fa-paperclip"></i>
+                            </button>
+
+                            <textarea id="messageInput" placeholder="Type your message..." rows="1" disabled></textarea>
+
+                            <button type="button" class="composer-icon" disabled>
+                                <i class="fa-solid fa-face-smile"></i>
+                            </button>
+
+                            <button type="button" class="send-btn" id="sendMessageBtn" disabled>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+
+                        </div>
+
                     </div>
 
                 </section>
