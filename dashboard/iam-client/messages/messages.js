@@ -985,44 +985,279 @@ async function requestVideoCall() {
 ========================= */
 
 function startIncomingCallWatcher() {
-    if (CALLS_TIMER) clearInterval(CALLS_TIMER);
+
+    if (CALLS_TIMER) {
+        clearInterval(CALLS_TIMER);
+    }
 
     CALLS_TIMER = setInterval(loadIncomingCalls, 2500);
+
     loadIncomingCalls();
 }
 
 async function loadIncomingCalls() {
+
+    try {
+
+        // validate current active call
+        if (ACTIVE_CALL_ID) {
+            await validateActiveCall();
+        }
+
+        const res = await fetch(`${API_URL}/api/video-call/my-calls`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        // failed request
+        if (!res.ok || !data.success) {
+
+            hideIncomingCallModal();
+
+            INCOMING_CALL = null;
+
+            return;
+        }
+
+        const calls = Array.isArray(data.calls)
+            ? data.calls
+            : [];
+
+        const incoming = calls.find(call =>
+            call.direction === "incoming" ||
+            call.receiverUid === CURRENT_USER?.uid
+        );
+
+        const isActive = incoming &&
+            !["ended", "rejected", "missed", "cancelled", "expired"].includes(incoming.status);
+
+        if (!isActive) {
+            hideIncomingCallModal();
+            INCOMING_CALL = null;
+            return;
+        }
+
+        // already showing same modal
+        if (
+            INCOMING_CALL &&
+            INCOMING_CALL.callId === incoming.callId
+        ) {
+            return;
+        }
+
+        INCOMING_CALL = incoming;
+
+        showIncomingCallModal(incoming);
+
+    } catch (error) {
+
+        console.error("loadIncomingCalls error:", error);
+
+        hideIncomingCallModal();
+
+        INCOMING_CALL = null;
+    }
+}
+
+/* =========================
+   VALIDATE ACTIVE CALL
+========================= */
+
+async function validateActiveCall() {
+
+    if (!ACTIVE_CALL_ID) return;
+
     try {
 
         const res = await fetch(`${API_URL}/api/video-call/my-calls`, {
             method: "GET",
             credentials: "include",
-            headers: { "Content-Type": "application/json" }
+            headers: {
+                "Content-Type": "application/json"
+            }
         });
 
         const data = await res.json().catch(() => ({}));
 
-        if (!res.ok || !data.success) return;
+        if (!res.ok || !data.success) {
+            return;
+        }
 
-        const incoming = (data.calls || []).find(call =>
-            call.direction === "incoming" &&
-            call.status === "ringing"
+        const calls = Array.isArray(data.calls)
+            ? data.calls
+            : [];
+
+        const activeCall = calls.find(
+            call => call.callId === ACTIVE_CALL_ID
         );
 
-        if (!incoming) return;
-        if (INCOMING_CALL?.callId === incoming.callId) return;
+        // call disappeared
+        if (!activeCall) {
 
-        INCOMING_CALL = incoming;
-        showIncomingCallModal(incoming);
+            cleanupCallCompletely("Call ended");
+
+            return;
+        }
+
+        // call closed
+        if (
+            [
+                "ended",
+                "rejected",
+                "missed",
+                "cancelled",
+                "expired"
+            ].includes(activeCall.status)
+        ) {
+
+            cleanupCallCompletely(
+                `Call ${activeCall.status}`
+            );
+
+            return;
+        }
 
     } catch (error) {
-        console.error("loadIncomingCalls error:", error);
+
+        console.error(
+            "validateActiveCall error:",
+            error
+        );
     }
 }
 
-function showIncomingCallModal(call) {
+/* =========================
+   FULL CLEANUP
+========================= */
 
-    const overlay = document.getElementById("incomingCallOverlay");
+function cleanupCallCompletely(message = "Call ended") {
+
+    console.log(
+        "cleanupCallCompletely:",
+        message
+    );
+
+    updateCallStatus(message);
+
+    hideIncomingCallModal();
+
+    // close rtc
+    if (PEER_CONNECTION) {
+
+        try {
+            PEER_CONNECTION.close();
+        } catch (e) { }
+
+        PEER_CONNECTION = null;
+    }
+
+    // stop local stream
+    if (LOCAL_STREAM) {
+
+        LOCAL_STREAM.getTracks().forEach(track => {
+
+            try {
+                track.stop();
+            } catch (e) { }
+
+        });
+
+        LOCAL_STREAM = null;
+    }
+
+    // clear remote video
+    const remoteVideo =
+        document.getElementById("remoteVideo");
+
+    if (remoteVideo) {
+        remoteVideo.srcObject = null;
+    }
+
+    // clear local video
+    const localVideo =
+        document.getElementById("localVideo");
+
+    if (localVideo) {
+        localVideo.srcObject = null;
+    }
+
+    ACTIVE_CALL_ID = null;
+    ACTIVE_CALL_ROLE = null;
+    INCOMING_CALL = null;
+
+    ADDED_ICE_IDS = new Set();
+
+    setTimeout(() => {
+
+        closeVideoCallModal?.();
+
+    }, 800);
+}
+
+function createIncomingCallModal() {
+    let overlay = document.getElementById("incomingCallOverlay");
+    if (overlay) return overlay;
+
+    overlay = document.createElement("div");
+    overlay.className = "incoming-call-overlay";
+    overlay.id = "incomingCallOverlay";
+    overlay.innerHTML = `
+        <div class="incoming-call-card">
+
+            <div class="incoming-rings">
+                <span></span>
+                <span></span>
+                <span></span>
+
+                <div class="incoming-avatar" id="incomingCallerAvatar">
+                    <span>CL</span>
+                </div>
+            </div>
+
+            <span class="incoming-pill">
+                Incoming video call
+            </span>
+
+            <h3 id="incomingCallerName">
+                Someone is calling...
+            </h3>
+
+            <p>
+                Answer to start camera and microphone
+            </p>
+
+            <div class="incoming-actions">
+
+                <button type="button" class="reject-call-btn" id="rejectIncomingCallBtn">
+                    <span class="call-svg-icon phone-down-icon"></span>
+                    Reject
+                </button>
+
+                <button type="button" class="answer-call-btn" id="answerIncomingCallBtn">
+                    <span class="call-svg-icon phone-up-icon"></span>
+                    Answer
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelector("#answerIncomingCallBtn")?.addEventListener("click", answerIncomingCall);
+    overlay.querySelector("#rejectIncomingCallBtn")?.addEventListener("click", rejectIncomingCall);
+
+    return overlay;
+}
+
+function showIncomingCallModal(call) {
+    const overlay = createIncomingCallModal();
     const nameEl = document.getElementById("incomingCallerName");
     const avatarEl = document.getElementById("incomingCallerAvatar");
 
@@ -1036,9 +1271,7 @@ function showIncomingCallModal(call) {
     }
 
     if (avatarEl) {
-
         const initials = getInitials(callerName);
-
         avatarEl.innerHTML = `
             <span>${initials}</span>
         `;
@@ -1052,9 +1285,18 @@ function hideIncomingCallModal() {
 }
 
 async function answerIncomingCall() {
+
     if (!INCOMING_CALL?.callId) return;
 
-    ACTIVE_CALL_ID = INCOMING_CALL.callId;
+    // stop polling while answering
+    if (CALLS_TIMER) {
+        clearInterval(CALLS_TIMER);
+        CALLS_TIMER = null;
+    }
+
+    const callId = INCOMING_CALL.callId;
+
+    ACTIVE_CALL_ID = callId;
     ACTIVE_CALL_ROLE = "receiver";
     ADDED_ICE_IDS = new Set();
 
@@ -1062,36 +1304,64 @@ async function answerIncomingCall() {
 
     openVideoCallModal({
         title: "Video call",
-        status: "Starting camera..."
+        status: "Answering call..."
     });
 
     const cameraReady = await startLocalCamera();
 
     if (!cameraReady) {
-        updateCallStatus("Camera permission denied or unavailable.");
+
+        updateCallStatus(
+            "Camera permission denied or unavailable."
+        );
+
+        startIncomingCallWatcher();
+
         return;
     }
 
     try {
-        const acceptRes = await fetch(`${API_URL}/api/video-call/accept`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                callId: ACTIVE_CALL_ID
-            })
-        });
 
-        const acceptData = await acceptRes.json().catch(() => ({}));
+        const acceptRes = await fetch(
+            `${API_URL}/api/video-call/accept`,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    callId
+                })
+            }
+        );
+
+        const acceptData =
+            await acceptRes.json().catch(() => ({}));
 
         if (!acceptRes.ok || !acceptData.success) {
-            updateCallStatus(acceptData.message || "Could not answer call");
+
+            console.error(
+                "accept failed:",
+                acceptData
+            );
+
+            cleanupCallCompletely(
+                acceptData.message ||
+                "Could not answer call"
+            );
+
+            startIncomingCallWatcher();
+
             return;
         }
 
-        updateCallStatus("Connecting WebRTC...");
+        updateCallStatus(
+            "Connecting WebRTC..."
+        );
 
         await createPeerConnection();
+
         await createAndSendAnswer();
 
         updateCallStatus("Connected");
@@ -1099,11 +1369,21 @@ async function answerIncomingCall() {
         INCOMING_CALL = null;
 
         watchActiveCall();
+
         startWebRTCWatcher();
 
     } catch (error) {
-        console.error("answerIncomingCall error:", error);
-        updateCallStatus(error.message || "Network error.");
+
+        console.error(
+            "answerIncomingCall error:",
+            error
+        );
+
+        cleanupCallCompletely(
+            error.message || "Network error."
+        );
+
+        startIncomingCallWatcher();
     }
 }
 
@@ -1119,8 +1399,7 @@ async function rejectIncomingCall() {
         }).catch(console.error);
     }
 
-    INCOMING_CALL = null;
-    hideIncomingCallModal();
+    cleanupCallCompletely("Call rejected");
 }
 
 /* =========================
@@ -1355,7 +1634,7 @@ function startWebRTCWatcher() {
             const webrtc = data.webrtc || {};
 
             if (["ended", "rejected", "missed", "cancelled"].includes(call.status)) {
-                cleanupCallUI(`Call ${call.status}`);
+                cleanupCallCompletely(`Call ${call.status}`);
                 return;
             }
 
@@ -1409,7 +1688,7 @@ function watchActiveCall() {
             }
 
             if (["ended", "rejected", "missed", "cancelled"].includes(status)) {
-                cleanupCallUI(`Call ${status}`);
+                cleanupCallCompletely(`Call ${status}`);
             }
 
         } catch (error) {
@@ -1564,74 +1843,274 @@ function toggleCamera() {
    END / CLEANUP
 ========================= */
 
-async function endVideoCall() {
-    if (ACTIVE_CALL_ID) {
-        await fetch(`${API_URL}/api/video-call/end`, {
+function endVideoCall() {
+    console.log("clicked")
+    try {
+        const callId = ACTIVE_CALL_ID; // SAVE FIRST
+
+        // Stop local media stream
+        if (LOCAL_STREAM) {
+            LOCAL_STREAM.getTracks().forEach(track => track.stop());
+            LOCAL_STREAM = null;
+        }
+
+        // Close peer connection
+        if (PEER_CONNECTION) {
+            PEER_CONNECTION.close();
+            PEER_CONNECTION = null;
+        }
+
+        // Clear timers
+        if (WEBRTC_TIMER) clearInterval(WEBRTC_TIMER);
+        if (ACTIVE_CALL_WATCH_TIMER) clearInterval(ACTIVE_CALL_WATCH_TIMER);
+
+        // Reset state AFTER saving callId
+        ACTIVE_CALL_ID = null;
+        ACTIVE_CALL_ROLE = null;
+        INCOMING_CALL = null;
+        ADDED_ICE_IDS = new Set();
+
+        // UI update
+        updateCallStatus("Call ended");
+        closeVideoCallModal();
+
+        // Notify backend
+        fetch(`${API_URL}/api/video-call/end`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                callId: ACTIVE_CALL_ID
-            })
-        }).catch(console.error);
-    }
+            body: JSON.stringify({ callId })
+        }).catch(err =>
+            console.error("endVideoCall notify error:", err)
+        );
 
-    cleanupCallUI("Call ended");
+    } catch (error) {
+        console.error("endVideoCall error:", error);
+    }
 }
 
-function cleanupCallUI(statusText = "Call ended") {
 
-    updateCallStatus(statusText);
 
-    clearInterval(WEBRTC_TIMER);
-    clearInterval(ACTIVE_CALL_WATCH_TIMER);
-    clearInterval(CALL_TIMER_INTERVAL);
-
-    WEBRTC_TIMER = null;
-    ACTIVE_CALL_WATCH_TIMER = null;
-    CALL_TIMER_INTERVAL = null;
-
-    if (PEER_CONNECTION) {
-        PEER_CONNECTION.ontrack = null;
-        PEER_CONNECTION.onicecandidate = null;
-        PEER_CONNECTION.close();
-        PEER_CONNECTION = null;
-    }
-
-    stopLocalCamera();
-    stopRemoteVideo();
-
-    ACTIVE_CALL_ID = null;
-    ACTIVE_CALL_ROLE = null;
-    INCOMING_CALL = null;
-
-    ADDED_ICE_IDS = new Set();
-
-    const placeholder = document.getElementById("remoteVideoPlaceholder");
-
-    if (placeholder) {
-        placeholder.style.display = "flex";
-    }
-
-    setTimeout(() => {
-
-        closeVideoCallModal();
-        hideIncomingCallModal();
-
-    }, 500);
-}
 
 /* =========================
    MODAL UI
 ========================= */
 
-function openVideoCallModal({ title = "Video call", status = "Connecting..." } = {}) {
-    const overlay = document.getElementById("videoCallOverlay");
+function openVideoCallModal({ title = "Video call", status = "Connecting...", profilePic = "", userName = "Client Name" } = {}) {
+    let overlay = document.getElementById("videoCallOverlay");
+    
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "videoCallOverlay";
+        overlay.className = "video-call-overlay";
+        overlay.innerHTML = `
+            <section class="video-call-screen">
+
+                <!-- BACKGROUND GLOWS -->
+                <div class="call-bg-glow glow-one"></div>
+                <div class="call-bg-glow glow-two"></div>
+
+                <!-- TOP BAR -->
+                <header class="call-screen-topbar">
+
+                    <div class="call-person-card">
+
+                        <div class="call-person-avatar" id="callUserAvatar">
+                            <img id="callUserAvatarImg" src="" alt="avatar" />
+                            <span class="avatar-initial" id="callUserAvatarInitial" style="display:none;"></span>
+                        </div>
+
+                        <div class="call-person-info">
+
+                            <span class="call-live-badge">
+                                <i></i>
+                                Secure Call
+                            </span>
+
+                            <h3 id="callModalTitle">
+                                
+                            </h3>
+
+                            <p id="callModalStatus">
+                                Connecting...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="call-top-actions">
+
+                        <button class="call-round-btn" id="switchCameraBtn">
+                            <span class="call-svg-icon switch-camera-icon"></span>
+                        </button>
+
+                        <button class="call-round-btn" id="expandCallBtn">
+                            <span class="call-svg-icon expand-icon"></span>
+                        </button>
+
+                        <button class="call-round-btn close-call-btn" id="closeCallModalBtn">
+                            <span class="call-svg-icon close-icon"></span>
+                        </button>
+
+                    </div>
+
+                </header>
+
+                <!-- CALL STAGE -->
+                <main class="call-stage">
+
+                    <!-- REMOTE VIDEO -->
+                    <section class="remote-video-stage" id="remoteVideoStage">
+
+                        <video id="remoteVideo" autoplay playsinline></video>
+
+                        <!-- REMOTE OFF STATE -->
+                        <div class="video-off-state" id="remoteVideoPlaceholder">
+
+                            <div class="video-off-avatar" id="remoteCallAvatar">
+                                <img id="remoteCallAvatarImg" src="" alt="avatar" />
+                            </div>
+
+                            <h2 id="remoteCallName">
+                                Freelancer
+                            </h2>
+
+                            <p id="remoteCallText">
+                                Waiting for the other person to join the call...
+                            </p>
+
+                        </div>
+
+                        <!-- CALL TIME -->
+                        <div class="call-quality-pill">
+
+                            <span class="quality-dot"></span>
+
+                            <span id="callTimer">
+                                00:00
+                            </span>
+
+                        </div>
+
+                    </section>
+
+                    <!-- RIGHT PANEL -->
+                    <aside class="call-side-panel">
+
+                        <!-- LOCAL VIDEO -->
+                        <div class="local-video-card" id="localVideoCard">
+
+                            <video id="localVideo" autoplay muted playsinline></video>
+
+                            <div class="local-video-off" id="localVideoOff">
+
+                                <span class="call-svg-icon camera-off-icon"></span>
+
+                                <p>Camera Off</p>
+
+                            </div>
+
+                            <span class="mini-label">
+                                You
+                            </span>
+
+                        </div>
+
+                        <!-- INFO CARD -->
+                        <div class="call-info-card">
+
+                            <span class="call-info-kicker">
+                                Call Status
+                            </span>
+
+                            <h4>
+                                HD Video Active
+                            </h4>
+
+                            <p>
+                                Your call is encrypted and secured.
+                                Network quality is stable.
+                            </p>
+
+                        </div>
+
+                    </aside>
+
+                </main>
+
+                <!-- CONTROLS -->
+                <footer class="call-control-dock">
+
+                    <!-- MIC -->
+                    <button type="button" class="call-control-btn" id="toggleMicBtn">
+
+                        <span class="call-svg-icon mic-icon"></span>
+
+                        <small>Mic</small>
+
+                    </button>
+
+                    <!-- CAMERA -->
+                    <button type="button" class="call-control-btn" id="toggleCamBtn">
+
+                        <span class="call-svg-icon chat-video-icon"></span>
+
+                        <small>Camera</small>
+
+                    </button>
+
+                    <!-- SPEAKER -->
+                    <button type="button" class="call-control-btn" id="toggleSpeakerBtn">
+
+                        <span class="call-svg-icon speaker-icon"></span>
+
+                        <small>Audio</small>
+
+                    </button>
+
+                    <!-- END -->
+                    <button type="button" class="call-control-btn end-call-btn" id="endCallBtn">
+
+                        <span class="call-svg-icon phone-down-icon"></span>
+
+                        <small>End</small>
+
+                    </button>
+
+                </footer>
+
+            </section>
+
+        </div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector("#endCallBtn")?.addEventListener("click", endVideoCall);
+    }
+    
     const titleEl = document.getElementById("callModalTitle");
     const statusEl = document.getElementById("callModalStatus");
+    const avatarImg = document.getElementById("callUserAvatarImg");
+    const avatarInitial = document.getElementById("callUserAvatarInitial");
+    const avatarContainer = document.getElementById("callUserAvatar");
 
     if (titleEl) titleEl.textContent = title;
     if (statusEl) statusEl.textContent = status;
+
+    if (avatarImg && avatarInitial && avatarContainer) {
+        if (profilePic) {
+            avatarImg.src = profilePic;
+            avatarImg.style.display = "block";
+            avatarInitial.style.display = "none";
+            avatarInitial.textContent = "";
+        } else {
+            avatarImg.src = "";
+            avatarImg.style.display = "none";
+            const initial = (userName || title || "").trim().charAt(0).toUpperCase() || "U";
+            avatarInitial.textContent = initial;
+            avatarInitial.style.display = "flex";
+        }
+    }
+
     if (overlay) overlay.classList.add("active");
 }
 

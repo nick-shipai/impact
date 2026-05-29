@@ -909,37 +909,151 @@ async function requestVideoCall() {
 function startIncomingCallWatcher() {
     if (CALLS_TIMER) clearInterval(CALLS_TIMER);
 
-    CALLS_TIMER = setInterval(loadIncomingCalls, 2500);
+    CALLS_TIMER = setInterval(loadIncomingCalls, 2000);
     loadIncomingCalls();
 }
 
 async function loadIncomingCalls() {
     try {
-        if (ACTIVE_CALL_ID) return;
+
+        // if currently inside active call screen
+        // check if call still exists
+        if (ACTIVE_CALL_ID) {
+            await validateActiveCall();
+        }
 
         const response = await fetch(`${API_URL}/api/video-call/my-calls`, {
             method: "GET",
             credentials: "include",
-            headers: { "Content-Type": "application/json" }
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+            hideIncomingCallModal();
+            return;
+        }
+
+        const calls = Array.isArray(data.calls)
+            ? data.calls
+            : [];
+
+        // ONLY allow ACTIVE ringing incoming calls
+        const incoming = calls.find(call =>
+            call.direction === "incoming" &&
+            call.status === "ringing"
+        );
+
+        // nothing incoming
+        if (!incoming) {
+
+            // close popup
+            hideIncomingCallModal();
+
+            // clear stale incoming
+            INCOMING_CALL = null;
+
+            return;
+        }
+
+        // hard block dead calls
+        if (
+            [
+                "ended",
+                "rejected",
+                "missed",
+                "cancelled",
+                "expired"
+            ].includes(incoming.status)
+        ) {
+
+            hideIncomingCallModal();
+
+            INCOMING_CALL = null;
+
+            return;
+        }
+
+        // already showing same call
+        if (
+            INCOMING_CALL &&
+            INCOMING_CALL.callId === incoming.callId
+        ) {
+            return;
+        }
+
+        INCOMING_CALL = incoming;
+
+        showIncomingCallModal(incoming);
+
+    } catch (error) {
+        console.error("loadIncomingCalls error:", error);
+
+        hideIncomingCallModal();
+    }
+}
+
+/* =========================
+   VALIDATE ACTIVE CALL
+========================= */
+
+async function validateActiveCall() {
+
+    if (!ACTIVE_CALL_ID) return;
+
+    try {
+
+        const response = await fetch(`${API_URL}/api/video-call/my-calls`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
         });
 
         const data = await response.json().catch(() => ({}));
 
         if (!response.ok || !data.success) return;
 
-        const incoming = (data.calls || []).find(call =>
-            call.direction === "incoming" &&
-            call.status === "ringing"
+        const calls = Array.isArray(data.calls)
+            ? data.calls
+            : [];
+
+        const activeCall = calls.find(
+            c => c.callId === ACTIVE_CALL_ID
         );
 
-        if (!incoming) return;
-        if (INCOMING_CALL?.callId === incoming.callId) return;
+        // call deleted/not found
+        if (!activeCall) {
 
-        INCOMING_CALL = incoming;
-        showIncomingCallModal(incoming);
+            cleanupCallCompletely("Call ended");
+
+            return;
+        }
+
+        // call closed
+        if (
+            [
+                "ended",
+                "rejected",
+                "missed",
+                "cancelled",
+                "expired"
+            ].includes(activeCall.status)
+        ) {
+
+            cleanupCallCompletely(
+                `Call ${activeCall.status}`
+            );
+
+            return;
+        }
 
     } catch (error) {
-        console.error("loadIncomingCalls error:", error);
+        console.error("validateActiveCall error:", error);
     }
 }
 
@@ -1010,6 +1124,17 @@ async function answerIncomingCall() {
 
         if (!response.ok || !data.success) {
             updateCallStatus(data.message || "Could not answer call");
+
+            INCOMING_CALL = null;
+            ACTIVE_CALL_ID = null;
+            ACTIVE_CALL_ROLE = null;
+
+            hideIncomingCallModal();
+
+            setTimeout(() => {
+                cleanupCallUI(data.message || "Call ended");
+            }, 1200);
+
             return;
         }
 
@@ -1505,19 +1630,29 @@ function toggleFocusCallView() {
 ========================= */
 
 async function endVideoCall() {
-    if (ACTIVE_CALL_ID) {
+    if (!ACTIVE_CALL_ID) return;
+
+    try {
         await fetch(`${API_URL}/api/video-call/end`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                callId: ACTIVE_CALL_ID
-            })
-        }).catch(console.error);
+            body: JSON.stringify({ callId: ACTIVE_CALL_ID })
+        });
+    } catch (error) {
+        console.error("endVideoCall error:", error);
+    } finally {
+        // ✅ Reset local state so call cannot be reused
+        ACTIVE_CALL_ID = null;
+        ACTIVE_CALL_ROLE = null;
+        INCOMING_CALL = null;
+        ADDED_ICE_IDS.clear();
+        hideIncomingCallModal();
+        closeVideoCallModal();
+        cleanupCallUI("Call ended");
     }
-
-    cleanupCallUI("Call ended");
 }
+
 
 function cleanupCallUI(statusText = "Call ended") {
     updateCallStatus(statusText);
@@ -1629,4 +1764,60 @@ function resetCallPlaceholders() {
 
     document.getElementById("remoteVideoStage")?.classList.remove("has-video");
     document.getElementById("localVideoCard")?.classList.remove("has-video");
+}
+/* =========================
+   FULL CLEANUP
+========================= */
+
+function cleanupCallCompletely(message = "Call ended") {
+
+    console.log("cleanupCallCompletely:", message);
+
+    updateCallStatus(message);
+
+    hideIncomingCallModal();
+
+    // stop rtc
+    if (PEER_CONNECTION) {
+        try {
+            PEER_CONNECTION.close();
+        } catch (e) {}
+
+        PEER_CONNECTION = null;
+    }
+
+    // stop local media
+    if (LOCAL_STREAM) {
+        LOCAL_STREAM.getTracks().forEach(track => {
+            try {
+                track.stop();
+            } catch (e) {}
+        });
+
+        LOCAL_STREAM = null;
+    }
+
+    // clear remote video
+    const remoteVideo = document.getElementById("remoteVideo");
+
+    if (remoteVideo) {
+        remoteVideo.srcObject = null;
+    }
+
+    // clear local video
+    const localVideo = document.getElementById("localVideo");
+
+    if (localVideo) {
+        localVideo.srcObject = null;
+    }
+
+    ACTIVE_CALL_ID = null;
+    ACTIVE_CALL_ROLE = null;
+    INCOMING_CALL = null;
+
+    ADDED_ICE_IDS = new Set();
+
+    setTimeout(() => {
+        closeVideoCallModal?.();
+    }, 1000);
 }
