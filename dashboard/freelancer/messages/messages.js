@@ -58,8 +58,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    console.log("Authenticated user:", auth.user);
-
     initLightbox();
     initMessagesPage(auth.user);
 });
@@ -435,6 +433,7 @@ function showTypingBubble() {
 function removeTypingBubble() {
     document.querySelectorAll(".typing-row").forEach(el => el.remove());
 }
+
 /* =========================
    LOAD MESSAGES
 ========================= */
@@ -477,7 +476,6 @@ async function sendMessage() {
 
     if (!input || !CURRENT_RECEIVER_UID) return;
 
-    // If images selected, send as image message
     if (SELECTED_IMAGE_FILES.length > 0) {
         await sendImageMessage();
         return;
@@ -589,31 +587,44 @@ function renderMessageBubble(msg) {
 
     let content = "";
     let isImageMsg = false;
+    let rawImgsArr = [];
 
     if (msg.type === "images" || msg.type === "mixed") {
         isImageMsg = true;
         const images = Array.isArray(msg.images) ? msg.images : [];
+        rawImgsArr = images;
         const gridClass = images.length === 1 ? "count-1"
             : images.length === 2 ? "count-2"
             : images.length === 3 ? "count-3"
             : images.length === 4 ? "count-4"
             : "count-many";
         content = `<div class="chat-images-grid ${gridClass}">
-            ${images.map(img => `<img src="${escapeHTML(img)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this)">`).join("")}
+            ${images.map(img => `<img src="${escapeHTML(img)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this); event.stopPropagation();">`).join("")}
           </div>`;
         if (msg.message) content += `<p>${escapeHTML(msg.message)}</p>`;
     } else if (msg.type === "image") {
         isImageMsg = true;
         const image = msg.imageUrl || (Array.isArray(msg.images) ? msg.images[0] : "");
-        content = `<img src="${escapeHTML(image)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this)">`;
+        rawImgsArr = image ? [image] : [];
+        content = `<img src="${escapeHTML(image)}" class="chat-image" loading="lazy" onclick="openLightboxFromImg(this); event.stopPropagation();">`;
         if (msg.message) content += `<p>${escapeHTML(msg.message)}</p>`;
     } else {
         content = `<p>${escapeHTML(msg.message || "")}</p>`;
     }
 
+    const msgType = msg.type || "text";
+    const msgText = escapeHTML(msg.message || "");
+    const msgImgs = escapeHTML(JSON.stringify(rawImgsArr));
+
     return `
     <div class="message-row ${isMine ? "mine" : "theirs"}">
-      <div class="message-bubble ${isImageMsg ? "image-bubble" : ""}">
+      <div class="message-bubble ${isImageMsg ? "image-bubble" : ""}"
+        data-msg-id="${escapeHTML(msg.messageId || "")}"
+        data-msg-type="${msgType}"
+        data-msg-mine="${isMine}"
+        data-msg-text="${msgText}"
+        data-msg-imgs="${msgImgs}"
+        oncontextmenu="handleBubbleClick(event, this)">
         ${content}
         <div class="message-meta">
           <span>${formatMessageTime(msg.createdAt)}</span>
@@ -626,6 +637,7 @@ function renderMessageBubble(msg) {
     </div>
   `;
 }
+
 function renderChatHeader(user) {
     const avatar = document.querySelector(".chat-avatar");
     const name = document.querySelector(".chat-user h3");
@@ -796,6 +808,7 @@ function escapeHTML(value) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
 function formatInboxTime(timestamp) {
     if (!timestamp) return "";
 
@@ -823,6 +836,7 @@ function formatInboxTime(timestamp) {
         day: "numeric"
     });
 }
+
 function openMobileChat() {
     if (window.innerWidth <= 700) {
         document.body.classList.add("mobile-chat-open");
@@ -832,6 +846,7 @@ function openMobileChat() {
 function closeMobileChat() {
     document.body.classList.remove("mobile-chat-open");
 }
+
 /* =========================
    FULL WEBRTC VIDEO CALL
    Client <-> Freelancer
@@ -840,6 +855,7 @@ function closeMobileChat() {
 let CALLS_TIMER = null;
 let ACTIVE_CALL_ID = null;
 let ACTIVE_CALL_ROLE = null;
+let CALL_IS_LIVE = false;          // FIX: tracks whether call actually connected
 let LOCAL_STREAM = null;
 let PEER_CONNECTION = null;
 let INCOMING_CALL = null;
@@ -919,6 +935,7 @@ async function requestVideoCall() {
 
         ACTIVE_CALL_ID = data.callId;
         ACTIVE_CALL_ROLE = "caller";
+        CALL_IS_LIVE = false;
         ADDED_ICE_IDS = new Set();
 
         updateCallStatus("Creating WebRTC offer...");
@@ -934,11 +951,25 @@ async function requestVideoCall() {
     } catch (error) {
         console.error("requestVideoCall error:", error);
         updateCallStatus(error.message || "Network error. Could not request call.");
+
+        // If call was created server-side but crashed locally, mark it ended
+        if (ACTIVE_CALL_ID) {
+            try {
+                await fetch(`${API_URL}/api/video-call/end`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ callId: ACTIVE_CALL_ID })
+                });
+            } catch (e) {
+                console.error("endVideoCall (error cleanup) failed:", e);
+            }
+        }
     }
 }
 
 /* =========================
-   INCOMING CALL
+   INCOMING CALL WATCHER
 ========================= */
 
 function startIncomingCallWatcher() {
@@ -951,8 +982,7 @@ function startIncomingCallWatcher() {
 async function loadIncomingCalls() {
     try {
 
-        // if currently inside active call screen
-        // check if call still exists
+        // if currently inside active call screen, check if call still exists
         if (ACTIVE_CALL_ID) {
             await validateActiveCall();
         }
@@ -972,61 +1002,52 @@ async function loadIncomingCalls() {
             return;
         }
 
-        const calls = Array.isArray(data.calls)
-            ? data.calls
-            : [];
+        const calls = Array.isArray(data.calls) ? data.calls : [];
 
-        // ONLY allow ACTIVE ringing incoming calls
+        // FIX: If we have a cached INCOMING_CALL, check its current status in the
+        // fresh calls list. If it is no longer ringing (cancelled, missed, ended,
+        // deleted), dismiss the modal immediately — before doing anything else.
+        if (INCOMING_CALL) {
+            const cached = calls.find(c => c.callId === INCOMING_CALL.callId);
+            const deadStatuses = ["ended", "rejected", "missed", "cancelled", "expired"];
+
+            if (!cached || deadStatuses.includes(cached.status)) {
+                hideIncomingCallModal();
+                INCOMING_CALL = null;
+            }
+        }
+
+        // Only surface a call that is actively ringing and directed at us
         const incoming = calls.find(call =>
             call.direction === "incoming" &&
             call.status === "ringing"
         );
 
-        // nothing incoming
+        // Nothing ringing right now
         if (!incoming) {
-
-            // close popup
             hideIncomingCallModal();
-
-            // clear stale incoming
             INCOMING_CALL = null;
-
             return;
         }
 
-        // hard block dead calls
-        if (
-            [
-                "ended",
-                "rejected",
-                "missed",
-                "cancelled",
-                "expired"
-            ].includes(incoming.status)
-        ) {
-
+        // Hard-block any dead-status call just in case direction/status mismatch
+        const deadStatuses = ["ended", "rejected", "missed", "cancelled", "expired"];
+        if (deadStatuses.includes(incoming.status)) {
             hideIncomingCallModal();
-
             INCOMING_CALL = null;
-
             return;
         }
 
-        // already showing same call
-        if (
-            INCOMING_CALL &&
-            INCOMING_CALL.callId === incoming.callId
-        ) {
+        // Already displaying this exact call — do nothing
+        if (INCOMING_CALL && INCOMING_CALL.callId === incoming.callId) {
             return;
         }
 
         INCOMING_CALL = incoming;
-
         showIncomingCallModal(incoming);
 
     } catch (error) {
         console.error("loadIncomingCalls error:", error);
-
         hideIncomingCallModal();
     }
 }
@@ -1053,37 +1074,21 @@ async function validateActiveCall() {
 
         if (!response.ok || !data.success) return;
 
-        const calls = Array.isArray(data.calls)
-            ? data.calls
-            : [];
+        const calls = Array.isArray(data.calls) ? data.calls : [];
 
-        const activeCall = calls.find(
-            c => c.callId === ACTIVE_CALL_ID
-        );
+        const activeCall = calls.find(c => c.callId === ACTIVE_CALL_ID);
 
-        // call deleted/not found
+        // call deleted/not found — clean up
         if (!activeCall) {
-
             cleanupCallCompletely("Call ended");
-
             return;
         }
 
-        // call closed
+        // call reached a terminal state
         if (
-            [
-                "ended",
-                "rejected",
-                "missed",
-                "cancelled",
-                "expired"
-            ].includes(activeCall.status)
+            ["ended", "rejected", "missed", "cancelled", "expired"].includes(activeCall.status)
         ) {
-
-            cleanupCallCompletely(
-                `Call ${activeCall.status}`
-            );
-
+            cleanupCallCompletely(`Call ${activeCall.status}`);
             return;
         }
 
@@ -1129,6 +1134,7 @@ async function answerIncomingCall() {
 
     ACTIVE_CALL_ID = INCOMING_CALL.callId;
     ACTIVE_CALL_ROLE = "receiver";
+    CALL_IS_LIVE = false;
     ADDED_ICE_IDS = new Set();
 
     hideIncomingCallModal();
@@ -1245,6 +1251,7 @@ async function createPeerConnection() {
             remoteStage?.classList.add("has-video");
         }
 
+        CALL_IS_LIVE = true;          // FIX: mark call as live when remote track arrives
         updateCallStatus("Connected");
         startCallTimer();
     };
@@ -1259,6 +1266,7 @@ async function createPeerConnection() {
         const state = PEER_CONNECTION.connectionState;
 
         if (state === "connected") {
+            CALL_IS_LIVE = true;      // FIX: also mark live when connection state confirms it
             updateCallStatus("Connected");
             startCallTimer();
         }
@@ -1584,6 +1592,7 @@ function stopLocalCamera() {
     localCard?.classList.remove("has-video");
 }
 
+// FIX: removed duplicate definition — single correct version that clears both video and stage class
 function stopRemoteVideo() {
     const remoteVideo = document.getElementById("remoteVideo");
     const remoteStage = document.getElementById("remoteVideoStage");
@@ -1595,15 +1604,6 @@ function stopRemoteVideo() {
     }
 
     remoteStage?.classList.remove("has-video");
-}
-
-function stopRemoteVideo() {
-    const remoteVideo = document.getElementById("remoteVideo");
-
-    if (remoteVideo?.srcObject) {
-        remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-        remoteVideo.srcObject = null;
-    }
 }
 
 function toggleMic() {
@@ -1661,33 +1661,38 @@ function toggleFocusCallView() {
 }
 
 /* =========================
-   END / CLEANUP
+   END / CANCEL / CLEANUP
 ========================= */
 
 async function endVideoCall() {
     if (!ACTIVE_CALL_ID) return;
 
+    const callIdToEnd = ACTIVE_CALL_ID;
+
+    // Reset state immediately so the UI is unblocked
+    ACTIVE_CALL_ID = null;
+    ACTIVE_CALL_ROLE = null;
+    CALL_IS_LIVE = false;
+    INCOMING_CALL = null;
+    ADDED_ICE_IDS.clear();
+    hideIncomingCallModal();
+    closeVideoCallModal();
+    cleanupCallUI("Call ended");
+
+    // Always mark as ended regardless of whether the call was live or still ringing.
+    // The server /api/video-call/end updates status to "ended" for any non-closed call,
+    // which causes the receiver's incoming-call poller to dismiss the modal automatically.
     try {
         await fetch(`${API_URL}/api/video-call/end`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ callId: ACTIVE_CALL_ID })
+            body: JSON.stringify({ callId: callIdToEnd })
         });
     } catch (error) {
         console.error("endVideoCall error:", error);
-    } finally {
-        // ✅ Reset local state so call cannot be reused
-        ACTIVE_CALL_ID = null;
-        ACTIVE_CALL_ROLE = null;
-        INCOMING_CALL = null;
-        ADDED_ICE_IDS.clear();
-        hideIncomingCallModal();
-        closeVideoCallModal();
-        cleanupCallUI("Call ended");
     }
 }
-
 
 function cleanupCallUI(statusText = "Call ended") {
     updateCallStatus(statusText);
@@ -1708,6 +1713,7 @@ function cleanupCallUI(statusText = "Call ended") {
 
     ACTIVE_CALL_ID = null;
     ACTIVE_CALL_ROLE = null;
+    CALL_IS_LIVE = false;            // FIX: reset live flag on cleanup
     INCOMING_CALL = null;
     ADDED_ICE_IDS = new Set();
 
@@ -1751,7 +1757,6 @@ function getCurrentCallName() {
     return (
         CURRENT_WITH_USER?.fullname ||
         CURRENT_WITH_USER?.name ||
-        CURRENT_FREELANCER?.fullname ||
         "Calling..."
     );
 }
@@ -1759,6 +1764,7 @@ function getCurrentCallName() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 function startCallTimer() {
     if (CALL_TIMER_INTERVAL) return;
 
@@ -1785,6 +1791,7 @@ function stopCallTimer() {
     const timer = document.getElementById("callTimer");
     if (timer) timer.textContent = "00:00";
 }
+
 function resetCallPlaceholders() {
     const remoteName = document.getElementById("remoteCallName");
     const remoteText = document.getElementById("remoteCallText");
@@ -1800,19 +1807,23 @@ function resetCallPlaceholders() {
     document.getElementById("remoteVideoStage")?.classList.remove("has-video");
     document.getElementById("localVideoCard")?.classList.remove("has-video");
 }
+
 /* =========================
    FULL CLEANUP
 ========================= */
 
 function cleanupCallCompletely(message = "Call ended") {
 
-    console.log("cleanupCallCompletely:", message);
-
     updateCallStatus(message);
 
     hideIncomingCallModal();
 
-    // stop rtc
+    if (WEBRTC_TIMER) clearInterval(WEBRTC_TIMER);
+    WEBRTC_TIMER = null;
+
+    if (ACTIVE_CALL_WATCH_TIMER) clearInterval(ACTIVE_CALL_WATCH_TIMER);
+    ACTIVE_CALL_WATCH_TIMER = null;
+
     if (PEER_CONNECTION) {
         try {
             PEER_CONNECTION.close();
@@ -1821,7 +1832,6 @@ function cleanupCallCompletely(message = "Call ended") {
         PEER_CONNECTION = null;
     }
 
-    // stop local media
     if (LOCAL_STREAM) {
         LOCAL_STREAM.getTracks().forEach(track => {
             try {
@@ -1832,25 +1842,26 @@ function cleanupCallCompletely(message = "Call ended") {
         LOCAL_STREAM = null;
     }
 
-    // clear remote video
     const remoteVideo = document.getElementById("remoteVideo");
-
     if (remoteVideo) {
         remoteVideo.srcObject = null;
     }
 
-    // clear local video
     const localVideo = document.getElementById("localVideo");
-
     if (localVideo) {
         localVideo.srcObject = null;
     }
 
+    document.getElementById("remoteVideoStage")?.classList.remove("has-video");
+    document.getElementById("localVideoCard")?.classList.remove("has-video");
+
     ACTIVE_CALL_ID = null;
     ACTIVE_CALL_ROLE = null;
+    CALL_IS_LIVE = false;             // FIX: reset live flag
     INCOMING_CALL = null;
-
     ADDED_ICE_IDS = new Set();
+
+    stopCallTimer();
 
     setTimeout(() => {
         closeVideoCallModal?.();
@@ -1891,11 +1902,9 @@ function bindImageUpload() {
 
         showImagePreview(validUrls);
 
-        // enable send btn whenever images are staged
         const sendBtn = document.querySelector(".send-btn");
         if (sendBtn) sendBtn.disabled = false;
 
-        // reset file input so same file can be re-picked
         fileInput.value = "";
     });
 }
@@ -1956,10 +1965,8 @@ async function sendImageMessage() {
 
     const previewUrls = [...SELECTED_IMAGE_URLS];
 
-    // Clear tray immediately
     cancelImagePreview();
 
-    // Optimistic bubble
     appendMessage({
         messageId : "temp_" + Date.now(),
         senderUid : CURRENT_USER?.uid,
@@ -2070,8 +2077,7 @@ function initLightbox() {
 }
 
 function openLightboxFromImg(imgEl) {
-    const chatBody =
-        document.querySelector(".chat-body");
+    const chatBody = document.querySelector(".chat-body");
 
     let images = [imgEl.src];
     let idx    = 0;
@@ -2124,4 +2130,254 @@ function lightboxMove(dir) {
 function closeLightbox() {
     document.getElementById("imageLightbox")?.classList.remove("active");
     document.body.style.overflow = "";
+}
+
+/* =========================
+   MESSAGE CONTEXT MENU
+========================= */
+let MSG_CTX_OPEN = false;
+
+function handleBubbleClick(event, bubbleEl) {
+    event.preventDefault();
+    event.stopPropagation();
+    showMsgMenu(event, bubbleEl);
+}
+
+function showMsgMenu(event, bubbleEl) {
+    closeMsgMenu();
+
+    const msgId   = bubbleEl.dataset.msgId   || "";
+    const msgType = bubbleEl.dataset.msgType  || "text";
+    const msgText = bubbleEl.dataset.msgText  || "";
+    const isMine  = bubbleEl.dataset.msgMine  === "true";
+    const isImg   = ["image", "images", "mixed"].includes(msgType);
+
+    let rawImgs = [];
+    try { rawImgs = JSON.parse(bubbleEl.dataset.msgImgs || "[]"); } catch (e) {}
+
+    if (!msgId) return;
+
+    const menu = document.createElement("div");
+    menu.id = "msgCtxMenu";
+    menu.className = "msg-ctx-menu";
+
+    const items = [];
+
+    if (isMine && !isImg) {
+        items.push(
+            `<button class="msg-ctx-item" onclick="startEditMsg('${msgId}'); closeMsgMenu();">` +
+            `<i class="fa-solid fa-pen msg-ctx-icon"></i> Edit</button>`
+        );
+    }
+
+    if (isImg && rawImgs.length) {
+        const encoded = encodeURIComponent(JSON.stringify(rawImgs));
+        items.push(
+            `<button class="msg-ctx-item" onclick="downloadMsgImages(JSON.parse(decodeURIComponent('${encoded}'))); closeMsgMenu();">` +
+            `<i class="fa-solid fa-download msg-ctx-icon"></i> Download</button>`
+        );
+    }
+
+    if (isMine) {
+        items.push(
+            `<button class="msg-ctx-item danger" onclick="confirmDeleteMsg('${msgId}'); closeMsgMenu();">` +
+            `<i class="fa-solid fa-trash msg-ctx-icon"></i> Delete</button>`
+        );
+    }
+
+    if (!items.length) return;
+
+    menu.innerHTML = items.join("");
+    document.body.appendChild(menu);
+
+    requestAnimationFrame(function () {
+        const mw = menu.offsetWidth;
+        const mh = menu.offsetHeight;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const cx = event.clientX;
+        const cy = event.clientY;
+
+        let x = cx + 4;
+        let y = cy + 4;
+
+        if (x + mw > vw - 8) x = cx - mw - 4;
+        if (y + mh > vh - 8) y = cy - mh - 4;
+
+        menu.style.left = x + "px";
+        menu.style.top  = y + "px";
+        menu.classList.add("visible");
+        MSG_CTX_OPEN = true;
+    });
+}
+
+function closeMsgMenu() {
+    const m = document.getElementById("msgCtxMenu");
+    if (m) m.remove();
+    MSG_CTX_OPEN = false;
+}
+
+document.addEventListener("click", function (e) {
+    if (MSG_CTX_OPEN && !e.target.closest("#msgCtxMenu")) {
+        closeMsgMenu();
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && MSG_CTX_OPEN) closeMsgMenu();
+});
+
+/* =========================
+   DELETE MESSAGE
+========================= */
+async function confirmDeleteMsg(msgId) {
+    if (!CURRENT_CONVERSATION_ID) return;
+    if (!confirm("Delete this message? This cannot be undone.")) return;
+
+    try {
+        const response = await fetch(
+            `${API_URL}/api/messages/delete/${encodeURIComponent(msgId)}?conversationId=${encodeURIComponent(CURRENT_CONVERSATION_ID)}`,
+            {
+                method: "DELETE",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" }
+            }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+            alert(data.message || "Could not delete message.");
+            return;
+        }
+
+        await loadMessages(CURRENT_CONVERSATION_ID, false);
+
+    } catch (error) {
+        console.error("confirmDeleteMsg error:", error);
+        alert("Network error. Message not deleted.");
+    }
+}
+
+/* =========================
+   EDIT MESSAGE
+========================= */
+function startEditMsg(msgId) {
+    const bubbleEl = document.querySelector(`[data-msg-id="${msgId}"]`);
+    if (!bubbleEl) return;
+
+    const currentText = bubbleEl.dataset.msgText || "";
+    const textEl = bubbleEl.querySelector("p");
+    if (!textEl) return;
+
+    const escaped = currentText.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+
+    textEl.outerHTML = `
+        <div class="msg-edit-wrap" id="msgEditWrap_${msgId}">
+            <textarea class="msg-edit-input" id="msgEditInput_${msgId}">${escaped}</textarea>
+            <div class="msg-edit-actions">
+                <button class="msg-edit-btn save" onclick="saveEditMsg('${msgId}')">Save</button>
+                <button class="msg-edit-btn cancel" onclick="cancelEditMsg('${msgId}', '${encodeURIComponent(currentText)}')">Cancel</button>
+            </div>
+        </div>
+    `;
+
+    const input = document.getElementById(`msgEditInput_${msgId}`);
+    if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                saveEditMsg(msgId);
+            }
+            if (e.key === "Escape") {
+                cancelEditMsg(msgId, encodeURIComponent(currentText));
+            }
+        });
+    }
+}
+
+async function saveEditMsg(msgId) {
+    if (!CURRENT_CONVERSATION_ID) return;
+
+    const input = document.getElementById(`msgEditInput_${msgId}`);
+    if (!input) return;
+
+    const newText = input.value.trim();
+    if (!newText) { alert("Message cannot be empty."); return; }
+
+    const saveBtn = input.closest(".msg-edit-wrap")?.querySelector(".save");
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving\u2026"; }
+
+    try {
+        const response = await fetch(
+            `${API_URL}/api/messages/edit/${encodeURIComponent(msgId)}`,
+            {
+                method: "PATCH",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: newText,
+                    conversationId: CURRENT_CONVERSATION_ID
+                })
+            }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+            alert(data.message || "Could not edit message.");
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save"; }
+            return;
+        }
+
+        await loadMessages(CURRENT_CONVERSATION_ID, false);
+
+    } catch (error) {
+        console.error("saveEditMsg error:", error);
+        alert("Network error. Message not edited.");
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save"; }
+    }
+}
+
+function cancelEditMsg(msgId, encodedText) {
+    const wrap = document.getElementById(`msgEditWrap_${msgId}`);
+    if (!wrap) return;
+
+    const text = decodeURIComponent(encodedText);
+    const p = document.createElement("p");
+    p.textContent = text;
+    wrap.replaceWith(p);
+}
+
+/* =========================
+   DOWNLOAD IMAGES
+========================= */
+async function downloadMsgImages(urls) {
+    if (!Array.isArray(urls) || !urls.length) return;
+
+    for (let i = 0; i < urls.length; i++) {
+        try {
+            const res  = await fetch(urls[i]);
+            const blob = await res.blob();
+            const ext  = blob.type.split("/")[1] || "jpg";
+            const blobUrl = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href     = blobUrl;
+            a.download = `image_${Date.now()}_${i + 1}.${ext}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+
+            if (i < urls.length - 1) {
+                await new Promise(r => setTimeout(r, 400));
+            }
+        } catch (error) {
+            console.error("downloadMsgImages error for url", urls[i], error);
+        }
+    }
 }

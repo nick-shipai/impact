@@ -275,7 +275,6 @@ async function sendMessage() {
 
     if (!input || !CURRENT_RECEIVER_UID) return;
 
-    // CASE 1: IMAGE MESSAGE
     if (SELECTED_IMAGE_FILES.length > 0) {
         await sendImageMessage();
         return;
@@ -352,10 +351,8 @@ async function sendImageMessage() {
     const tempId = "temp_" + Date.now();
     const previewUrls = [...SELECTED_IMAGE_URLS];
 
-    // Clear preview tray immediately
     cancelImagePreview();
 
-    // Optimistic bubble
     appendMessageBubble({
         messageId: tempId,
         senderUid: CURRENT_USER.uid,
@@ -366,7 +363,6 @@ async function sendImageMessage() {
         sending: true
     });
 
-    // Tiny progress strip
     showUploadProgress();
 
     try {
@@ -412,7 +408,7 @@ function showUploadProgress() {
             <div class="upload-progress-track">
                 <div class="upload-progress-fill"></div>
             </div>
-            <span class="upload-progress-label">Uploading…</span>
+            <span class="upload-progress-label">Uploading\u2026</span>
         `;
         composer.insertAdjacentElement("beforebegin", strip);
     }
@@ -426,6 +422,7 @@ function hideUploadProgress() {
         setTimeout(() => { if (strip.parentNode) strip.remove(); }, 350);
     }
 }
+
 function appendMessageBubble(msg) {
     const chatBody = document.getElementById("chatBody");
     if (!chatBody) return;
@@ -442,6 +439,7 @@ function appendMessageBubble(msg) {
     list.insertAdjacentHTML("beforeend", renderMessageBubble(msg));
     chatBody.scrollTop = chatBody.scrollHeight;
 }
+
 /* =========================
    LOAD CONVERSATIONS
 ========================= */
@@ -632,25 +630,14 @@ function renderMessages(messages, scrollToBottom = true) {
 }
 
 function renderMessageBubble(msg) {
-    const isMine =
-        msg.senderUid === CURRENT_USER?.uid;
-
+    const isMine = msg.senderUid === CURRENT_USER?.uid;
     const isRead = !!msg.read;
 
     let content = "";
 
-    /* =========================
-       MULTIPLE IMAGES
-    ========================= */
+    if (msg.type === "images" || msg.type === "mixed") {
 
-    if (
-        msg.type === "images" ||
-        msg.type === "mixed"
-    ) {
-
-        const images = Array.isArray(msg.images)
-            ? msg.images
-            : [];
+        const images = Array.isArray(msg.images) ? msg.images : [];
 
         const gridClass = images.length === 1 ? "count-1"
             : images.length === 2 ? "count-2"
@@ -672,25 +659,12 @@ function renderMessageBubble(msg) {
         `;
 
         if (msg.message) {
-            content += `
-                <p>
-                    ${escapeHTML(msg.message)}
-                </p>
-            `;
+            content += `<p>${escapeHTML(msg.message)}</p>`;
         }
-    }
 
-    /* =========================
-       SINGLE IMAGE
-    ========================= */
+    } else if (msg.type === "image") {
 
-    else if (msg.type === "image") {
-
-        const image =
-            msg.imageUrl ||
-            (Array.isArray(msg.images)
-                ? msg.images[0]
-                : "");
+        const image = msg.imageUrl || (Array.isArray(msg.images) ? msg.images[0] : "");
 
         content = `
             <img
@@ -702,25 +676,11 @@ function renderMessageBubble(msg) {
         `;
 
         if (msg.message) {
-            content += `
-                <p>
-                    ${escapeHTML(msg.message)}
-                </p>
-            `;
+            content += `<p>${escapeHTML(msg.message)}</p>`;
         }
-    }
 
-    /* =========================
-       TEXT
-    ========================= */
-
-    else {
-
-        content = `
-            <p>
-                ${escapeHTML(msg.message || "")}
-            </p>
-        `;
+    } else {
+        content = `<p>${escapeHTML(msg.message || "")}</p>`;
     }
 
     return `
@@ -732,26 +692,13 @@ function renderMessageBubble(msg) {
                 data-msg-mine="${isMine}"
                 data-msg-text="${escapeHTML(msg.message || "")}"
                 data-msg-imgs="${escapeHTML(JSON.stringify(Array.isArray(msg.images) ? msg.images : (msg.imageUrl ? [msg.imageUrl] : [])))}"
-                ${isMine ? 'oncontextmenu="handleBubbleClick(event, this)"' : ""}>
+                oncontextmenu="handleBubbleClick(event, this)">
 
                 ${content}
 
                 <div class="message-meta">
-
-                    <span>
-                        ${formatMessageTime(msg.createdAt)}
-                    </span>
-
-                    ${isMine
-            ? `
-                            <span class="
-                                css-checks
-                                ${isRead ? "seen" : ""}
-                            "></span>
-                        `
-            : ""
-        }
-
+                    <span>${formatMessageTime(msg.createdAt)}</span>
+                    ${isMine ? `<span class="css-checks ${isRead ? "seen" : ""}"></span>` : ""}
                 </div>
 
             </div>
@@ -884,6 +831,7 @@ function enableComposer(enabled) {
     buttons.forEach((btn) => {
         btn.disabled = !enabled;
     });
+
     const videoBtn = document.getElementById("videoCallBtn");
     if (videoBtn) videoBtn.disabled = !enabled;
 }
@@ -904,16 +852,16 @@ function showImagePreview(urls) {
                         class="cancel-preview"
                         onclick="removePreviewImage(${index})"
                         title="Remove"
-                    >✕</button>
+                    >\u2715</button>
                 </div>
             `).join("")}
             ${count > 1 ? `<span class="image-preview-count">${label} selected</span>` : ""}
         </div>
     `;
 }
+
 function removePreviewImage(index) {
     SELECTED_IMAGE_FILES.splice(index, 1);
-
     SELECTED_IMAGE_URLS.splice(index, 1);
 
     if (!SELECTED_IMAGE_URLS.length) {
@@ -927,19 +875,15 @@ function removePreviewImage(index) {
 function cancelImagePreview() {
     SELECTED_IMAGE_FILES = [];
     SELECTED_IMAGE_URLS = [];
-
     removeImagePreview();
 }
 
 function removeImagePreview() {
     const container = document.getElementById("imagePreviewContainer");
-
     if (container) {
         container.innerHTML = "";
     }
 }
-
-
 
 /* =========================
    EVENTS
@@ -975,13 +919,6 @@ function bindChatEvents() {
 
             btn.disabled = input.value.trim().length < 1;
         });
-
-        input.addEventListener("input", function () {
-            const btn = document.getElementById("sendMessageBtn");
-            if (!btn || input.disabled) return;
-
-            btn.disabled = input.value.trim().length < 1;
-        });
     }
 }
 
@@ -1002,7 +939,6 @@ function bindImageUpload() {
         if (!files.length) return;
 
         const validFiles = [];
-
         const validUrls = [];
 
         for (const file of files) {
@@ -1011,7 +947,6 @@ function bindImageUpload() {
             }
 
             validFiles.push(file);
-
             validUrls.push(URL.createObjectURL(file));
         }
 
@@ -1063,6 +998,7 @@ function escapeHTML(value) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
 function startChatRealtime(conversationId) {
     if (CHAT_TIMER) clearInterval(CHAT_TIMER);
 
@@ -1072,6 +1008,7 @@ function startChatRealtime(conversationId) {
         }
     }, 700);
 }
+
 async function sendTypingStatus(isTyping) {
     if (!CURRENT_RECEIVER_UID) return;
     if (LAST_TYPING_STATE === isTyping) return;
@@ -1172,6 +1109,7 @@ function showTypingBubble() {
 function removeTypingBubble() {
     document.querySelectorAll(".typing-row").forEach(el => el.remove());
 }
+
 function openMobileChatPanel() {
     if (window.innerWidth <= 700) {
         document.body.classList.add("mobile-chat-open");
@@ -1181,6 +1119,7 @@ function openMobileChatPanel() {
 function closeMobileChatPanel() {
     document.body.classList.remove("mobile-chat-open");
 }
+
 /* =========================
    FULL WEBRTC VIDEO CALL
    Client <-> Freelancer
@@ -1189,6 +1128,7 @@ function closeMobileChatPanel() {
 let CALLS_TIMER = null;
 let ACTIVE_CALL_ID = null;
 let ACTIVE_CALL_ROLE = null;
+let CALL_IS_LIVE = false;          // FIX: tracks whether call actually connected
 let LOCAL_STREAM = null;
 let PEER_CONNECTION = null;
 let INCOMING_CALL = null;
@@ -1266,6 +1206,7 @@ async function requestVideoCall() {
 
         ACTIVE_CALL_ID = data.callId;
         ACTIVE_CALL_ROLE = "caller";
+        CALL_IS_LIVE = false;
         ADDED_ICE_IDS = new Set();
 
         updateCallStatus("Creating WebRTC offer...");
@@ -1281,15 +1222,28 @@ async function requestVideoCall() {
     } catch (error) {
         console.error("requestVideoCall error:", error);
         updateCallStatus(error.message || "Network error.");
+
+        // If call was created server-side but crashed locally, mark it ended
+        if (ACTIVE_CALL_ID) {
+            try {
+                await fetch(`${API_URL}/api/video-call/end`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ callId: ACTIVE_CALL_ID })
+                });
+            } catch (e) {
+                console.error("endVideoCall (error cleanup) failed:", e);
+            }
+        }
     }
 }
 
 /* =========================
-   INCOMING CALL
+   INCOMING CALL WATCHER
 ========================= */
 
 function startIncomingCallWatcher() {
-
     if (CALLS_TIMER) {
         clearInterval(CALLS_TIMER);
     }
@@ -1318,39 +1272,43 @@ async function loadIncomingCalls() {
 
         const data = await res.json().catch(() => ({}));
 
-        // failed request
         if (!res.ok || !data.success) {
-
             hideIncomingCallModal();
-
             INCOMING_CALL = null;
-
             return;
         }
 
-        const calls = Array.isArray(data.calls)
-            ? data.calls
-            : [];
+        const calls = Array.isArray(data.calls) ? data.calls : [];
 
+        // FIX: If we have a cached INCOMING_CALL, check its current status in the
+        // fresh calls list. If it is gone or no longer "ringing", dismiss immediately.
+        if (INCOMING_CALL) {
+            const cached = calls.find(c => c.callId === INCOMING_CALL.callId);
+            const deadStatuses = ["ended", "rejected", "missed", "cancelled", "expired"];
+
+            if (!cached || deadStatuses.includes(cached.status) || cached.status !== "ringing") {
+                hideIncomingCallModal();
+                INCOMING_CALL = null;
+            }
+        }
+
+        // FIX: Only surface calls that are BOTH incoming AND still "ringing".
+        // The original code used direction === "incoming" || receiverUid === currentUser
+        // WITHOUT checking status, which caused ended/missed calls to keep showing.
         const incoming = calls.find(call =>
-            call.direction === "incoming" ||
-            call.receiverUid === CURRENT_USER?.uid
+            (call.direction === "incoming" || call.receiverUid === CURRENT_USER?.uid) &&
+            call.status === "ringing"
         );
 
-        const isActive = incoming &&
-            !["ended", "rejected", "missed", "cancelled", "expired"].includes(incoming.status);
-
-        if (!isActive) {
+        // Nothing actively ringing
+        if (!incoming) {
             hideIncomingCallModal();
             INCOMING_CALL = null;
             return;
         }
 
-        // already showing same modal
-        if (
-            INCOMING_CALL &&
-            INCOMING_CALL.callId === incoming.callId
-        ) {
+        // Already displaying this exact call
+        if (INCOMING_CALL && INCOMING_CALL.callId === incoming.callId) {
             return;
         }
 
@@ -1363,7 +1321,6 @@ async function loadIncomingCalls() {
         console.error("loadIncomingCalls error:", error);
 
         hideIncomingCallModal();
-
         INCOMING_CALL = null;
     }
 }
@@ -1392,46 +1349,28 @@ async function validateActiveCall() {
             return;
         }
 
-        const calls = Array.isArray(data.calls)
-            ? data.calls
-            : [];
+        const calls = Array.isArray(data.calls) ? data.calls : [];
 
         const activeCall = calls.find(
             call => call.callId === ACTIVE_CALL_ID
         );
 
-        // call disappeared
+        // call disappeared — clean up
         if (!activeCall) {
-
             cleanupCallCompletely("Call ended");
-
             return;
         }
 
-        // call closed
+        // call reached a terminal state
         if (
-            [
-                "ended",
-                "rejected",
-                "missed",
-                "cancelled",
-                "expired"
-            ].includes(activeCall.status)
+            ["ended", "rejected", "missed", "cancelled", "expired"].includes(activeCall.status)
         ) {
-
-            cleanupCallCompletely(
-                `Call ${activeCall.status}`
-            );
-
+            cleanupCallCompletely(`Call ${activeCall.status}`);
             return;
         }
 
     } catch (error) {
-
-        console.error(
-            "validateActiveCall error:",
-            error
-        );
+        console.error("validateActiveCall error:", error);
     }
 }
 
@@ -1441,65 +1380,58 @@ async function validateActiveCall() {
 
 function cleanupCallCompletely(message = "Call ended") {
 
-    console.log(
-        "cleanupCallCompletely:",
-        message
-    );
-
     updateCallStatus(message);
 
     hideIncomingCallModal();
 
-    // close rtc
-    if (PEER_CONNECTION) {
+    if (WEBRTC_TIMER) clearInterval(WEBRTC_TIMER);
+    WEBRTC_TIMER = null;
 
+    if (ACTIVE_CALL_WATCH_TIMER) clearInterval(ACTIVE_CALL_WATCH_TIMER);
+    ACTIVE_CALL_WATCH_TIMER = null;
+
+    if (PEER_CONNECTION) {
         try {
             PEER_CONNECTION.close();
-        } catch (e) { }
-
+        } catch (e) {}
         PEER_CONNECTION = null;
     }
 
-    // stop local stream
     if (LOCAL_STREAM) {
-
         LOCAL_STREAM.getTracks().forEach(track => {
-
-            try {
-                track.stop();
-            } catch (e) { }
-
+            try { track.stop(); } catch (e) {}
         });
-
         LOCAL_STREAM = null;
     }
 
-    // clear remote video
-    const remoteVideo =
-        document.getElementById("remoteVideo");
-
+    const remoteVideo = document.getElementById("remoteVideo");
     if (remoteVideo) {
         remoteVideo.srcObject = null;
     }
 
-    // clear local video
-    const localVideo =
-        document.getElementById("localVideo");
-
+    const localVideo = document.getElementById("localVideo");
     if (localVideo) {
         localVideo.srcObject = null;
     }
 
+    const placeholder = document.getElementById("remoteVideoPlaceholder");
+    if (placeholder) placeholder.style.display = "";
+
     ACTIVE_CALL_ID = null;
     ACTIVE_CALL_ROLE = null;
+    CALL_IS_LIVE = false;              // FIX: reset live flag
     INCOMING_CALL = null;
-
     ADDED_ICE_IDS = new Set();
 
+    clearInterval(CALL_TIMER_INTERVAL);
+    CALL_TIMER_INTERVAL = null;
+    CALL_SECONDS = 0;
+
+    const timer = document.getElementById("callTimer");
+    if (timer) timer.textContent = "00:00";
+
     setTimeout(() => {
-
         closeVideoCallModal?.();
-
     }, 800);
 }
 
@@ -1576,9 +1508,7 @@ function showIncomingCallModal(call) {
 
     if (avatarEl) {
         const initials = getInitials(callerName);
-        avatarEl.innerHTML = `
-            <span>${initials}</span>
-        `;
+        avatarEl.innerHTML = `<span>${initials}</span>`;
     }
 
     overlay?.classList.add("active");
@@ -1602,6 +1532,7 @@ async function answerIncomingCall() {
 
     ACTIVE_CALL_ID = callId;
     ACTIVE_CALL_ROLE = "receiver";
+    CALL_IS_LIVE = false;
     ADDED_ICE_IDS = new Set();
 
     hideIncomingCallModal();
@@ -1614,58 +1545,34 @@ async function answerIncomingCall() {
     const cameraReady = await startLocalCamera();
 
     if (!cameraReady) {
-
-        updateCallStatus(
-            "Camera permission denied or unavailable."
-        );
-
+        updateCallStatus("Camera permission denied or unavailable.");
         startIncomingCallWatcher();
-
         return;
     }
 
     try {
 
-        const acceptRes = await fetch(
-            `${API_URL}/api/video-call/accept`,
-            {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    callId
-                })
-            }
-        );
+        const acceptRes = await fetch(`${API_URL}/api/video-call/accept`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ callId })
+        });
 
-        const acceptData =
-            await acceptRes.json().catch(() => ({}));
+        const acceptData = await acceptRes.json().catch(() => ({}));
 
         if (!acceptRes.ok || !acceptData.success) {
-
-            console.error(
-                "accept failed:",
-                acceptData
-            );
-
-            cleanupCallCompletely(
-                acceptData.message ||
-                "Could not answer call"
-            );
-
+            console.error("accept failed:", acceptData);
+            cleanupCallCompletely(acceptData.message || "Could not answer call");
             startIncomingCallWatcher();
-
             return;
         }
 
-        updateCallStatus(
-            "Connecting WebRTC..."
-        );
+        updateCallStatus("Connecting WebRTC...");
 
         await createPeerConnection();
-
         await createAndSendAnswer();
 
         updateCallStatus("Connected");
@@ -1673,20 +1580,11 @@ async function answerIncomingCall() {
         INCOMING_CALL = null;
 
         watchActiveCall();
-
         startWebRTCWatcher();
 
     } catch (error) {
-
-        console.error(
-            "answerIncomingCall error:",
-            error
-        );
-
-        cleanupCallCompletely(
-            error.message || "Network error."
-        );
-
+        console.error("answerIncomingCall error:", error);
+        cleanupCallCompletely(error.message || "Network error.");
         startIncomingCallWatcher();
     }
 }
@@ -1732,20 +1630,18 @@ async function createPeerConnection() {
         if (remoteVideo && event.streams?.[0]) {
 
             remoteVideo.srcObject = event.streams[0];
-
             remoteVideo.autoplay = true;
             remoteVideo.playsInline = true;
 
-            await remoteVideo.play().catch(() => { });
+            await remoteVideo.play().catch(() => {});
 
             if (placeholder) {
                 placeholder.style.display = "none";
             }
-
         }
 
+        CALL_IS_LIVE = true;            // FIX: mark call as live when remote track arrives
         updateCallStatus("Connected");
-
     };
 
     PEER_CONNECTION.onicecandidate = async function (event) {
@@ -1758,6 +1654,7 @@ async function createPeerConnection() {
         const state = PEER_CONNECTION.connectionState;
 
         if (state === "connected") {
+            CALL_IS_LIVE = true;        // FIX: mark live on confirmed connection
             updateCallStatus("Connected");
             startCallTimer();
         }
@@ -1881,9 +1778,7 @@ async function sendIceCandidate(candidate) {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                candidate
-            })
+            body: JSON.stringify({ candidate })
         });
 
     } catch (error) {
@@ -2043,19 +1938,14 @@ async function startLocalCamera() {
         const localVideo = document.getElementById("localVideo");
 
         if (localVideo) {
-
             localVideo.srcObject = LOCAL_STREAM;
-
             localVideo.muted = true;
             localVideo.autoplay = true;
             localVideo.playsInline = true;
-
-            await localVideo.play().catch(() => { });
-
+            await localVideo.play().catch(() => {});
         }
 
         const localOff = document.getElementById("localVideoOff");
-
         if (localOff) {
             localOff.style.display = "none";
         }
@@ -2081,7 +1971,6 @@ function stopLocalCamera() {
     LOCAL_STREAM = null;
 
     const localVideo = document.getElementById("localVideo");
-
     if (localVideo) {
         localVideo.srcObject = null;
     }
@@ -2114,7 +2003,6 @@ function toggleMic() {
 }
 
 function toggleCamera() {
-
     const track = LOCAL_STREAM?.getVideoTracks?.()[0];
     const btn = document.getElementById("toggleCamBtn");
     const offUI = document.getElementById("localVideoOff");
@@ -2130,71 +2018,68 @@ function toggleCamera() {
     }
 
     if (btn) {
-
         btn.innerHTML = track.enabled
-            ? `
-                <span class="icon video-icon"></span>
-                <small>Camera</small>
-            `
-            : `
-                <span class="icon video-off-icon"></span>
-                <small>Camera Off</small>
-            `;
+            ? `<span class="icon video-icon"></span><small>Camera</small>`
+            : `<span class="icon video-off-icon"></span><small>Camera Off</small>`;
     }
 }
 
 /* =========================
-   END / CLEANUP
+   END / CANCEL / CLEANUP
 ========================= */
 
-function endVideoCall() {
-    console.log("clicked")
+async function endVideoCall() {
+    if (!ACTIVE_CALL_ID) return;
+
+    const callIdToEnd = ACTIVE_CALL_ID;
+
+    // Reset state immediately so UI is unblocked
+    ACTIVE_CALL_ID = null;
+    ACTIVE_CALL_ROLE = null;
+    CALL_IS_LIVE = false;
+    INCOMING_CALL = null;
+    ADDED_ICE_IDS = new Set();
+
+    if (WEBRTC_TIMER) clearInterval(WEBRTC_TIMER);
+    WEBRTC_TIMER = null;
+
+    if (ACTIVE_CALL_WATCH_TIMER) clearInterval(ACTIVE_CALL_WATCH_TIMER);
+    ACTIVE_CALL_WATCH_TIMER = null;
+
+    if (LOCAL_STREAM) {
+        LOCAL_STREAM.getTracks().forEach(track => track.stop());
+        LOCAL_STREAM = null;
+    }
+
+    if (PEER_CONNECTION) {
+        PEER_CONNECTION.close();
+        PEER_CONNECTION = null;
+    }
+
+    clearInterval(CALL_TIMER_INTERVAL);
+    CALL_TIMER_INTERVAL = null;
+    CALL_SECONDS = 0;
+
+    const timer = document.getElementById("callTimer");
+    if (timer) timer.textContent = "00:00";
+
+    updateCallStatus("Call ended");
+    closeVideoCallModal();
+
+    // Always mark as ended regardless of whether the call was live or still ringing.
+    // The server /api/video-call/end updates status to "ended" for any non-closed call,
+    // which causes the receiver's incoming-call poller to dismiss the modal automatically.
     try {
-        const callId = ACTIVE_CALL_ID; // SAVE FIRST
-
-        // Stop local media stream
-        if (LOCAL_STREAM) {
-            LOCAL_STREAM.getTracks().forEach(track => track.stop());
-            LOCAL_STREAM = null;
-        }
-
-        // Close peer connection
-        if (PEER_CONNECTION) {
-            PEER_CONNECTION.close();
-            PEER_CONNECTION = null;
-        }
-
-        // Clear timers
-        if (WEBRTC_TIMER) clearInterval(WEBRTC_TIMER);
-        if (ACTIVE_CALL_WATCH_TIMER) clearInterval(ACTIVE_CALL_WATCH_TIMER);
-
-        // Reset state AFTER saving callId
-        ACTIVE_CALL_ID = null;
-        ACTIVE_CALL_ROLE = null;
-        INCOMING_CALL = null;
-        ADDED_ICE_IDS = new Set();
-
-        // UI update
-        updateCallStatus("Call ended");
-        closeVideoCallModal();
-
-        // Notify backend
-        fetch(`${API_URL}/api/video-call/end`, {
+        await fetch(`${API_URL}/api/video-call/end`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ callId })
-        }).catch(err =>
-            console.error("endVideoCall notify error:", err)
-        );
-
+            body: JSON.stringify({ callId: callIdToEnd })
+        });
     } catch (error) {
         console.error("endVideoCall error:", error);
     }
 }
-
-
-
 
 /* =========================
    MODAL UI
@@ -2231,13 +2116,9 @@ function openVideoCallModal({ title = "Video call", status = "Connecting...", pr
                                 Secure Call
                             </span>
 
-                            <h3 id="callModalTitle">
-                                
-                            </h3>
+                            <h3 id="callModalTitle"></h3>
 
-                            <p id="callModalStatus">
-                                Connecting...
-                            </p>
+                            <p id="callModalStatus">Connecting...</p>
 
                         </div>
 
@@ -2276,9 +2157,7 @@ function openVideoCallModal({ title = "Video call", status = "Connecting...", pr
                                 <img id="remoteCallAvatarImg" src="" alt="avatar" />
                             </div>
 
-                            <h2 id="remoteCallName">
-                                Freelancer
-                            </h2>
+                            <h2 id="remoteCallName">Freelancer</h2>
 
                             <p id="remoteCallText">
                                 Waiting for the other person to join the call...
@@ -2291,9 +2170,7 @@ function openVideoCallModal({ title = "Video call", status = "Connecting...", pr
 
                             <span class="quality-dot"></span>
 
-                            <span id="callTimer">
-                                00:00
-                            </span>
+                            <span id="callTimer">00:00</span>
 
                         </div>
 
@@ -2308,29 +2185,20 @@ function openVideoCallModal({ title = "Video call", status = "Connecting...", pr
                             <video id="localVideo" autoplay muted playsinline></video>
 
                             <div class="local-video-off" id="localVideoOff">
-
                                 <span class="call-svg-icon camera-off-icon"></span>
-
                                 <p>Camera Off</p>
-
                             </div>
 
-                            <span class="mini-label">
-                                You
-                            </span>
+                            <span class="mini-label">You</span>
 
                         </div>
 
                         <!-- INFO CARD -->
                         <div class="call-info-card">
 
-                            <span class="call-info-kicker">
-                                Call Status
-                            </span>
+                            <span class="call-info-kicker">Call Status</span>
 
-                            <h4>
-                                HD Video Active
-                            </h4>
+                            <h4>HD Video Active</h4>
 
                             <p>
                                 Your call is encrypted and secured.
@@ -2346,40 +2214,24 @@ function openVideoCallModal({ title = "Video call", status = "Connecting...", pr
                 <!-- CONTROLS -->
                 <footer class="call-control-dock">
 
-                    <!-- MIC -->
                     <button type="button" class="call-control-btn" id="toggleMicBtn">
-
                         <span class="call-svg-icon mic-icon"></span>
-
                         <small>Mic</small>
-
                     </button>
 
-                    <!-- CAMERA -->
                     <button type="button" class="call-control-btn" id="toggleCamBtn">
-
                         <span class="call-svg-icon chat-video-icon"></span>
-
                         <small>Camera</small>
-
                     </button>
 
-                    <!-- SPEAKER -->
                     <button type="button" class="call-control-btn" id="toggleSpeakerBtn">
-
                         <span class="call-svg-icon speaker-icon"></span>
-
                         <small>Audio</small>
-
                     </button>
 
-                    <!-- END -->
                     <button type="button" class="call-control-btn end-call-btn" id="endCallBtn">
-
                         <span class="call-svg-icon phone-down-icon"></span>
-
                         <small>End</small>
-
                     </button>
 
                 </footer>
@@ -2429,19 +2281,11 @@ function closeVideoCallModal() {
 }
 
 function updateCallStatus(text) {
-
     const el = document.getElementById("callModalStatus");
-
-    if (!el) return;
-
-    el.textContent = text || "";
+    if (el) el.textContent = text || "";
 
     const remoteText = document.getElementById("remoteCallText");
-
-    if (remoteText) {
-        remoteText.textContent = text || "";
-    }
-
+    if (remoteText) remoteText.textContent = text || "";
 }
 
 /* =========================
@@ -2460,27 +2304,25 @@ function getCurrentCallName() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-function startCallTimer() {
 
+function startCallTimer() {
     clearInterval(CALL_TIMER_INTERVAL);
 
     CALL_SECONDS = 0;
 
     CALL_TIMER_INTERVAL = setInterval(() => {
-
         CALL_SECONDS++;
 
         const mins = String(Math.floor(CALL_SECONDS / 60)).padStart(2, "0");
         const secs = String(CALL_SECONDS % 60).padStart(2, "0");
 
         const timer = document.getElementById("callTimer");
-
         if (timer) {
             timer.textContent = `${mins}:${secs}`;
         }
-
     }, 1000);
 }
+
 /* =========================
    SWITCH CAMERA (front/back)
 ========================= */
@@ -2510,7 +2352,7 @@ async function switchCamera() {
         const localVideo = document.getElementById("localVideo");
         if (localVideo) {
             localVideo.srcObject = LOCAL_STREAM;
-            await localVideo.play().catch(() => { });
+            await localVideo.play().catch(() => {});
         }
 
         if (PEER_CONNECTION) {
@@ -2532,14 +2374,13 @@ let IS_EXPANDED = false;
 
 function toggleFullscreen() {
     const stage = document.querySelector(".call-stage");
-    const btn = document.getElementById("expandCallBtn");
 
     if (!stage) return;
 
     IS_EXPANDED = !IS_EXPANDED;
-
     stage.classList.toggle("expanded", IS_EXPANDED);
 }
+
 /* =========================
    TOGGLE SPEAKER
 ========================= */
@@ -2564,6 +2405,9 @@ function toggleSpeaker() {
     }
 }
 
+/* =========================
+   IMAGE LIGHTBOX
+========================= */
 
 function initLightbox() {
     if (document.getElementById("imageLightbox")) return;
@@ -2639,7 +2483,6 @@ function _lbShow(index) {
     const next    = document.getElementById("lightboxNext");
     if (!img) return;
 
-    // re-trigger pop animation on swap
     img.style.animation = "none";
     void img.offsetHeight;
     img.style.animation = "";
@@ -2667,7 +2510,6 @@ function closeLightbox() {
 ========================= */
 
 function handleBubbleClick(event, bubbleEl) {
-    if (event.target.closest(".chat-image, .chat-images-grid")) return;
     event.preventDefault();
     event.stopPropagation();
     showMsgMenu(event, bubbleEl);
@@ -2685,7 +2527,7 @@ function showMsgMenu(event, bubbleEl) {
     let rawImgs = [];
     try { rawImgs = JSON.parse(bubbleEl.dataset.msgImgs || "[]"); } catch (e) {}
 
-    if (!msgId || !isMine) return;
+    if (!msgId) return;
 
     const menu = document.createElement("div");
     menu.id = "msgCtxMenu";
@@ -2693,7 +2535,7 @@ function showMsgMenu(event, bubbleEl) {
 
     const items = [];
 
-    if (!isImg) {
+    if (isMine && !isImg) {
         items.push(
             `<button class="msg-ctx-item" onclick="startEditMsg('${msgId}'); closeMsgMenu();">` +
             `<i class="fa-solid fa-pen msg-ctx-icon"></i> Edit</button>`
@@ -2708,10 +2550,14 @@ function showMsgMenu(event, bubbleEl) {
         );
     }
 
-    items.push(
-        `<button class="msg-ctx-item danger" onclick="confirmDeleteMsg('${msgId}'); closeMsgMenu();">` +
-        `<i class="fa-solid fa-trash msg-ctx-icon"></i> Delete</button>`
-    );
+    if (isMine) {
+        items.push(
+            `<button class="msg-ctx-item danger" onclick="confirmDeleteMsg('${msgId}'); closeMsgMenu();">` +
+            `<i class="fa-solid fa-trash msg-ctx-icon"></i> Delete</button>`
+        );
+    }
+
+    if (!items.length) return;
 
     menu.innerHTML = items.join("");
     document.body.appendChild(menu);
