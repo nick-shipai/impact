@@ -866,8 +866,24 @@ let ADDED_ICE_IDS = new Set();
 const RTC_CONFIG = {
     iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" }
-    ]
+        { urls: "stun:stun1.l.google.com:19302" },
+        {
+            urls: "turn:openrelay.metered.ca:80",
+            username: "openrelayproject",
+            credential: "openrelayproject"
+        },
+        {
+            urls: "turn:openrelay.metered.ca:443",
+            username: "openrelayproject",
+            credential: "openrelayproject"
+        },
+        {
+            urls: "turn:openrelay.metered.ca:443?transport=tcp",
+            username: "openrelayproject",
+            credential: "openrelayproject"
+        }
+    ],
+    iceTransportPolicy: "all"
 };
 
 /* =========================
@@ -926,9 +942,34 @@ async function requestVideoCall() {
             })
         });
 
-        const data = await response.json().catch(() => ({}));
+        let data = await response.json().catch(() => ({}));
 
-        if (!response.ok || !data.success) {
+        // If a stale ringing call is blocking, auto-clear it and retry once
+        if (response.status === 409 && data.code === "ACTIVE_CALL_EXISTS" && data.call?.status === "ringing") {
+            updateCallStatus("Clearing previous call...");
+            try {
+                await fetch(`${API_URL}/api/video-call/end`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ callId: data.call.callId })
+                });
+            } catch (e) {
+                console.error("stale-call end error:", e);
+            }
+            updateCallStatus("Retrying...");
+            const retryRes = await fetch(`${API_URL}/api/video-call/request`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uid: CURRENT_RECEIVER_UID })
+            });
+            data = await retryRes.json().catch(() => ({}));
+            if (!retryRes.ok || !data.success) {
+                updateCallStatus(data.message || "Could not start call");
+                return;
+            }
+        } else if (!response.ok || !data.success) {
             updateCallStatus(data.message || "Could not start call");
             return;
         }
