@@ -52,17 +52,59 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (auth.success) {
-        console.log("User logged in:", auth.user);
-
-        const signupLinks = document.querySelectorAll(".signup-link, .login-link, .signin-link");
-        signupLinks.forEach(link => {
-            link.textContent = "Dashboard";
-            link.href = "./dashboard/#get-started";
-        });
-    } else {
-        console.log("User not logged in");
+        renderProfileDashBtn(auth.user);
+        console.log("User authenticated:", auth.user);
     }
 });
+
+/* =========================
+   PROFILE DASHBOARD BUTTON
+========================= */
+
+function getInitials(name) {
+    if (!name) return "?";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0][0];
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function renderProfileDashBtn(user) {
+    const signInBtn = document.querySelector(".sign-in-btn");
+    const signUpBtn = document.querySelector(".sign-up-btn");
+
+    // Remove sign-up link entirely
+    if (signUpBtn) signUpBtn.remove();
+
+    // If no sign-in button found, nothing to replace
+    if (!signInBtn) return;
+
+    const photoURL = user.photoURL || "";
+    const fullname = user.fullname || user.email || "User";
+    const firstName = fullname.split(" ")[0];
+    const initials = getInitials(fullname);
+
+    const avatarInner = photoURL
+        ? `<img src="${photoURL}" alt="${firstName}" loading="lazy">`
+        : `<span class="avatar-initial">${initials}</span>`;
+
+    const btnHTML = `
+        <a href="./dashboard/#get-started" class="profile-dash-btn" aria-label="Go to dashboard">
+            <span class="profile-dash-avatar">${avatarInner}</span>
+            <span class="profile-dash-text">
+                <span class="profile-dash-name">${firstName}</span>
+                <span class="profile-dash-label">Dashboard &rsaquo;</span>
+            </span>
+            <span class="profile-dash-arrow">&#x276F;</span>
+        </a>
+    `;
+
+    const wrapper = document.createElement("span");
+    wrapper.innerHTML = btnHTML.trim();
+    signInBtn.replaceWith(wrapper.firstElementChild);
+}
+
+/* placeholder closing — removed duplicate
+   The block above already closed DOMContentLoaded.
 
 /* =========================
    ANIMATE ELEMENTS ON SCROLL
