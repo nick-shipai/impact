@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | IMPACTECH ACADEMY</title>
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="404.css" />
+</head>
+
+<body>
+
+  <!-- Floating particles canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Floating emoji blobs -->
+  <div class="blob-field" aria-hidden="true">
+    <span class="blob" data-emoji="🚀">🚀</span>
+    <span class="blob" data-emoji="😵">😵</span>
+    <span class="blob" data-emoji="🔍">🔍</span>
+    <span class="blob" data-emoji="💀">💀</span>
+    <span class="blob" data-emoji="🌪️">🌪️</span>
+    <span class="blob" data-emoji="👾">👾</span>
+    <span class="blob" data-emoji="🤖">🤖</span>
+    <span class="blob" data-emoji="⚡">⚡</span>
+    <span class="blob" data-emoji="🎯">🎯</span>
+    <span class="blob" data-emoji="🛸">🛸</span>
+    <span class="blob" data-emoji="🧨">🧨</span>
+    <span class="blob" data-emoji="🌀">🌀</span>
+  </div>
+
+  <!-- Main content -->
+  <main class="page-404">
+
+    <!-- Logo top-left -->
+    <a href="https://impactacademy.site" class="brand-logo">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH" />
+      <span>IMPACTECH</span>
+    </a>
+
+    <div class="card-wrap">
+
+      <!-- Glitch number -->
+      <div class="glitch-wrap" aria-label="404">
+        <div class="glitch" data-text="404">404</div>
+      </div>
+
+      <!-- Animated robot -->
+      <div class="robot-zone">
+        <div class="robot">
+          <div class="robot-head">
+            <div class="robot-eyes">
+              <div class="eye left-eye"><div class="pupil"></div></div>
+              <div class="eye right-eye"><div class="pupil"></div></div>
+            </div>
+            <div class="robot-mouth"></div>
+            <div class="robot-antenna">
+              <div class="antenna-ball"></div>
+            </div>
+          </div>
+          <div class="robot-body">
+            <div class="robot-chest">
+              <div class="chest-light red"></div>
+              <div class="chest-light green"></div>
+              <div class="chest-light blue"></div>
+            </div>
+          </div>
+          <div class="robot-legs">
+            <div class="leg left-leg"></div>
+            <div class="leg right-leg"></div>
+          </div>
+          <div class="robot-arms">
+            <div class="arm left-arm"></div>
+            <div class="arm right-arm"></div>
+          </div>
+        </div>
+        <div class="robot-shadow"></div>
+      </div>
+
+      <!-- Copy -->
+      <h1 class="headline">
+        Whoa. How did you get here?
+        <span class="wave-emoji">🤔</span>
+      </h1>
+
+      <p class="sub" id="funnyLine">
+        The page you're looking for took a gap year and forgot to come back.
+      </p>
+
+      <!-- Refresh joke button -->
+      <button class="btn-joke" id="newJokeBtn">
+        <i class="fa-solid fa-dice"></i> New Excuse
+      </button>
+
+      <!-- Navigation options -->
+      <div class="nav-options">
+        <a href="https://impactacademy.site" class="nav-btn primary-btn">
+          <i class="fa-solid fa-house"></i> Take Me Home
+        </a>
+        <a href="javascript:history.back()" class="nav-btn ghost-btn">
+          <i class="fa-solid fa-arrow-left"></i> Go Back
+        </a>
+        <a href="https://impactacademy.site/contact" class="nav-btn ghost-btn">
+          <i class="fa-solid fa-headset"></i> Contact Support
+        </a>
+      </div>
+
+      <!-- Quick links -->
+      <div class="quick-links">
+        <p>Or try one of these:</p>
+        <div class="link-row">
+          <a href="https://impactacademy.site/dashboard/freelancer">
+            <i class="fa-solid fa-gauge-high"></i> Dashboard
+          </a>
+          <a href="https://impactacademy.site/dashboard/freelancer/find-jobs">
+            <i class="fa-solid fa-magnifying-glass"></i> Find Jobs
+          </a>
+          <a href="https://impactacademy.site/dashboard/freelancer/earnings">
+            <i class="fa-solid fa-wallet"></i> Earnings
+          </a>
+          <a href="https://impactacademy.site/dashboard/freelancer/settings">
+            <i class="fa-solid fa-gear"></i> Settings
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Countdown bar -->
+    <div class="redirect-bar" id="redirectBar">
+      <i class="fa-solid fa-circle-info"></i>
+      Redirecting to home in <span id="countdown">10</span>s
+      <button id="cancelRedirect">Cancel</button>
+    </div>
+
+  </main>
+
+  <script src="404.js"></script>
+</body>
+</html>

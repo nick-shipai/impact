@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | IMPACTECH ACADEMY</title>
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="settings.css" />
+</head>
+
+<body>
+<div class="client-layout">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="client-sidebar">
+
+    <div class="sidebar-logo">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="../../freelancer/">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="../find-jobs">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Find Jobs</span>
+      </a>
+      <a href="../my-proposals">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>My Proposals</span>
+      </a>
+      <a href="../contracts">
+        <i class="fa-solid fa-handshake"></i>
+        <span>Contracts</span>
+      </a>
+      <a href="../messages">
+        <i class="fa-solid fa-comments"></i>
+        <span>Messages</span>
+      </a>
+      <a href="../notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+      </a>
+      <a href="../earnings">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Earnings</span>
+      </a>
+      <a href="../settings" class="active">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="../logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="client-main">
+
+    <!-- TOPBAR -->
+    <header class="client-topbar">
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i>
+        <span>></span>
+        <p>Freelancer</p>
+        <span>></span>
+        <p>Settings</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="client-profile" id="profileInitial">
+          <span>—</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="settings-hero">
+      <div class="settings-hero-text">
+        <span class="hero-badge">
+          <i class="fa-solid fa-gear"></i>
+          Account Settings
+        </span>
+        <h1>Your Settings</h1>
+        <p>Manage your profile, security, payments and preferences all in one place.</p>
+      </div>
+      <div class="settings-hero-cards">
+        <div class="hero-stat-card purple-stat">
+          <i class="fa-solid fa-user-check"></i>
+          <h3 id="statProfileComplete">—</h3>
+          <p>Profile Complete</p>
+        </div>
+        <div class="hero-stat-card success-stat">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h3 id="statAccountSecure">—</h3>
+          <p>Account Secure</p>
+        </div>
+        <div class="hero-stat-card active-stat">
+          <i class="fa-solid fa-bell"></i>
+          <h3 id="statAlertsActive">—</h3>
+          <p>Alerts Active</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS BODY -->
+    <div class="settings-layout">
+
+      <!-- ========= LEFT NAV ========= -->
+      <nav class="settings-nav">
+        <a href="#profile" class="settings-nav-item active" data-tab="profile">
+          <div class="nav-icon-wrap"><i class="fa-solid fa-user"></i></div>
+          <div class="nav-label">
+            <strong>Profile</strong>
+            <span>Photo, bio & skills</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+        <a href="#account" class="settings-nav-item" data-tab="account">
+          <div class="nav-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+          <div class="nav-label">
+            <strong>Account & Security</strong>
+            <span>Email, password & 2FA</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+        <a href="#notifications" class="settings-nav-item" data-tab="notifications">
+          <div class="nav-icon-wrap"><i class="fa-solid fa-bell"></i></div>
+          <div class="nav-label">
+            <strong>Notifications</strong>
+            <span>Alerts & preferences</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+        <a href="#payment" class="settings-nav-item" data-tab="payment">
+          <div class="nav-icon-wrap"><i class="fa-solid fa-wallet"></i></div>
+          <div class="nav-label">
+            <strong>Payment Methods</strong>
+            <span>Payout accounts</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+        <a href="#privacy" class="settings-nav-item" data-tab="privacy">
+          <div class="nav-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="nav-label">
+            <strong>Privacy</strong>
+            <span>Visibility & data</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+        <a href="#danger" class="settings-nav-item danger-item" data-tab="danger">
+          <div class="nav-icon-wrap danger-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="nav-label">
+            <strong>Danger Zone</strong>
+            <span>Delete account</span>
+          </div>
+          <i class="fa-solid fa-chevron-right nav-arrow"></i>
+        </a>
+      </nav>
+
+      <!-- ========= RIGHT PANELS ========= -->
+      <div class="settings-panels">
+
+        <!-- ============ PROFILE ============ -->
+        <section class="settings-panel active" id="panel-profile">
+
+          <!-- Avatar -->
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Profile Photo</h2>
+                <p>Your photo appears on your public profile and proposals</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="avatar-section">
+                <div class="avatar-preview">
+                  <div class="avatar-placeholder" id="avatarPreview">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                  <div class="avatar-badge"><i class="fa-solid fa-camera"></i></div>
+                </div>
+                <div class="avatar-info">
+                  <h3>Upload your photo</h3>
+                  <p>JPG, PNG or WEBP · Max 1.5 MB · At least 200×200 px</p>
+                  <div class="avatar-actions">
+                    <label class="post-job-btn" for="avatarInput" style="cursor:pointer;">
+                      <i class="fa-solid fa-upload"></i> Upload Photo
+                    </label>
+                    <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" hidden />
+                    <button class="btn-ghost-sm" id="removeAvatarBtn">
+                      <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Basic Info -->
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Basic Information</h2>
+                <p>This information is visible to clients on your public profile</p>
+              </div>
+              <div class="profile-complete-badge">
+                <div class="complete-ring">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+                    <circle id="profileRingBar" cx="18" cy="18" r="15.9" fill="none" stroke="#2563eb" stroke-width="3"
+                      stroke-dasharray="0 100" stroke-linecap="round" transform="rotate(-90 18 18)"/>
+                  </svg>
+                  <span id="profileRingPct">—</span>
+                </div>
+                <small>Profile complete</small>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-grid two-col">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="fieldFirstName" placeholder="First name" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="fieldLastName" placeholder="Last name" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Professional Title</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <input type="text" id="fieldTitle" placeholder="e.g. Full-Stack Developer" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hourly Rate (USD)</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <input type="number" id="fieldHourlyRate" placeholder="0.00" min="0" />
+                  </div>
+                </div>
+                <div class="form-group full-width">
+                  <label>Location</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" id="fieldLocation" placeholder="City, Country" />
+                  </div>
+                </div>
+                <div class="form-group full-width">
+                  <label>Professional Bio</label>
+                  <textarea id="fieldBio" rows="5" placeholder="Describe your experience, expertise, and what makes you stand out..."></textarea>
+                  <span class="char-count"><span id="bioCount">0</span> / 500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Skills & Expertise</h2>
+                <p>Add up to 15 skills that best represent your work</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="input-wrap" style="margin-bottom:14px;">
+                <i class="fa-solid fa-plus"></i>
+                <input type="text" id="skillInput" placeholder="Type a skill and press Enter..." />
+              </div>
+              <div class="skills-list" id="skillsList">
+                <!-- Populated by settings.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio Links -->
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Portfolio & Links</h2>
+                <p>Share your work and social presence</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-grid two-col">
+                <div class="form-group">
+                  <label>Personal Website</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-globe"></i>
+                    <input type="url" id="fieldWebsite" placeholder="https://yoursite.com" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>GitHub</label>
+                  <div class="input-wrap">
+                    <i class="fa-brands fa-github"></i>
+                    <input type="url" id="fieldGithub" placeholder="https://github.com/username" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>LinkedIn</label>
+                  <div class="input-wrap">
+                    <i class="fa-brands fa-linkedin"></i>
+                    <input type="url" id="fieldLinkedin" placeholder="https://linkedin.com/in/username" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Portfolio URL</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <input type="url" id="fieldPortfolio" placeholder="https://portfolio.com" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn-ghost" id="discardProfileBtn">Discard Changes</button>
+            <button class="post-job-btn" id="saveProfileBtn"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+          </div>
+
+        </section>
+
+        <!-- ============ ACCOUNT & SECURITY ============ -->
+        <section class="settings-panel" id="panel-account">
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Email Address</h2>
+                <p>Your login email and where we send notifications</p>
+              </div>
+              <span class="verified-badge" id="emailVerifiedBadge" style="display:none;">
+                <i class="fa-solid fa-circle-check"></i> Verified
+              </span>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Current Email</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="fieldCurrentEmail" placeholder="—" readonly />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>New Email</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-envelope-open"></i>
+                    <input type="email" id="fieldNewEmail" placeholder="Enter new email" />
+                  </div>
+                </div>
+              </div>
+              <button class="post-job-btn" style="margin-top:18px;" id="updateEmailBtn">
+                <i class="fa-solid fa-envelope"></i> Update Email
+              </button>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Change Password</h2>
+                <p>Use a strong password you don't use elsewhere</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="fieldCurrentPass" placeholder="••••••••" />
+                    <button class="toggle-pass" type="button"><i class="fa-solid fa-eye"></i></button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>New Password</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="fieldNewPass" placeholder="••••••••" />
+                    <button class="toggle-pass" type="button"><i class="fa-solid fa-eye"></i></button>
+                  </div>
+                  <div class="password-strength">
+                    <div class="strength-bars"><span></span><span></span><span></span><span></span></div>
+                    <small id="strengthLabel">Enter a password</small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Confirm New Password</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="fieldConfirmPass" placeholder="••••••••" />
+                    <button class="toggle-pass" type="button"><i class="fa-solid fa-eye"></i></button>
+                  </div>
+                </div>
+              </div>
+              <button class="post-job-btn" style="margin-top:18px;" id="updatePasswordBtn">
+                <i class="fa-solid fa-key"></i> Update Password
+              </button>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Two-Factor Authentication</h2>
+                <p>Add an extra layer of security to your account</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="twoFaToggle" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="settings-card-body">
+              <div class="twofa-options">
+                <label class="twofa-option">
+                  <input type="radio" name="twofa" value="app" />
+                  <div class="twofa-card">
+                    <div class="twofa-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <div>
+                      <strong>Authenticator App</strong>
+                      <small>Google Authenticator, Authy</small>
+                    </div>
+                    <span class="recommended-badge">Recommended</span>
+                  </div>
+                </label>
+                <label class="twofa-option">
+                  <input type="radio" name="twofa" value="sms" />
+                  <div class="twofa-card">
+                    <div class="twofa-icon"><i class="fa-solid fa-comment-sms"></i></div>
+                    <div>
+                      <strong>SMS / Text Message</strong>
+                      <small>Receive a code on your phone</small>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Active Sessions</h2>
+                <p>Devices currently logged in to your account</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="session-list" id="sessionList">
+                <!-- Populated by settings.js -->
+              </div>
+              <button class="btn-danger-outline" style="margin-top:18px;" id="revokeAllBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out All Other Devices
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ============ NOTIFICATIONS ============ -->
+        <section class="settings-panel" id="panel-notifications">
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Email Notifications</h2>
+                <p>Choose which emails you'd like to receive</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="notif-list">
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>New Job Matches</strong>
+                    <small>Get notified when new jobs match your skills</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifJobMatches" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Contract Updates</strong>
+                    <small>When a client sends a contract or milestone update</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifContracts" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Payment Received</strong>
+                    <small>Confirmation when a payment clears to your wallet</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifPayment" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>New Messages</strong>
+                    <small>Email digest of unread messages</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifMessages" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Profile Views</strong>
+                    <small>When a client views your profile</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifProfileViews" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Weekly Earnings Report</strong>
+                    <small>Summary of your earnings every Monday</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifWeeklyReport" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Platform News & Tips</strong>
+                    <small>Feature updates and freelancing guides</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifNews" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Push Notifications</h2>
+                <p>In-app and browser push alerts</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="notif-list">
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Instant Messages</strong>
+                    <small>Push alert for each new message</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="pushMessages" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Bid Status Updates</strong>
+                    <small>When a client accepts or declines your proposal</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="pushBidStatus" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Payment Alerts</strong>
+                    <small>Instant push when money is received</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="pushPayment" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="notif-frequency">
+                <label>Email Digest Frequency</label>
+                <select id="digestFrequency">
+                  <option value="immediately">Immediately</option>
+                  <option value="daily">Daily Digest</option>
+                  <option value="weekly">Weekly Digest</option>
+                  <option value="never">Never</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn-ghost" id="resetNotifBtn">Reset to Default</button>
+            <button class="post-job-btn" id="saveNotifBtn"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+          </div>
+
+        </section>
+
+        <!-- ============ PAYMENT METHODS ============ -->
+        <section class="settings-panel" id="panel-payment">
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Saved Payout Methods</h2>
+                <p>Add or manage where your earnings are sent</p>
+              </div>
+              <button class="post-job-btn" style="padding:10px 18px;font-size:13px;" id="addMethodBtn">
+                <i class="fa-solid fa-plus"></i> Add Method
+              </button>
+            </div>
+            <div class="settings-card-body">
+              <div class="payout-methods" id="payoutMethodsList">
+                <!-- Populated by settings.js -->
+              </div>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Payout Preferences</h2>
+                <p>Control when and how you receive your earnings</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-grid two-col">
+                <div class="form-group">
+                  <label>Payout Schedule</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <select id="fieldPayoutSchedule">
+                      <option value="weekly">Weekly (every Friday)</option>
+                      <option value="biweekly">Bi-weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="manual">Manual only</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Minimum Payout Amount</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <input type="number" id="fieldMinPayout" placeholder="e.g. 50" min="0" />
+                  </div>
+                </div>
+                <div class="form-group full-width">
+                  <label>Preferred Currency</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-coins"></i>
+                    <select id="fieldCurrency">
+                      <option value="USD">USD — US Dollar</option>
+                      <option value="EUR">EUR — Euro</option>
+                      <option value="GBP">GBP — British Pound</option>
+                      <option value="NGN">NGN — Nigerian Naira</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="info-box">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Platform fee is <strong>10%</strong> on all earnings. Payouts are processed within 1–3 business days after your scheduled date.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn-ghost" id="discardPaymentBtn">Discard Changes</button>
+            <button class="post-job-btn" id="savePaymentBtn"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+          </div>
+
+        </section>
+
+        <!-- ============ PRIVACY ============ -->
+        <section class="settings-panel" id="panel-privacy">
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Profile Visibility</h2>
+                <p>Control who can see your profile and contact you</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="visibility-options">
+                <label class="visibility-option">
+                  <input type="radio" name="visibility" value="public" id="visPublic" />
+                  <div class="vis-card">
+                    <div class="vis-icon vis-public"><i class="fa-solid fa-earth-americas"></i></div>
+                    <div>
+                      <strong>Public</strong>
+                      <small>Anyone can find and view your profile</small>
+                    </div>
+                  </div>
+                </label>
+                <label class="visibility-option">
+                  <input type="radio" name="visibility" value="clients" id="visClients" />
+                  <div class="vis-card">
+                    <div class="vis-icon vis-clients"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                      <strong>Registered Clients Only</strong>
+                      <small>Only verified clients can view your profile</small>
+                    </div>
+                  </div>
+                </label>
+                <label class="visibility-option">
+                  <input type="radio" name="visibility" value="private" id="visPrivate" />
+                  <div class="vis-card">
+                    <div class="vis-icon vis-private"><i class="fa-solid fa-lock"></i></div>
+                    <div>
+                      <strong>Private</strong>
+                      <small>Only you can see your profile</small>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Privacy Controls</h2>
+                <p>Fine-tune what information is publicly visible</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="notif-list">
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Show Hourly Rate</strong>
+                    <small>Display your hourly rate on your public profile</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="privShowRate" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Show Earnings History</strong>
+                    <small>Display total earnings badge on your profile</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="privShowEarnings" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Show Online Status</strong>
+                    <small>Let clients see when you're active</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="privShowOnline" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Searchable by Email</strong>
+                    <small>Allow clients to find you using your email</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="privSearchable" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <strong>Allow Direct Messages</strong>
+                    <small>Clients can message you without a contract</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="privDirectMsg" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="earn-card">
+            <div class="earn-card-header">
+              <div>
+                <h2>Your Data</h2>
+                <p>Download or manage your personal data</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="data-actions">
+                <div class="data-action-item">
+                  <div class="data-action-info">
+                    <strong><i class="fa-solid fa-download"></i> Download Your Data</strong>
+                    <small>Get a copy of all your profile, contracts and messages</small>
+                  </div>
+                  <button class="btn-ghost-sm" id="exportDataBtn">Request Export</button>
+                </div>
+                <div class="data-action-item">
+                  <div class="data-action-info">
+                    <strong><i class="fa-solid fa-file-shield"></i> Privacy Policy</strong>
+                    <small>How we collect, use and protect your data</small>
+                  </div>
+                  <a href="#" class="btn-ghost-sm">View Policy</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn-ghost" id="discardPrivacyBtn">Discard Changes</button>
+            <button class="post-job-btn" id="savePrivacyBtn"><i class="fa-solid fa-floppy-disk"></i> Save Privacy Settings</button>
+          </div>
+
+        </section>
+
+        <!-- ============ DANGER ZONE ============ -->
+        <section class="settings-panel" id="panel-danger">
+
+          <div class="earn-card danger-card">
+            <div class="earn-card-header">
+              <div>
+                <h2 style="color:#d97706;"><i class="fa-solid fa-pause-circle" style="color:#d97706;"></i> Pause Account</h2>
+                <p>Temporarily hide your profile and pause all notifications</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="danger-info-box warning">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>
+                  <strong>What happens when you pause?</strong>
+                  <ul>
+                    <li>Your profile becomes invisible to new clients</li>
+                    <li>Existing contracts and messages are unaffected</li>
+                    <li>You can reactivate at any time</li>
+                  </ul>
+                </div>
+              </div>
+              <button class="btn-warning" id="pauseAccountBtn">
+                <i class="fa-solid fa-pause"></i> Pause My Account
+              </button>
+            </div>
+          </div>
+
+          <div class="earn-card danger-card">
+            <div class="earn-card-header">
+              <div>
+                <h2 style="color:#dc2626;"><i class="fa-solid fa-trash-can" style="color:#dc2626;"></i> Delete Account</h2>
+                <p>Permanently delete your account and all associated data</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="danger-info-box error">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div>
+                  <strong>This action is permanent and cannot be undone.</strong>
+                  <ul>
+                    <li>All your profile data will be deleted</li>
+                    <li>Active contracts will be cancelled</li>
+                    <li>Your earnings history will be permanently removed</li>
+                    <li>You will not be able to recover this account</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="delete-confirm-wrap">
+                <div class="form-group">
+                  <label>Type <strong>DELETE</strong> to confirm</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <input type="text" id="deleteConfirm" placeholder="DELETE" />
+                  </div>
+                </div>
+                <button class="btn-danger" id="deleteAccountBtn" disabled>
+                  <i class="fa-solid fa-trash-can"></i> Delete My Account
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+<script src="settings.js"></script>
+</body>
+</html>

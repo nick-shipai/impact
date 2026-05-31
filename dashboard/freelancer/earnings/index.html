@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Earnings | IMPACTECH ACADEMY</title>
+  <link rel="icon" href="https://impactacademy.site/images/icon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="earnings.css" />
+</head>
+
+<body>
+<div class="client-layout">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="client-sidebar">
+
+    <div class="sidebar-logo">
+      <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY" />
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="../../freelancer/">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="../find-jobs">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Find Jobs</span>
+      </a>
+      <a href="../my-proposals">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>My Proposals</span>
+      </a>
+      <a href="../contracts">
+        <i class="fa-solid fa-handshake"></i>
+        <span>Contracts</span>
+      </a>
+      <a href="../messages">
+        <i class="fa-solid fa-comments"></i>
+        <span>Messages</span>
+      </a>
+      <a href="../notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+      </a>
+      <a href="../earnings" class="active">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Earnings</span>
+      </a>
+      <a href="../settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="../logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="client-main">
+
+    <!-- TOPBAR -->
+    <header class="client-topbar">
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i>
+        <span>></span>
+        <p>Freelancer</p>
+        <span>></span>
+        <p>Earnings</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="post-job-btn" id="openPayoutBtn">
+          <i class="fa-solid fa-circle-dollar-to-slot"></i>
+          Request Payout
+        </button>
+        <div class="client-profile" id="profileInitial">
+          <span>—</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="find-hero">
+      <div>
+        <span class="hero-badge">
+          <i class="fa-solid fa-wallet"></i>
+          Earnings Overview
+        </span>
+        <h1>Your Earnings</h1>
+        <p>
+          Track your income, monitor pending payouts,
+          and manage your payment methods all in one place.
+        </p>
+      </div>
+
+      <div class="hero-stats-grid">
+        <div class="hero-stat-card success-stat">
+          <i class="fa-solid fa-circle-dollar-to-slot"></i>
+          <h3 id="statTotalEarned">—</h3>
+          <p>Total Earned</p>
+        </div>
+        <div class="hero-stat-card active-stat">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <h3 id="statPending">—</h3>
+          <p>Pending</p>
+        </div>
+        <div class="hero-stat-card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <h3 id="statThisMonth">—</h3>
+          <p>This Month</p>
+        </div>
+        <div class="hero-stat-card purple-stat">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+          <h3 id="statWithdrawn">—</h3>
+          <p>Withdrawn</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BODY GRID -->
+    <div class="earnings-layout">
+
+      <!-- ========= LEFT COLUMN ========= -->
+      <div class="earnings-main">
+
+        <!-- CHART CARD -->
+        <div class="earn-card">
+          <div class="earn-card-header">
+            <div>
+              <h2>Earnings Chart</h2>
+              <p>Monthly income over time</p>
+            </div>
+            <select id="chartPeriod">
+              <option value="6m">Last 6 Months</option>
+              <option value="12m">Last 12 Months</option>
+              <option value="3m">Last 3 Months</option>
+            </select>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="chart-tabs">
+              <button class="chart-tab active" onclick="setChartTab(this, 'income')">Income</button>
+              <button class="chart-tab" onclick="setChartTab(this, 'contracts')">Contracts</button>
+              <button class="chart-tab" onclick="setChartTab(this, 'payouts')">Payouts</button>
+            </div>
+
+            <div class="chart-container" id="chartContainer">
+              <!-- Rendered by earnings.js -->
+            </div>
+
+            <div class="chart-summary">
+              <div class="chart-sum-item">
+                <strong id="sumThisMonth">—</strong>
+                <span>This Month</span>
+                <div class="trend-neutral" id="sumThisMonthTrend">
+                  <i class="fa-solid fa-chart-bar"></i> —
+                </div>
+              </div>
+              <div class="chart-sum-item">
+                <strong id="sumAvgMonth">—</strong>
+                <span>Avg / Month</span>
+                <div class="trend-neutral">
+                  <i class="fa-solid fa-chart-bar"></i> avg
+                </div>
+              </div>
+              <div class="chart-sum-item">
+                <strong id="sumBestMonth">—</strong>
+                <span>Best Month</span>
+                <div class="trend-up" id="sumBestMonthLabel">
+                  <i class="fa-solid fa-trophy"></i> —
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRANSACTIONS CARD -->
+        <div class="earn-card">
+          <div class="earn-card-header">
+            <div>
+              <h2>Transaction History</h2>
+              <p id="txnSubtitle">Loading transactions…</p>
+            </div>
+          </div>
+
+          <div class="txn-filter-row">
+            <button class="txn-filter-btn active" onclick="filterTxn(this, 'all')">All</button>
+            <button class="txn-filter-btn" onclick="filterTxn(this, 'paid')">Paid</button>
+            <button class="txn-filter-btn" onclick="filterTxn(this, 'pending')">Pending</button>
+            <button class="txn-filter-btn" onclick="filterTxn(this, 'payout')">Payouts</button>
+            <select id="txnSort" onchange="sortTxn(this.value)">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="highest">Highest Amount</option>
+            </select>
+          </div>
+
+          <div class="txn-list" id="txnList">
+            <!-- Rendered by earnings.js -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========= RIGHT COLUMN ========= -->
+      <div class="earnings-side">
+
+        <!-- AVAILABLE BALANCE -->
+        <div class="side-card">
+          <h3>
+            <i class="fa-solid fa-circle-dollar-to-slot"></i>
+            Available Balance
+          </h3>
+
+          <div class="payout-balance">
+            <p>Ready to Withdraw</p>
+            <h2 id="availableBalance">—</h2>
+            <small id="nextPayoutDate">—</small>
+          </div>
+
+          <button class="payout-btn" id="openPayoutBtn2">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            Request Payout
+          </button>
+
+          <div class="payout-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Payouts are processed within 1–3 business days.
+          </div>
+        </div>
+
+        <!-- MONTHLY GOAL -->
+        <div class="side-card">
+          <h3>
+            <i class="fa-solid fa-bullseye"></i>
+            Monthly Goal
+          </h3>
+
+          <div>
+            <div class="goal-header">
+              <span>Progress</span>
+              <strong id="goalProgressLabel">— / —</strong>
+            </div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar" id="goalBar"></div>
+            </div>
+            <div class="goal-labels">
+              <span>0%</span>
+              <strong id="goalPct">—</strong>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div class="earn-badge-row" id="goalBadges"></div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="side-card">
+          <h3>
+            <i class="fa-solid fa-chart-line"></i>
+            Quick Stats
+          </h3>
+
+          <div class="stat-row">
+            <span class="stat-row-label">
+              <i class="fa-solid fa-briefcase"></i> Contracts Done
+            </span>
+            <span class="stat-row-value" id="statContracts">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-label">
+              <i class="fa-solid fa-star"></i> Avg. Rating
+            </span>
+            <span class="stat-row-value" id="statRating">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-label">
+              <i class="fa-solid fa-clock"></i> Avg. Pay / Job
+            </span>
+            <span class="stat-row-value" id="statAvgPay">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-label">
+              <i class="fa-solid fa-percent"></i> Platform Fee
+            </span>
+            <span class="stat-row-value" id="statFee">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-label">
+              <i class="fa-solid fa-arrow-down-to-bracket"></i> Total Payouts
+            </span>
+            <span class="stat-row-value" id="statTotalPayouts">—</span>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHODS -->
+        <div class="side-card">
+          <h3>
+            <i class="fa-solid fa-credit-card"></i>
+            Payment Methods
+          </h3>
+
+          <div id="paymentMethodsList">
+            <!-- Rendered by earnings.js -->
+          </div>
+
+          <button class="add-method-btn" id="addMethodBtn">
+            <i class="fa-solid fa-plus"></i>
+            Add Payment Method
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ==================== PAYOUT DRAWER ==================== -->
+<div class="drawer-overlay" id="payoutModal">
+
+  <div class="proposal-drawer" id="payoutDrawer">
+
+    <div class="drawer-header">
+      <div class="drawer-header-info">
+        <h2>Request Payout</h2>
+        <div class="drawer-header-badges">
+          <span class="drawer-badge">
+            <i class="fa-solid fa-wallet"></i>
+            Available: <span id="drawerAvailableAmt">—</span>
+          </span>
+        </div>
+      </div>
+      <button class="drawer-close-btn" id="closePayoutBtn">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+
+      <!-- Amount -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-circle-dollar-to-slot"></i>
+          Payout Amount
+        </div>
+        <div class="drawer-amount-input">
+          <span class="currency">$</span>
+          <input type="number" id="payoutAmount" placeholder="Enter amount" min="1" />
+        </div>
+        <div class="quick-amounts" id="quickAmounts"></div>
+      </div>
+
+      <!-- Method -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-credit-card"></i>
+          Payout Method
+        </div>
+        <div id="drawerMethodsList">
+          <!-- Rendered by earnings.js -->
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-receipt"></i>
+          Summary
+        </div>
+        <div class="drawer-info-row">
+          <span>Payout Amount</span>
+          <strong id="summaryAmount">$0.00</strong>
+        </div>
+        <div class="drawer-info-row">
+          <span>Processing Fee</span>
+          <strong style="color:#dc2626;">$0.00</strong>
+        </div>
+        <div class="drawer-info-row">
+          <span>You'll Receive</span>
+          <strong id="summaryReceive" style="color:#16a34a;font-size:15px;">$0.00</strong>
+        </div>
+        <div class="drawer-info-row">
+          <span>Est. Arrival</span>
+          <strong>1–3 Business Days</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="drawer-footer">
+      <button class="drawer-cancel-btn" id="cancelPayoutBtn">Cancel</button>
+      <button class="drawer-submit-btn" id="submitPayoutBtn">
+        <i class="fa-solid fa-paper-plane"></i>
+        Confirm Payout
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== SCRIPT ==================== -->
+<script src="earnings.js"></script>
+
+</body>
+</html>
