@@ -1,9 +1,73 @@
-const SIGNIN_API_URL = "https://backend.impactacademy.site/api/signin";
+const BASE_URL = "https://backend.impactacademy.site";
+const SIGNIN_API_URL = `${BASE_URL}/api/signin`;
+const VALIDATE_SESSION_URL = `${BASE_URL}/api/auth/validate-session`;
 
 const signinForm = document.getElementById("signinForm");
 const formMessage = document.getElementById("formMessage");
 const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
+
+/* =========================
+   ROLE → DASHBOARD MAP
+========================= */
+
+const ROLE_DASHBOARD = {
+    freelancer: "../dashboard/freelancer",
+    client:     "../dashboard/iam-client",
+    student:    "../dashboard/student"
+};
+
+function getDashboardForRole(role) {
+    if (!role) return "../dashboard/va-student";
+    const key = String(role).toLowerCase();
+    return ROLE_DASHBOARD[key] || "../dashboard/va-student";
+}
+
+/* =========================
+   SESSION CHECK ON LOAD
+   If the user already has a valid session, skip the signin
+   page entirely and send them straight to their dashboard.
+========================= */
+
+(async function checkExistingSession() {
+    try {
+        const res = await fetch(VALIDATE_SESSION_URL, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!data.success || !data.user) return;
+
+        localStorage.setItem("impactech_user", JSON.stringify(data.user));
+
+        // Server returns accountType — fall back through common field names
+        const role =
+            data.user.accountType ||
+            data.user.role        ||
+            data.user.userType    ||
+            data.user.type;
+
+        const destination = data.redirectUrl || getDashboardForRole(role);
+
+        showMessage("Already signed in. Redirecting...", "success");
+
+        setTimeout(() => {
+            window.location.href = destination;
+        }, 400);
+
+    } catch (err) {
+        // No session or network error — stay on signin page
+    }
+})();
+
+/* =========================
+   UI HELPERS
+========================= */
 
 function showMessage(message, type = "error") {
     if (!formMessage) return;
@@ -55,6 +119,10 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+/* =========================
+   PASSWORD TOGGLE
+========================= */
+
 if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", function () {
         const icon = togglePassword.querySelector("i");
@@ -68,6 +136,10 @@ if (togglePassword && passwordInput) {
         }
     });
 }
+
+/* =========================
+   SIGNIN FORM SUBMIT
+========================= */
 
 signinForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -163,8 +235,16 @@ signinForm.addEventListener("submit", async function (e) {
 
         showMessage("Signin successful. Redirecting...", "success");
 
+        const role =
+            data.user?.accountType ||
+            data.user?.role        ||
+            data.user?.userType    ||
+            data.user?.type;
+
+        const destination = data.redirectUrl || getDashboardForRole(role);
+
         setTimeout(() => {
-            window.location.href = data.redirectUrl || "../dashboard/va-student";
+            window.location.href = destination;
         }, 700);
 
     } catch (error) {

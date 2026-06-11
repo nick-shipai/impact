@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses | IMPACTECH ACADEMY</title>
+    <link rel="stylesheet" href="courses.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<nav class="sh-navbar">
+    <div class="sh-navbar-inner">
+        <div class="sh-brand">
+            <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY">
+            <span>Impactech</span>
+        </div>
+        <div class="sh-nav-links">
+            <a href="../index.html"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="./" class="active"><i class="fa-solid fa-book-open"></i> Courses</a>
+            <a href="#learning"><i class="fa-solid fa-play-circle"></i> My Learning</a>
+            <a href="#schedule"><i class="fa-solid fa-calendar-days"></i> Schedule</a>
+            <a href="#certificates"><i class="fa-solid fa-award"></i> Certificates</a>
+        </div>
+        <div class="sh-nav-right">
+            <div class="sh-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search courses..." id="courseSearchInput">
+            </div>
+            <button class="sh-notif-btn">
+                <i class="fa-solid fa-bell"></i>
+                <span class="sh-badge">3</span>
+            </button>
+            <div class="sh-avatar" id="navAvatar">S</div>
+        </div>
+        <button class="sh-hamburger" id="shHamburger">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+    <div class="sh-mobile-menu" id="shMobileMenu">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="./" class="active"><i class="fa-solid fa-book-open"></i> Courses</a>
+        <a href="#learning"><i class="fa-solid fa-play-circle"></i> My Learning</a>
+        <a href="#schedule"><i class="fa-solid fa-calendar-days"></i> Schedule</a>
+        <a href="#certificates"><i class="fa-solid fa-award"></i> Certificates</a>
+    </div>
+</nav>
+
+<main class="sh-main">
+
+    <section class="crs-hero">
+        <div class="crs-hero-bg"></div>
+        <div class="crs-hero-content">
+            <div class="crs-hero-left">
+                <div class="crs-hero-pill">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Explore & Learn</span>
+                </div>
+                <h1>Discover Your Next Skill</h1>
+                <p>Browse through our curated courses designed to help you grow, build, and earn.</p>
+                <div class="crs-hero-actions">
+                    <a href="#all-courses" class="sh-btn-primary">
+                        <i class="fa-solid fa-compass"></i>
+                        Browse All
+                    </a>
+                    <a href="#enrolled" class="sh-btn-ghost">
+                        <i class="fa-solid fa-bookmark"></i>
+                        My Enrolled
+                    </a>
+                </div>
+            </div>
+            <div class="crs-hero-right">
+                <div class="crs-hero-stats-card">
+                    <div class="crs-hero-stat">
+                        <div class="crs-hero-stat-icon" style="--ic: #2563eb;">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <div>
+                            <h3 id="heroCourseCount">0+</h3>
+                            <p>Courses</p>
+                        </div>
+                    </div>
+                    <div class="crs-hero-stat">
+                        <div class="crs-hero-stat-icon" style="--ic: #10b981;">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <h3>2K+</h3>
+                            <p>Students</p>
+                        </div>
+                    </div>
+                    <div class="crs-hero-stat">
+                        <div class="crs-hero-stat-icon" style="--ic: #f59e0b;">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div>
+                            <h3>4.9</h3>
+                            <p>Rating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="crs-search-hero" id="all-courses">
+        <div class="crs-search-inner">
+            <h2>Find the Perfect Course</h2>
+            <p>Search by topic, skill level, or instructor</p>
+            <div class="crs-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="e.g. Python, UI/UX, Marketing..." id="mainSearchInput">
+                <button class="crs-search-btn">Search</button>
+            </div>
+            <div class="crs-quick-tags">
+                <span class="crs-quick-tag active" data-filter="all">All Courses</span>
+                <span class="crs-quick-tag" data-filter="tech"><i class="fa-solid fa-code"></i> Tech</span>
+                <span class="crs-quick-tag" data-filter="design"><i class="fa-solid fa-pen-nib"></i> Design</span>
+                <span class="crs-quick-tag" data-filter="business"><i class="fa-solid fa-briefcase"></i> Business</span>
+                <span class="crs-quick-tag" data-filter="marketing"><i class="fa-solid fa-bullhorn"></i> Marketing</span>
+                <span class="crs-quick-tag" data-filter="ai"><i class="fa-solid fa-robot"></i> AI</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="crs-enrolled-section" id="enrolled">
+        <div class="sh-section">
+            <div class="sh-section-header">
+                <div>
+                    <h2>Continue Learning</h2>
+                    <p>Pick up where you left off</p>
+                </div>
+            </div>
+            <div class="crs-progress-list" id="enrolledList">
+            </div>
+        </div>
+    </section>
+
+    <section class="crs-browse-section">
+        <div class="sh-section">
+            <div class="sh-section-header">
+                <div>
+                    <h2>All Courses</h2>
+                    <p>Explore our full course catalog</p>
+                </div>
+                <div class="sh-course-filter">
+                    <button class="sh-filter-btn active" data-filter="all">All</button>
+                    <button class="sh-filter-btn" data-filter="tech">Tech</button>
+                    <button class="sh-filter-btn" data-filter="design">Design</button>
+                    <button class="sh-filter-btn" data-filter="business">Business</button>
+                    <button class="sh-filter-btn" data-filter="marketing">Marketing</button>
+                    <button class="sh-filter-btn" data-filter="ai">AI</button>
+                </div>
+            </div>
+            <div class="crs-course-grid" id="browseGrid">
+            </div>
+        </div>
+    </section>
+
+    <section class="crs-categories-section">
+        <div class="sh-section">
+            <div class="sh-section-header">
+                <div>
+                    <h2>Browse by Category</h2>
+                    <p>Explore courses organized by topic</p>
+                </div>
+            </div>
+            <div class="crs-categories-grid" id="categoriesGrid">
+            </div>
+        </div>
+    </section>
+
+    <section class="crs-cta-section">
+        <div class="crs-cta-card">
+            <div class="crs-cta-bg"></div>
+            <div class="crs-cta-content">
+                <div class="crs-cta-icon">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <h2>Can't find what you're looking for?</h2>
+                <p>Let us know what course you'd like and we'll create it for you.</p>
+                <button class="sh-btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Request a Course
+                </button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<nav class="sh-bottom-nav">
+    <a href="../index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="./" class="active"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
+    <a href="#learning"><i class="fa-solid fa-play-circle"></i><span>Learning</span></a>
+    <a href="#schedule"><i class="fa-solid fa-calendar-days"></i><span>Schedule</span></a>
+    <a href="#certificates"><i class="fa-solid fa-award"></i><span>Certs</span></a>
+</nav>
+
+<script src="courses.js"></script>
+
+</body>
+</html>

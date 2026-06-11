@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Setup | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="set-up.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="setup-page">
+
+        <aside class="setup-side">
+            <div class="brand">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+                <h2>IMPACTECH</h2>
+            </div>
+
+            <div class="side-content">
+                <span>STUDENT SETUP</span>
+                <h1>Let's build your learning profile.</h1>
+                <p>
+                    Tell us about your goals, skills, and interests so we can
+                    recommend the right courses, mentors, and learning path for you.
+                </p>
+            </div>
+
+            <div class="side-box">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <div>
+                    <h3>Learn at Your Pace</h3>
+                    <p>You can update your profile and preferences anytime from your student dashboard.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="setup-main">
+
+            <div class="setup-card">
+
+                <div class="setup-header">
+                    <div>
+                        <h2 id="stepTitle">Basic Information</h2>
+                        <p id="stepDescription">Tell us a bit about yourself.</p>
+                    </div>
+
+                    <div class="step-count">
+                        Step <span id="currentStepText">1</span> of <span id="totalStepText">7</span>
+                    </div>
+                </div>
+
+                <div class="progress-wrap">
+                    <div class="progress-info">
+                        <span id="progressPercent">0%</span>
+                        <span>Completed</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <form id="studentSetupForm">
+
+                    <!-- STEP 1: Basic Information -->
+                    <section class="form-step active" data-title="Basic Information"
+                        data-description="Tell us a bit about yourself.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Full Name <span class="req-star">*</span></label>
+                                <input type="text" name="fullName" id="fullNameInput"
+                                    placeholder="Loading..." readonly required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Email Address <span class="req-star">*</span></label>
+                                <input type="email" name="email" id="emailInput"
+                                    placeholder="Loading..." readonly required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Phone Number <span class="req-star">*</span></label>
+                                <input type="tel" name="phone" id="phoneInput"
+                                    placeholder="+1 or +234..." required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>
+                                    Country <span class="req-star">*</span>
+                                    <span class="field-auto-badge" id="countryAutoBadge" style="display:none;">
+                                        <i class="fa-solid fa-location-dot"></i> Auto-detected
+                                    </span>
+                                </label>
+                                <input type="text" name="country" id="countryInput"
+                                    placeholder="Detecting location..." readonly required>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 2: Academic Background -->
+                    <section class="form-step" data-title="Academic Background"
+                        data-description="Help us understand your current education level.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Education Level <span class="req-star">*</span></label>
+                                <select name="educationLevel" required>
+                                    <option value="">Select level</option>
+                                    <option>High School</option>
+                                    <option>Diploma / Certificate</option>
+                                    <option>Bachelor's Degree</option>
+                                    <option>Master's Degree</option>
+                                    <option>PhD / Doctorate</option>
+                                    <option>Self-taught</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Current School / Institution <span class="optional-label">(optional)</span></label>
+                                <input type="text" name="school" placeholder="Name of your school">
+                            </div>
+
+                            <div class="input-box">
+                                <label>Field of Study <span class="req-star">*</span></label>
+                                <input type="text" name="fieldOfStudy" placeholder="e.g. Computer Science" required>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Graduation Year <span class="req-star">*</span></label>
+                                <select name="graduationYear" required>
+                                    <option value="">Select year</option>
+                                    <option>Still in school</option>
+                                    <option>2024</option>
+                                    <option>2023</option>
+                                    <option>2022</option>
+                                    <option>2021</option>
+                                    <option>2020 or earlier</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 3: Learning Goals -->
+                    <section class="form-step" data-title="Learning Goals"
+                        data-description="What do you want to achieve with IMPACTECH ACADEMY? (Select at least one)">
+                        <div class="check-grid">
+                            <label><input type="checkbox" name="goals" value="Get a Job"> Get a Job</label>
+                            <label><input type="checkbox" name="goals" value="Freelancing"> Start Freelancing</label>
+                            <label><input type="checkbox" name="goals" value="Build a Business"> Build a Business</label>
+                            <label><input type="checkbox" name="goals" value="Upgrade Skills"> Upgrade My Skills</label>
+                            <label><input type="checkbox" name="goals" value="Earn Online"> Earn Online</label>
+                            <label><input type="checkbox" name="goals" value="Remote Work"> Get Remote Work</label>
+                            <label><input type="checkbox" name="goals" value="AI Mastery"> Master AI Tools</label>
+                            <label><input type="checkbox" name="goals" value="Personal Growth"> Personal Growth</label>
+                        </div>
+                    </section>
+
+                    <!-- STEP 4: Course Interest -->
+                    <section class="form-step" data-title="Course Interest"
+                        data-description="Search and pick the topics you want to learn. (Select at least one)">
+
+                        <div class="course-search-wrap">
+                            <div class="course-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="courseSearch" placeholder="Search e.g. Python, Design, Marketing...">
+                            </div>
+                            <div class="course-meta">
+                                <span id="courseCount" class="course-count">0 selected</span>
+                                <button type="button" class="course-clear-btn" id="courseClearBtn">Clear all</button>
+                            </div>
+                        </div>
+
+                        <div class="course-categories" id="courseCategories">
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-robot"></i> AI &amp; Automation</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="AI Automation"> AI Automation</label>
+                                    <label><input type="checkbox" name="courses" value="ChatGPT Mastery"> ChatGPT Mastery</label>
+                                    <label><input type="checkbox" name="courses" value="Prompt Engineering"> Prompt Engineering</label>
+                                    <label><input type="checkbox" name="courses" value="AI Tools for Business"> AI Tools for Business</label>
+                                    <label><input type="checkbox" name="courses" value="Workflow Automation"> Workflow Automation</label>
+                                    <label><input type="checkbox" name="courses" value="Make & Zapier"> Make &amp; Zapier</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-code"></i> Tech &amp; Development</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Web Development"> Web Development</label>
+                                    <label><input type="checkbox" name="courses" value="Frontend Development"> Frontend Development</label>
+                                    <label><input type="checkbox" name="courses" value="Backend Development"> Backend Development</label>
+                                    <label><input type="checkbox" name="courses" value="Python Programming"> Python Programming</label>
+                                    <label><input type="checkbox" name="courses" value="JavaScript"> JavaScript</label>
+                                    <label><input type="checkbox" name="courses" value="Mobile App Development"> Mobile App Dev</label>
+                                    <label><input type="checkbox" name="courses" value="WordPress"> WordPress</label>
+                                    <label><input type="checkbox" name="courses" value="No-Code Tools"> No-Code Tools</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-bullhorn"></i> Marketing &amp; Growth</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Digital Marketing"> Digital Marketing</label>
+                                    <label><input type="checkbox" name="courses" value="Social Media Management"> Social Media Mgt</label>
+                                    <label><input type="checkbox" name="courses" value="Content Marketing"> Content Marketing</label>
+                                    <label><input type="checkbox" name="courses" value="Email Marketing"> Email Marketing</label>
+                                    <label><input type="checkbox" name="courses" value="SEO"> SEO</label>
+                                    <label><input type="checkbox" name="courses" value="Paid Ads"> Paid Ads (Meta/Google)</label>
+                                    <label><input type="checkbox" name="courses" value="Affiliate Marketing"> Affiliate Marketing</label>
+                                    <label><input type="checkbox" name="courses" value="Influencer Marketing"> Influencer Marketing</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-pen-nib"></i> Design &amp; Creative</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Graphic Design"> Graphic Design</label>
+                                    <label><input type="checkbox" name="courses" value="UI UX Design"> UI/UX Design</label>
+                                    <label><input type="checkbox" name="courses" value="Canva Design"> Canva Design</label>
+                                    <label><input type="checkbox" name="courses" value="Video Editing"> Video Editing</label>
+                                    <label><input type="checkbox" name="courses" value="Motion Graphics"> Motion Graphics</label>
+                                    <label><input type="checkbox" name="courses" value="Brand Identity"> Brand Identity</label>
+                                    <label><input type="checkbox" name="courses" value="Content Creation"> Content Creation</label>
+                                    <label><input type="checkbox" name="courses" value="Photography Editing"> Photography Editing</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-briefcase"></i> Business &amp; Admin</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Virtual Assistant"> Virtual Assistant</label>
+                                    <label><input type="checkbox" name="courses" value="Data Entry"> Data Entry &amp; Admin</label>
+                                    <label><input type="checkbox" name="courses" value="CRM Management"> CRM Management</label>
+                                    <label><input type="checkbox" name="courses" value="Project Management"> Project Management</label>
+                                    <label><input type="checkbox" name="courses" value="Customer Service"> Customer Service</label>
+                                    <label><input type="checkbox" name="courses" value="Business Communication"> Business Communication</label>
+                                    <label><input type="checkbox" name="courses" value="Executive Assistance"> Executive Assistance</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-pen"></i> Writing &amp; Communication</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Copywriting"> Copywriting</label>
+                                    <label><input type="checkbox" name="courses" value="Blog Writing"> Blog Writing</label>
+                                    <label><input type="checkbox" name="courses" value="Ghostwriting"> Ghostwriting</label>
+                                    <label><input type="checkbox" name="courses" value="Scriptwriting"> Scriptwriting</label>
+                                    <label><input type="checkbox" name="courses" value="Proofreading"> Proofreading &amp; Editing</label>
+                                    <label><input type="checkbox" name="courses" value="Technical Writing"> Technical Writing</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-chart-line"></i> Finance &amp; Data</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Data Analysis"> Data Analysis</label>
+                                    <label><input type="checkbox" name="courses" value="Excel & Google Sheets"> Excel &amp; Google Sheets</label>
+                                    <label><input type="checkbox" name="courses" value="Bookkeeping"> Bookkeeping</label>
+                                    <label><input type="checkbox" name="courses" value="Financial Literacy"> Financial Literacy</label>
+                                    <label><input type="checkbox" name="courses" value="Ecommerce"> Ecommerce &amp; Dropshipping</label>
+                                    <label><input type="checkbox" name="courses" value="Online Business"> Online Business Setup</label>
+                                </div>
+                            </div>
+
+                            <div class="course-category">
+                                <div class="category-label"><i class="fa-solid fa-star"></i> Personal Development</div>
+                                <div class="check-grid">
+                                    <label><input type="checkbox" name="courses" value="Freelancing"> Freelancing</label>
+                                    <label><input type="checkbox" name="courses" value="Public Speaking"> Public Speaking</label>
+                                    <label><input type="checkbox" name="courses" value="Leadership Skills"> Leadership Skills</label>
+                                    <label><input type="checkbox" name="courses" value="Time Management"> Time Management</label>
+                                    <label><input type="checkbox" name="courses" value="Remote Work Skills"> Remote Work Skills</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="course-no-results" id="courseNoResults" style="display:none;">
+                            <i class="fa-solid fa-face-meh"></i>
+                            <p>No courses match your search.</p>
+                        </div>
+
+                    </section>
+
+                    <!-- STEP 5: Learning Preferences -->
+                    <section class="form-step" data-title="Learning Preferences"
+                        data-description="Set up how you want to learn best.">
+                        <div class="form-grid">
+                            <div class="input-box">
+                                <label>Learning Style <span class="req-star">*</span></label>
+                                <select name="learningStyle" required>
+                                    <option value="">Select style</option>
+                                    <option>Video lessons</option>
+                                    <option>Text &amp; reading</option>
+                                    <option>Live classes</option>
+                                    <option>Hands-on projects</option>
+                                    <option>Mixed</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Hours Per Week Available <span class="req-star">*</span></label>
+                                <select name="hoursPerWeek" required>
+                                    <option value="">Select hours</option>
+                                    <option>Less than 3 hours</option>
+                                    <option>3 - 7 hours</option>
+                                    <option>7 - 15 hours</option>
+                                    <option>15 - 30 hours</option>
+                                    <option>Full-time (30+)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Preferred Schedule <span class="req-star">*</span></label>
+                                <select name="schedule" required>
+                                    <option value="">Select schedule</option>
+                                    <option>Morning (6am - 12pm)</option>
+                                    <option>Afternoon (12pm - 5pm)</option>
+                                    <option>Evening (5pm - 10pm)</option>
+                                    <option>Late night (10pm+)</option>
+                                    <option>Flexible / anytime</option>
+                                </select>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Primary Device <span class="req-star">*</span></label>
+                                <select name="device" required>
+                                    <option value="">Select device</option>
+                                    <option>Smartphone only</option>
+                                    <option>Laptop / PC</option>
+                                    <option>Tablet</option>
+                                    <option>Both phone &amp; laptop</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STEP 6: Plan Selection -->
+                    <section class="form-step" data-title="Choose Your Plan"
+                        data-description="Pick the plan that fits your learning goals.">
+
+                        <div class="billing-toggle-wrap">
+                            <span class="billing-label active" id="labelMonthly">Monthly</span>
+
+                            <button type="button" class="billing-toggle" id="billingToggle"
+                                aria-pressed="false" aria-label="Switch billing period">
+                                <span class="toggle-thumb"></span>
+                            </button>
+
+                            <span class="billing-label" id="labelYearly">
+                                Yearly
+                                <span class="billing-save-badge">Save 2 months</span>
+                            </span>
+                        </div>
+
+                        <div class="plan-grid">
+
+                            <!-- STARTER -->
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Starter">
+                                <div class="plan-inner">
+                                    <div class="plan-top">
+                                        <div class="plan-icon">
+                                            <i class="fa-solid fa-seedling"></i>
+                                        </div>
+                                        <h3>Starter</h3>
+                                        <p>Access free beginner resources, community access, and basic course previews.</p>
+                                    </div>
+                                    <div class="plan-price">
+                                        <strong class="price-monthly">Free</strong>
+                                        <strong class="price-yearly" style="display:none;">Free</strong>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- PRO -->
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Pro">
+                                <div class="plan-inner">
+                                    <span class="plan-badge">Popular</span>
+                                    <div class="plan-top">
+                                        <div class="plan-icon">
+                                            <i class="fa-solid fa-bolt"></i>
+                                        </div>
+                                        <h3>Pro</h3>
+                                        <p>Full course access, certificates, mentorship sessions, and job board access.</p>
+                                    </div>
+                                    <div class="plan-price">
+                                        <strong class="price-monthly">$19<small>/mo</small></strong>
+                                        <strong class="price-yearly" style="display:none;">
+                                            $159<small>/yr</small>
+                                            <span class="price-strike">$228</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- ELITE -->
+                            <label class="plan-card">
+                                <input type="radio" name="plan" value="Elite">
+                                <div class="plan-inner">
+                                    <span class="plan-badge elite-badge">Best Value</span>
+                                    <div class="plan-top">
+                                        <div class="plan-icon">
+                                            <i class="fa-solid fa-crown"></i>
+                                        </div>
+                                        <h3>Elite</h3>
+                                        <p>Everything in Pro + 1-on-1 coaching, live classes, priority support &amp; placement.</p>
+                                    </div>
+                                    <div class="plan-price">
+                                        <strong class="price-monthly">$49<small>/mo</small></strong>
+                                        <strong class="price-yearly" style="display:none;">
+                                            $409<small>/yr</small>
+                                            <span class="price-strike">$588</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </label>
+
+                        </div>
+
+                        <input type="hidden" name="billingCycle" id="billingCycleInput" value="monthly">
+
+                    </section>
+
+                    <!-- STEP 7: Finish Setup -->
+                    <section class="form-step" data-title="Finish Setup"
+                        data-description="Review and complete your student profile.">
+                        <div class="finish-box">
+                            <div class="finish-panel">
+
+                                <div class="finish-icon">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+
+                                <h3>You're ready to learn</h3>
+
+                                <p>
+                                    Your student profile is set up. After finishing, you'll get access to your
+                                    learning dashboard, recommended courses, and your personalised roadmap.
+                                </p>
+
+                                <div class="finish-mini-grid">
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-book-open"></i>
+                                        <h4>Start Learning</h4>
+                                        <span>Access your courses</span>
+                                    </div>
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-award"></i>
+                                        <h4>Earn Certificates</h4>
+                                        <span>Prove your skills</span>
+                                    </div>
+                                    <div class="finish-mini-card">
+                                        <i class="fa-solid fa-users"></i>
+                                        <h4>Join Community</h4>
+                                        <span>Learn with others</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-box" id="summaryBox">
+                                    No setup data yet.
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="setup-actions">
+                        <button type="button" class="back-btn" id="backBtn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                        <button type="button" class="next-btn" id="nextBtn">
+                            Next
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <button type="submit" class="finish-btn" id="finishBtn" style="display:none;">
+                            <span id="finishBtnText">Finish Setup</span>
+                            <i class="fa-solid fa-check" id="finishBtnIcon"></i>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="setup-toast" id="setupToast"></div>
+
+    <script src="set-up.js"></script>
+</body>
+
+</html>

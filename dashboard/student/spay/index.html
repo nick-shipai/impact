@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | IMPACTECH ACADEMY</title>
+
+    <link rel="stylesheet" href="spay.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- AUTH LOADING OVERLAY -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-overlay-inner">
+            <div class="auth-spinner"></div>
+            <p>Verifying your session...</p>
+        </div>
+    </div>
+
+    <div class="setup-page">
+
+        <!-- ===================== LEFT SIDEBAR ===================== -->
+        <aside class="setup-side">
+            <div class="brand">
+                <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+                <h2>IMPACTECH</h2>
+            </div>
+
+            <div class="side-content">
+                <span>SECURE CHECKOUT</span>
+                <h1>Complete your subscription.</h1>
+                <p>
+                    You're one step away from unlocking your full learning experience.
+                    Your payment is secured with 256-bit SSL encryption.
+                </p>
+            </div>
+
+            <!-- ORDER SUMMARY -->
+            <div class="order-summary" id="orderSummary">
+                <div class="order-summary-head">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Order Summary</span>
+                </div>
+
+                <div class="order-row" id="orderPlanRow">
+                    <span class="order-label">Plan</span>
+                    <span class="order-value" id="orderPlan">—</span>
+                </div>
+
+                <div class="order-row" id="orderCycleRow">
+                    <span class="order-label">Billing</span>
+                    <span class="order-value" id="orderCycle">—</span>
+                </div>
+
+                <div class="order-divider"></div>
+
+                <div class="order-row order-total">
+                    <span class="order-label">Total</span>
+                    <span class="order-value" id="orderTotal">—</span>
+                </div>
+
+                <div class="order-rate-note" id="orderRateNote" style="display:none;"></div>
+            </div>
+
+            <!-- SECURITY NOTICE -->
+            <div class="side-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <h3>100% Secure Payment</h3>
+                    <p>All transactions are encrypted and protected. We never store your card details.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===================== MAIN CONTENT ===================== -->
+        <main class="setup-main">
+
+            <div class="setup-card">
+
+                <!-- PAGE HEADER -->
+                <div class="setup-header">
+                    <div>
+                        <h2>Payment Details</h2>
+                        <p>Choose how you want to pay and complete your order.</p>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fa-solid fa-lock"></i>
+                        SSL Secured
+                    </div>
+                </div>
+
+                <!-- PLAN REMINDER PILL -->
+                <div class="plan-reminder" id="planReminder">
+                    <div class="plan-reminder-icon" id="planReminderIcon">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div class="plan-reminder-info">
+                        <span id="planReminderName">Loading plan...</span>
+                        <small id="planReminderPrice">—</small>
+                        <small id="planReminderSecondary" style="display:none;" class="plan-reminder-secondary"></small>
+                    </div>
+                    <a href="../set-up/" class="plan-change-link">Change</a>
+                </div>
+
+                <!-- COUNTRY PAYMENT NOTE (shown/hidden by JS) -->
+                <div class="country-pay-note" id="countryPayNote" style="display:none;"></div>
+
+                <!-- PAYMENT TABS -->
+                <div class="pay-tabs">
+                    <button class="pay-tab active" id="tabCard" type="button" onclick="switchTab('card')">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Pay with Card
+                    </button>
+                    <button class="pay-tab" id="tabBank" type="button" onclick="switchTab('bank')">
+                        <i class="fa-solid fa-building-columns"></i>
+                        Bank Transfer
+                    </button>
+                </div>
+
+                <!-- ============== CARD PAYMENT PANEL ============== -->
+                <div class="pay-panel active" id="panelCard">
+
+                    <div class="card-cta-panel">
+
+                        <div class="card-cta-icon-wrap">
+                            <div class="card-cta-icon">
+                                <i class="fa-solid fa-credit-card"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="card-cta-title">Pay with Your Card</h3>
+                        <p class="card-cta-desc">
+                            Click the button below to securely complete your payment using any debit or credit card.
+                            You'll be taken to a secure Flutterwave-powered checkout — no card details are ever stored by us.
+                        </p>
+
+                        <button type="button" class="pay-btn card-cta-btn" id="cardPayBtn" onclick="launchFlutterwaveCardPayment()">
+                            <i class="fa-solid fa-credit-card" id="cardPayBtnIcon"></i>
+                            <span id="cardPayBtnText">Continue with Card</span>
+                        </button>
+
+                        <div class="card-cta-badges">
+                            <span><i class="fa-solid fa-lock"></i> 256-bit SSL</span>
+                            <span><i class="fa-brands fa-cc-visa"></i> Visa</span>
+                            <span><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span>
+                            <span><i class="fa-brands fa-cc-amex"></i> Amex</span>
+                            <span><i class="fa-brands fa-cc-discover"></i> Discover</span>
+                        </div>
+
+                        <p class="pay-footnote card-cta-footnote">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Secured by Flutterwave &middot; We never store your card details
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ============ BANK TRANSFER PANEL ============ -->
+                <div class="pay-panel" id="panelBank">
+
+                    <div class="bank-intro">
+                        <div class="bank-intro-icon">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div>
+                            <h3>Pay via Bank Transfer</h3>
+                            <p>A dedicated account number will be generated just for you. Transfer the exact amount shown and your subscription activates automatically.</p>
+                        </div>
+                    </div>
+
+                    <!-- VIRTUAL ACCOUNT: LOADING STATE -->
+                    <div class="va-loading" id="vaLoading">
+                        <div class="va-spinner"></div>
+                        <div>
+                            <p>Generating your dedicated account number...</p>
+                            <small>This takes a few seconds. Please wait.</small>
+                        </div>
+                    </div>
+
+                    <!-- VIRTUAL ACCOUNT: ERROR STATE -->
+                    <div class="va-error" id="vaError" style="display:none;">
+                        <div class="va-error-icon">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+                        <div>
+                            <p id="vaErrorMsg">Could not generate account number. Please try again.</p>
+                            <button class="va-retry-btn" type="button" onclick="generateVirtualAccount()">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- VIRTUAL ACCOUNT: DETAILS (populated by JS) -->
+                    <div class="bank-details-box" id="bankDetailsBox" style="display:none;">
+
+                        <!-- Virtual account badge -->
+                        <div class="va-badge-row">
+                            <div class="va-badge">
+                                <i class="fa-solid fa-bolt"></i>
+                                Flutterwave Virtual Account &middot; One-time use
+                            </div>
+                            <div class="va-expiry-wrap" id="vaExpiryWrap" style="display:none;">
+                                <i class="fa-solid fa-clock"></i>
+                                Expires in <span id="vaExpiryCountdown">—</span>
+                            </div>
+                        </div>
+
+                        <div class="bank-detail-row">
+                            <span class="bank-detail-label">Bank Name</span>
+                            <div class="bank-detail-value-wrap">
+                                <span class="bank-detail-value" id="bankName">—</span>
+                                <button class="copy-btn" type="button" onclick="copyValue('bankName')">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bank-detail-row">
+                            <span class="bank-detail-label">Account Name</span>
+                            <div class="bank-detail-value-wrap">
+                                <span class="bank-detail-value" id="bankAccName">—</span>
+                                <button class="copy-btn" type="button" onclick="copyValue('bankAccName')">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bank-detail-row highlight-row">
+                            <span class="bank-detail-label">Account Number</span>
+                            <div class="bank-detail-value-wrap">
+                                <span class="bank-detail-value bank-acc-num" id="bankAccNum">—</span>
+                                <button class="copy-btn" type="button" onclick="copyValue('bankAccNum')">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bank-detail-row">
+                            <span class="bank-detail-label">Amount to Pay</span>
+                            <div class="bank-detail-value-wrap">
+                                <div class="bank-amount-col">
+                                    <span class="bank-detail-value bank-amount" id="bankAmount">—</span>
+                                    <small class="bank-amount-sub" id="bankAmountSub" style="display:none;"></small>
+                                </div>
+                                <button class="copy-btn" type="button" onclick="copyValue('bankAmount')">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bank-detail-row">
+                            <span class="bank-detail-label">Reference / Narration</span>
+                            <div class="bank-detail-value-wrap">
+                                <span class="bank-detail-value" id="bankRef">—</span>
+                                <button class="copy-btn" type="button" onclick="copyValue('bankRef')">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Regenerate button -->
+                        <div class="va-regenerate-row">
+                            <button class="va-regenerate-btn" type="button" onclick="generateVirtualAccount(true)">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Generate New Account
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- IMPORTANT TRANSFER NOTE -->
+                    <div class="narration-note" id="vaNarrationNote" style="display:none;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Transfer the <strong>exact</strong> amount shown. Using a different amount or a different account may delay activation.
+                    </div>
+
+                    <!-- PROOF UPLOAD -->
+                    <div class="proof-section">
+                        <div class="proof-section-title">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            Upload Proof of Payment
+                            <span class="optional-badge">Optional but speeds up confirmation</span>
+                        </div>
+
+                        <label class="proof-upload-area" id="proofUploadArea">
+                            <input type="file" id="proofFile" name="proofFile" accept="image/*,.pdf" style="display:none;">
+                            <div class="proof-placeholder" id="proofPlaceholder">
+                                <i class="fa-solid fa-image"></i>
+                                <span>Click to upload receipt or screenshot</span>
+                                <small>JPG, PNG or PDF · Max 5MB</small>
+                            </div>
+                            <div class="proof-preview" id="proofPreview" style="display:none;">
+                                <i class="fa-solid fa-file-check"></i>
+                                <span id="proofFileName">file.jpg</span>
+                                <button class="proof-remove-btn" type="button" id="proofRemoveBtn">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </label>
+
+                        <div class="narration-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            Always include your <strong>Payment Reference</strong> as the narration when making the transfer.
+                        </div>
+                    </div>
+
+                    <!-- BANK PAY BUTTON -->
+                    <div class="pay-action">
+                        <button type="button" class="pay-btn bank-pay-btn" id="bankPayBtn" disabled>
+                            <span id="bankPayBtnText">I Have Made Payment</span>
+                            <i class="fa-solid fa-check" id="bankPayBtnIcon"></i>
+                        </button>
+                        <p class="pay-footnote">
+                            <i class="fa-solid fa-clock"></i>
+                            Your subscription activates automatically once Flutterwave confirms the transfer
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- ACCEPTED METHODS STRIP -->
+                <div class="accepted-methods">
+                    <span>Accepted:</span>
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-brands fa-cc-amex"></i>
+                    <i class="fa-brands fa-cc-discover"></i>
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="setup-toast" id="setupToast"></div>
+
+    <!-- Flutterwave Inline JS -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="spay.js"></script>
+</body>
+
+</html>

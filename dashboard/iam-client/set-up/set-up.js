@@ -45,12 +45,36 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../signin";
+        window.location.href = "../../../signin/";
         return;
     }
 
-    initClientSetup(auth.user);
     console.log("Authenticated user:", auth.user);
+
+    var userType = (auth.user?.accountType || "").toLowerCase().trim();
+    if (userType !== "client") {
+        window.location.href = "/404.html";
+        return;
+    }
+
+    if (auth.user?.setup?.completed) {
+        window.location.href = "../../iam-client/";
+        return;
+    }
+
+    try {
+        const checkRes = await fetch(`${API_URL}/api/load-client-set-up-data`, {
+            method: "GET",
+            credentials: "include"
+        });
+        const checkData = await checkRes.json().catch(() => ({}));
+        if (checkData.setupCompleted) {
+            window.location.href = "../../iam-client/";
+            return;
+        }
+    } catch (e) {}
+
+    initClientSetup(auth.user);
 });
 
 function initClientSetup(authUser) {

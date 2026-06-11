@@ -87,8 +87,18 @@ function renderProfileDashBtn(user) {
         ? `<img src="${photoURL}" alt="${firstName}" loading="lazy">`
         : `<span class="avatar-initial">${initials}</span>`;
 
+    // Determine dashboard path based on user type
+    let dashboardPath = "./dashboard/#get-started";
+    if (user.accountType === "freelancer") {
+        dashboardPath = "./dashboard/freelancer";
+    } else if (user.accountType === "client") {
+        dashboardPath = "./dashboard/iam-client";
+    } else if (user.accountType === "student") {
+        dashboardPath = "./dashboard/student";
+    }
+
     const btnHTML = `
-        <a href="./dashboard/#get-started" class="profile-dash-btn" aria-label="Go to dashboard">
+        <a href="${dashboardPath}" class="profile-dash-btn" aria-label="Go to dashboard">
             <span class="profile-dash-avatar">${avatarInner}</span>
             <span class="profile-dash-text">
                 <span class="profile-dash-name">${firstName}</span>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing | IMPACTECH ACADEMY</title>
+    <link rel="stylesheet" href="pricing.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="pr-nav">
+    <div class="pr-nav-inner">
+        <a href="../courses/" class="pr-nav-brand">
+            <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+            <span>Impactech</span>
+        </a>
+        <div class="pr-nav-links">
+            <a href="../courses/">Courses</a>
+            <a href="../courses/#learning">My Learning</a>
+        </div>
+        <div class="pr-nav-right">
+            <a href="../courses/" class="pr-nav-back"><i class="fa-solid fa-arrow-left"></i> Back to Courses</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section class="pr-hero">
+    <div class="pr-hero-bg">
+        <div class="pr-shape pr-shape-1"></div>
+        <div class="pr-shape pr-shape-2"></div>
+        <div class="pr-shape pr-shape-3"></div>
+        <div class="pr-shape pr-shape-4"></div>
+    </div>
+    <div class="pr-hero-content">
+        <span class="pr-hero-tag"><i class="fa-solid fa-crown"></i> Pricing Plans</span>
+        <h1>Upgrade Your Learning Experience</h1>
+        <p>Choose the plan that fits your learning journey and unlock premium features.</p>
+    </div>
+</section>
+
+<!-- ===================== BILLING TOGGLE + PRICING CARDS ===================== -->
+<section class="pr-section pr-pricing-section">
+    <div class="pr-container">
+
+        <div class="pr-billing-toggle-wrap">
+            <span class="pr-billing-label active" id="prLabelMonthly">Monthly</span>
+            <button type="button" class="pr-billing-toggle" id="prBillingToggle" aria-pressed="false" aria-label="Switch billing period">
+                <span class="pr-toggle-thumb"></span>
+            </button>
+            <span class="pr-billing-label" id="prLabelYearly">
+                Yearly
+                <span class="pr-save-badge">Save 2 months</span>
+            </span>
+        </div>
+
+        <div class="pr-plan-grid">
+
+            <!-- FREE -->
+            <div class="pr-plan-card" data-plan="free">
+                <div class="pr-plan-inner">
+                    <div class="pr-plan-header">
+                        <div class="pr-plan-icon pr-plan-icon-free">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <h3>Free</h3>
+                        <p>Get started with basic courses and community access.</p>
+                    </div>
+                    <div class="pr-plan-price">
+                        <span class="price-monthly">Free</span>
+                        <span class="price-yearly" style="display:none;">Free</span>
+                    </div>
+                    <ul class="pr-plan-features">
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Access to free courses</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Basic learning tools</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Community access</li>
+                    </ul>
+                    <div class="pr-plan-action">
+                        <button class="pr-btn pr-btn-outline" disabled>Current Plan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRO -->
+            <div class="pr-plan-card pr-plan-featured" data-plan="pro">
+                <div class="pr-plan-popular-badge">Most Popular</div>
+                <div class="pr-plan-inner">
+                    <div class="pr-plan-header">
+                        <div class="pr-plan-icon pr-plan-icon-pro">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3>Pro</h3>
+                        <p>Unlock premium courses and accelerate your growth.</p>
+                    </div>
+                    <div class="pr-plan-price">
+                        <span class="price-monthly"><strong>$0.10</strong><small>/mo</small></span>
+                        <span class="price-yearly" style="display:none;"><strong>$2.00</strong><small>/yr</small><span class="pr-price-strike">$1.20</span></span>
+                    </div>
+                    <ul class="pr-plan-features">
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Access to premium courses</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Advanced learning tools</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Better course recommendations</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Early access to features</li>
+                    </ul>
+                    <div class="pr-plan-action">
+                        <button class="pr-btn pr-btn-primary pr-btn-upgrade" data-plan="pro">Upgrade to Pro</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ELITE -->
+            <div class="pr-plan-card" data-plan="elite">
+                <div class="pr-plan-elite-badge">Best Value</div>
+                <div class="pr-plan-inner">
+                    <div class="pr-plan-header">
+                        <div class="pr-plan-icon pr-plan-icon-elite">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <h3>Elite</h3>
+                        <p>The ultimate learning experience with exclusive perks.</p>
+                    </div>
+                    <div class="pr-plan-price">
+                        <span class="price-monthly"><strong>$0.50</strong><small>/mo</small></span>
+                        <span class="price-yearly" style="display:none;"><strong>$4.00</strong><small>/yr</small><span class="pr-price-strike">$6.00</span></span>
+                    </div>
+                    <ul class="pr-plan-features">
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Everything in Pro</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Exclusive content</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> VIP support</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Premium community access</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Highest platform benefits</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Join up to 7 courses</li>
+                    </ul>
+                    <div class="pr-plan-action">
+                        <button class="pr-btn pr-btn-elite pr-btn-upgrade" data-plan="elite">Upgrade to Elite</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================== COMPARISON TABLE ===================== -->
+<section class="pr-section pr-comparison-section">
+    <div class="pr-container">
+        <div class="pr-section-header">
+            <span class="pr-section-tag">Compare Plans</span>
+            <h2>See What's Included</h2>
+            <p>A detailed breakdown of every feature across all plans.</p>
+        </div>
+        <div class="pr-table-wrap">
+            <table class="pr-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Free</th>
+                        <th class="pr-col-highlight">Pro</th>
+                        <th>Elite</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Premium Courses</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                    <tr>
+                        <td>Priority Support</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                    <tr>
+                        <td>Exclusive Content</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                    <tr>
+                        <td>Advanced Features</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                    <tr>
+                        <td>VIP Access</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                    <tr>
+                        <td>Join up to 20 courses</td>
+                        <td><span class="pr-tx pr-tx-no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+                        <td class="pr-col-highlight"><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                        <td><span class="pr-tx pr-tx-yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="pr-section pr-testimonials-section">
+    <div class="pr-container">
+        <div class="pr-section-header">
+            <span class="pr-section-tag"><i class="fa-solid fa-heart"></i> Testimonials</span>
+            <h2>Loved by Students Worldwide</h2>
+            <p>See what our learners have to say about their experience.</p>
+        </div>
+        <div class="pr-testimonials-grid">
+            <div class="pr-testimonial-card">
+                <div class="pr-stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Impactech completely changed my career trajectory. The Pro plan is worth every penny — I landed my first tech job within 3 months."</p>
+                <div class="pr-testimonial-author">
+                    <div class="pr-avatar pr-avatar-1">A</div>
+                    <div>
+                        <strong>Amina Bello</strong>
+                        <span>Pro Member</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pr-testimonial-card">
+                <div class="pr-stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"The Elite mentorship sessions were a game-changer. Having direct access to industry experts helped me avoid common mistakes."</p>
+                <div class="pr-testimonial-author">
+                    <div class="pr-avatar pr-avatar-2">K</div>
+                    <div>
+                        <strong>Kelechi Okoro</strong>
+                        <span>Elite Member</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pr-testimonial-card">
+                <div class="pr-stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"The course quality is outstanding. I've tried many platforms but Impactech has the best content and community support."</p>
+                <div class="pr-testimonial-author">
+                    <div class="pr-avatar pr-avatar-3">T</div>
+                    <div>
+                        <strong>Tunde Adewale</strong>
+                        <span>Pro Member</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="pr-section pr-faq-section">
+    <div class="pr-container">
+        <div class="pr-section-header">
+            <span class="pr-section-tag"><i class="fa-solid fa-circle-question"></i> FAQ</span>
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about our plans and billing.</p>
+        </div>
+        <div class="pr-faq-list">
+            <div class="pr-faq-item">
+                <button class="pr-faq-question">
+                    <span>What happens after I upgrade?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="pr-faq-answer">
+                    <p>Immediately after upgrading, you'll unlock access to all features included in your chosen plan. Premium courses, advanced tools, and priority support become available right away. No waiting period — start learning instantly.</p>
+                </div>
+            </div>
+            <div class="pr-faq-item">
+                <button class="pr-faq-question">
+                    <span>Can I downgrade later?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="pr-faq-answer">
+                    <p>Yes, you can downgrade your plan at any time from your account settings. Your current plan features will remain active until the end of your billing period, then your account will switch to the lower tier.</p>
+                </div>
+            </div>
+            <div class="pr-faq-item">
+                <button class="pr-faq-question">
+                    <span>Is my subscription automatically renewed?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="pr-faq-answer">
+                    <p>Yes, subscriptions renew automatically at the end of each billing cycle. You'll receive a reminder email before renewal. You can cancel auto-renewal anytime from your dashboard settings.</p>
+                </div>
+            </div>
+            <div class="pr-faq-item">
+                <button class="pr-faq-question">
+                    <span>What payment methods are supported?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="pr-faq-answer">
+                    <p>We support multiple payment methods including debit/credit cards, bank transfers, and mobile money. All transactions are securely processed through our trusted payment partners.</p>
+                </div>
+            </div>
+            <div class="pr-faq-item">
+                <button class="pr-faq-question">
+                    <span>Do I get a refund if I'm not satisfied?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="pr-faq-answer">
+                    <p>We offer a 7-day money-back guarantee. If you're not satisfied with your upgrade within the first 7 days, contact our support team for a full refund — no questions asked.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="pr-section pr-cta-section">
+    <div class="pr-cta-bg">
+        <div class="pr-shape pr-shape-cta-1"></div>
+        <div class="pr-shape pr-shape-cta-2"></div>
+    </div>
+    <div class="pr-container pr-cta-content">
+        <h2>Ready to Unlock More?</h2>
+        <p>Join thousands of learners who are already accelerating their careers with Impactech.</p>
+        <div class="pr-cta-buttons">
+            <button class="pr-btn pr-btn-cta-primary pr-btn-upgrade" data-plan="pro">Upgrade to Pro</button>
+            <button class="pr-btn pr-btn-cta-secondary pr-btn-upgrade" data-plan="elite">Upgrade to Elite</button>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="pr-footer">
+    <div class="pr-container">
+        <p>&copy; 2026 IMPACTECH ACADEMY. All rights reserved.</p>
+    </div>
+</footer>
+
+<div class="pr-toast" id="prToast"></div>
+
+<script src="pricing.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Course... | IMPACTECH ACADEMY</title>
+    <link rel="stylesheet" href="view-course.css">
+    <link rel="stylesheet" href="player.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="vc-nav">
+    <div class="vc-nav-inner">
+        <a href="../courses/" class="vc-nav-brand">
+            <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH">
+            <span>Impactech</span>
+        </a>
+        <div class="vc-nav-right">
+            <a href="../courses/" class="vc-nav-back"><i class="fa-solid fa-arrow-left"></i> Back to Courses</a>
+        </div>
+    </div>
+</nav>
+
+<!-- LOADING STATE -->
+<div class="vc-loading-screen" id="vcLoadingScreen">
+    <div class="vc-loading-spinner">
+        <div class="vc-spinner-ring"></div>
+        <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <p>Loading course...</p>
+</div>
+
+<!-- ERROR STATE -->
+<div class="vc-error-screen" id="vcErrorScreen" style="display:none;">
+    <div class="vc-error-icon"><i class="fa-solid fa-exclamation-triangle"></i></div>
+    <h2 id="vcErrorTitle">Course not found</h2>
+    <p id="vcErrorMsg">The course you're looking for doesn't exist or has been removed.</p>
+    <a href="../courses/" class="vc-error-btn"><i class="fa-solid fa-arrow-left"></i> Back to Courses</a>
+</div>
+
+<!-- COURSE CONTENT (hidden until loaded) -->
+<div id="vcCourseContent" style="display:none;">
+
+    <!-- HERO / THUMBNAIL IMAGE -->
+    <section class="vc-hero" id="vcHero">
+        <div class="vc-hero-media" id="vcMedia">
+            <div class="vc-thumb-placeholder" id="vcThumbPlaceholder">
+                <div class="vc-thumb-icon"><i class="fa-solid fa-image"></i></div>
+                <span class="vc-thumb-label">Course Thumbnail</span>
+            </div>
+            <img id="vcThumbImg" class="vc-thumb-img" style="display:none;" alt="Course Thumbnail">
+        </div>
+        <div class="vc-hero-overlay"></div>
+        <div class="vc-hero-gradient"></div>
+        <div class="vc-shape vc-shape-1"></div>
+        <div class="vc-shape vc-shape-2"></div>
+        <div class="vc-shape vc-shape-3"></div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="vc-main">
+        <div class="vc-container">
+
+            <!-- Breadcrumb -->
+            <div class="vc-breadcrumb" id="vcBreadcrumb">
+                <a href="../courses/">Courses</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="vcBreadcrumbCat">Loading...</span>
+            </div>
+
+            <div class="vc-layout">
+
+                <!-- LEFT: Course Info -->
+                <div class="vc-content">
+
+                    <!-- Title Block -->
+                    <div class="vc-title-block vc-reveal">
+                        <div class="vc-title-row">
+                            <h1 id="vcTitle">Loading...</h1>
+                            <span class="vc-access-badge" id="vcAccessBadge">Free</span>
+                        </div>
+                        <p class="vc-subtitle" id="vcSubtitle"></p>
+                    </div>
+
+                    <!-- Teacher -->
+                    <div class="vc-teacher-card vc-reveal" id="vcTeacherCard">
+                        <div class="vc-teacher-avatar" id="vcTeacherAvatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="vc-teacher-info">
+                            <div class="vc-teacher-name" id="vcTeacherName">Loading...</div>
+                            <div class="vc-teacher-meta-row">
+                                <span class="vc-teacher-status" id="vcTeacherStatus">Instructor</span>
+                                <span class="vc-teacher-separator">&middot;</span>
+                                <span class="vc-teacher-followers" id="vcFollowerCount">0 followers</span>
+                            </div>
+                        </div>
+                        <button class="vc-follow-btn" id="vcFollowBtn"><i class="fa-solid fa-plus"></i> Follow</button>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="vc-stats-row vc-reveal" id="vcStatsRow">
+                        <div class="vc-stat">
+                            <i class="fa-solid fa-users"></i>
+                            <div><strong id="vcStatStudents">0</strong><span>Students</span></div>
+                        </div>
+                        <div class="vc-stat">
+                            <i class="fa-solid fa-eye"></i>
+                            <div><strong id="vcStatViews">0</strong><span>Views</span></div>
+                        </div>
+                        <div class="vc-stat">
+                            <i class="fa-solid fa-book"></i>
+                            <div><strong id="vcStatLessons">0</strong><span>Lessons</span></div>
+                        </div>
+                        <div class="vc-stat">
+                            <i class="fa-solid fa-star"></i>
+                            <div><strong id="vcStatRating">0</strong><span>Rating</span></div>
+                        </div>
+                    </div>
+
+                    <!-- PROMOTIONAL VIDEO -->
+                    <div class="vc-section vc-reveal" id="vcPromoSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-bullhorn"></i> Promotional Video</h2>
+                        <div class="vc-video-player" id="vcPromoPlayer">
+                            <div class="vc-video-embed" id="vcPromoEmbed"></div>
+                            <div class="vc-video-placeholder" id="vcPromoPlaceholder">
+                                <div class="vc-video-placeholder-inner">
+                                    <div class="vc-video-play-ring"><i class="fa-solid fa-play"></i></div>
+                                    <h3>Promotional Video</h3>
+                                    <p>Click to play the course preview</p>
+                                </div>
+                                <div class="vc-video-scanlines"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRAILER VIDEO -->
+                    <div class="vc-section vc-reveal" id="vcTrailerSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-clapperboard"></i> Course Trailer</h2>
+                        <div class="vc-video-player" id="vcTrailerPlayer">
+                            <div class="vc-video-embed" id="vcTrailerEmbed"></div>
+                            <div class="vc-video-placeholder" id="vcTrailerPlaceholder">
+                                <div class="vc-video-placeholder-inner">
+                                    <div class="vc-video-play-ring vc-trailer-ring"><i class="fa-solid fa-play"></i></div>
+                                    <h3>Course Trailer</h3>
+                                    <p>Click to play the course trailer</p>
+                                </div>
+                                <div class="vc-video-scanlines"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="vc-section vc-reveal">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-align-left"></i> About this course</h2>
+                        <div class="vc-description" id="vcDescription"></div>
+                        <button class="vc-read-more-btn" id="vcReadMore" style="display:none;">Read more <i class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="vc-section vc-reveal" id="vcTagsSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-tags"></i> Topics</h2>
+                        <div class="vc-tags" id="vcTags"></div>
+                    </div>
+
+                    <!-- What You'll Learn -->
+                    <div class="vc-section vc-reveal" id="vcOutcomesSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-lightbulb"></i> What You'll Learn</h2>
+                        <div class="vc-outcomes" id="vcOutcomes"></div>
+                    </div>
+
+                    <!-- Curriculum / Lessons -->
+                    <div class="vc-section vc-reveal" id="vcCurriculumSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-list-ol"></i> Curriculum</h2>
+                        <div class="vc-curriculum" id="vcCurriculum"></div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="vc-section vc-reveal" id="vcRequirementsSection" style="display:none;">
+                        <h2 class="vc-section-title"><i class="fa-solid fa-clipboard-list"></i> Requirements</h2>
+                        <div class="vc-requirements" id="vcRequirements"></div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT: Sidebar -->
+                <aside class="vc-sidebar">
+
+                    <!-- Enroll Card -->
+                    <div class="vc-enroll-card vc-reveal" id="vcEnrollCard">
+                        <div class="vc-enroll-price" id="vcEnrollPrice">
+                            <span class="vc-price-current" id="vcPriceDisplay">Free</span>
+                        </div>
+                        <button class="vc-btn vc-btn-enroll" id="vcEnrollBtn">
+                            <i class="fa-solid fa-rocket"></i> Enroll Now
+                        </button>
+                        <p class="vc-enroll-note">Get instant access to all course materials</p>
+                        <div class="vc-enroll-features">
+                            <div class="vc-enroll-feature"><i class="fa-solid fa-check"></i> Full lifetime access</div>
+                            <div class="vc-enroll-feature"><i class="fa-solid fa-check"></i> Certificate of completion</div>
+                            <div class="vc-enroll-feature"><i class="fa-solid fa-check"></i> Access on mobile & desktop</div>
+                            <div class="vc-enroll-feature"><i class="fa-solid fa-check"></i> Downloadable resources</div>
+                        </div>
+                    </div>
+
+                    <!-- Share Card -->
+                    <div class="vc-share-card vc-reveal">
+                        <h3>Share this course</h3>
+                        <div class="vc-share-buttons">
+                            <button class="vc-share-btn" title="Copy link"><i class="fa-solid fa-link"></i></button>
+                            <button class="vc-share-btn" title="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></button>
+                            <button class="vc-share-btn" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+                            <button class="vc-share-btn" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script src="player.js"></script>
+<script src="view-course.js"></script>
+</body>
+</html>

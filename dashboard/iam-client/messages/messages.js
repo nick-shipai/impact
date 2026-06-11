@@ -72,7 +72,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../signin";
+        window.location.href = "../../../signin/";
+        return;
+    }
+
+    var userType = (auth.user?.accountType || "").toLowerCase().trim();
+    if (userType !== "client") {
+        window.location.href = "/404.html";
         return;
     }
 
@@ -1135,6 +1141,9 @@ let INCOMING_CALL = null;
 let WEBRTC_TIMER = null;
 let ACTIVE_CALL_WATCH_TIMER = null;
 let ADDED_ICE_IDS = new Set();
+let RINGTONE_CTX = null;
+let RINGTONE_GAIN = null;
+let RINGTONE_TIMER = null;
 
 const RTC_CONFIG = {
     iceServers: [
@@ -1158,6 +1167,51 @@ const RTC_CONFIG = {
     ],
     iceTransportPolicy: "all"
 };
+
+/* =========================
+   RINGTONE (Web Audio API)
+========================= */
+
+function playRingtone() {
+    if (RINGTONE_CTX) return;
+    try {
+        RINGTONE_CTX = new (window.AudioContext || window.webkitAudioContext)();
+        RINGTONE_GAIN = RINGTONE_CTX.createGain();
+        RINGTONE_GAIN.gain.value = 0.3;
+        RINGTONE_GAIN.connect(RINGTONE_CTX.destination);
+
+        let noteIndex = 0;
+        const notes = [440, 523];
+
+        function playNote() {
+            if (!RINGTONE_CTX) return;
+            const osc = RINGTONE_CTX.createOscillator();
+            osc.type = "sine";
+            osc.frequency.value = notes[noteIndex % 2];
+            osc.connect(RINGTONE_GAIN);
+            osc.start();
+            osc.stop(RINGTONE_CTX.currentTime + 0.25);
+            noteIndex++;
+        }
+
+        playNote();
+        RINGTONE_TIMER = setInterval(playNote, 350);
+    } catch (e) {
+        console.error("playRingtone error:", e);
+    }
+}
+
+function stopRingtone() {
+    if (RINGTONE_TIMER) {
+        clearInterval(RINGTONE_TIMER);
+        RINGTONE_TIMER = null;
+    }
+    if (RINGTONE_CTX) {
+        RINGTONE_CTX.close().catch(() => {});
+        RINGTONE_CTX = null;
+    }
+    RINGTONE_GAIN = null;
+}
 
 /* =========================
    INIT
@@ -1553,9 +1607,11 @@ function showIncomingCallModal(call) {
     }
 
     overlay?.classList.add("active");
+    playRingtone();
 }
 
 function hideIncomingCallModal() {
+    stopRingtone();
     document.getElementById("incomingCallOverlay")?.classList.remove("active");
 }
 

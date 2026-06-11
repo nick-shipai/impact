@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Home | IMPACTECH ACADEMY</title>
+    <link rel="stylesheet" href="student.css">
+    <link rel="icon" href="https://impactacademy.site/images/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<nav class="sh-navbar">
+    <div class="sh-navbar-inner">
+        <div class="sh-brand">
+            <img src="https://impactacademy.site/images/icon.png" alt="IMPACTECH ACADEMY">
+            <span>Impactech</span>
+        </div>
+        <div class="sh-nav-links">
+            <a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="./courses/"><i class="fa-solid fa-book-open"></i> Courses</a>
+            <a href="#learning"><i class="fa-solid fa-play-circle"></i> My Learning</a>
+            <a href="#schedule"><i class="fa-solid fa-calendar-days"></i> Schedule</a>
+            <a href="#certificates"><i class="fa-solid fa-award"></i> Certificates</a>
+        </div>
+        <div class="sh-nav-right">
+            <div class="sh-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search courses...">
+            </div>
+            <button class="sh-notif-btn">
+                <i class="fa-solid fa-bell"></i>
+                <span class="sh-badge"></span>
+            </button>
+            <div class="sh-avatar" id="navAvatar"></div>
+        </div>
+        <button class="sh-hamburger" id="shHamburger">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+    <div class="sh-mobile-menu" id="shMobileMenu">
+        <a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="./courses/"><i class="fa-solid fa-book-open"></i> Courses</a>
+        <a href="#learning"><i class="fa-solid fa-play-circle"></i> My Learning</a>
+        <a href="#schedule"><i class="fa-solid fa-calendar-days"></i> Schedule</a>
+        <a href="#certificates"><i class="fa-solid fa-award"></i> Certificates</a>
+        <a href="./settings"><i class="fa-solid fa-gear"></i> Settings</a>
+        <a href="./logout" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</nav>
+
+<main class="sh-main">
+
+    <section class="sh-hero">
+        <div class="sh-hero-bg"></div>
+        <div class="sh-hero-content">
+            <div class="sh-hero-left">
+                <div class="sh-hero-loading" id="heroLoading">
+                    <div class="sh-hero-loading-inner">
+                        <div class="sh-skeleton sh-skeleton-pill"></div>
+                        <div class="sh-skeleton sh-skeleton-hero-title"></div>
+                        <div class="sh-skeleton sh-skeleton-hero-text"></div>
+                        <div style="display:flex;gap:12px;margin-top:24px">
+                            <div class="sh-skeleton sh-skeleton-btn"></div>
+                            <div class="sh-skeleton sh-skeleton-btn-ghost"></div>
+                        </div>
+                    </div>
+                    <div class="sh-hero-loading-side">
+                        <div class="sh-skeleton sh-skeleton-streak"></div>
+                    </div>
+                </div>
+                <div class="sh-hero-loaded">
+                    <div class="sh-hello-pill">
+                        <i class="fa-solid fa-star"></i>
+                        <span id="greetingText"></span>
+                    </div>
+                    <h1 id="heroName"></h1>
+                    <p id="heroSubtext">You have <strong id="pendingLessons"></strong> pending and a live class at <strong id="nextClassTime"></strong>.</p>
+                    <div class="sh-hero-actions">
+                        <a href="#learning" class="sh-btn-primary">
+                            <i class="fa-solid fa-play"></i>
+                            Continue Learning
+                        </a>
+                        <a href="./courses/" class="sh-btn-ghost">
+                            <i class="fa-solid fa-compass"></i>
+                            Browse Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sh-hero-right">
+                <div class="sh-streak-card">
+                    <div class="sh-streak-ring">
+                        <span class="sh-streak-num" id="streakNum"></span>
+                        <span class="sh-streak-label">Day Streak</span>
+                    </div>
+                    <div class="sh-streak-dots" id="streakDots"></div>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sh-stats">
+        <div class="sh-stat">
+            <div class="sh-stat-icon" style="--ic: #2563eb;">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <div>
+                <h3 id="statCourses"><span class="sh-skeleton sh-skeleton-stat-num"></span></h3>
+                <p>Courses Enrolled</p>
+            </div>
+        </div>
+        <div class="sh-stat">
+            <div class="sh-stat-icon" style="--ic: #06b6d4;">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+                <h3 id="statHours"><span class="sh-skeleton sh-skeleton-stat-num"></span></h3>
+                <p>Hours Learned</p>
+            </div>
+        </div>
+        <div class="sh-stat">
+            <div class="sh-stat-icon" style="--ic: #f59e0b;">
+                <i class="fa-solid fa-file-circle-check"></i>
+            </div>
+            <div>
+                <h3 id="statAssignments"><span class="sh-skeleton sh-skeleton-stat-num"></span></h3>
+                <p>Assignments Done</p>
+            </div>
+        </div>
+        <div class="sh-stat">
+            <div class="sh-stat-icon" style="--ic: #10b981;">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+                <h3 id="statCertificates"><span class="sh-skeleton sh-skeleton-stat-num"></span></h3>
+                <p>Certificates Earned</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="sh-grid">
+
+        <div class="sh-col-main">
+
+            <section class="sh-section" id="learning">
+                <div class="sh-section-header">
+                    <div>
+                        <h2>Continue Learning</h2>
+                        <p>Pick up where you left off</p>
+                    </div>
+                    <a href="#" class="sh-see-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="sh-progress-list" id="progressList">
+                    <div class="sh-skeleton-row">
+                        <div class="sh-skeleton sh-skeleton-progress-thumb"></div>
+                        <div class="sh-skeleton-progress-info">
+                            <div class="sh-skeleton sh-skeleton-title w-60"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-40"></div>
+                            <div class="sh-skeleton sh-skeleton-bar"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-25"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-row">
+                        <div class="sh-skeleton sh-skeleton-progress-thumb"></div>
+                        <div class="sh-skeleton-progress-info">
+                            <div class="sh-skeleton sh-skeleton-title w-50"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-35"></div>
+                            <div class="sh-skeleton sh-skeleton-bar"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-20"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-row">
+                        <div class="sh-skeleton sh-skeleton-progress-thumb"></div>
+                        <div class="sh-skeleton-progress-info">
+                            <div class="sh-skeleton sh-skeleton-title w-55"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-30"></div>
+                            <div class="sh-skeleton sh-skeleton-bar"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-22"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sh-section" id="courses">
+                <div class="sh-section-header">
+                    <div>
+                        <h2>Browse Courses</h2>
+                        <p>Expand your skills with new courses</p>
+                    </div>
+                    <div class="sh-course-filter">
+                        <button class="sh-filter-btn active">All</button>
+                        <button class="sh-filter-btn">Tech</button>
+                        <button class="sh-filter-btn">Business</button>
+                        <button class="sh-filter-btn">Design</button>
+                    </div>
+                </div>
+                <div class="sh-course-grid" id="courseGrid">
+                    <div class="sh-skeleton-course">
+                        <div class="sh-skeleton sh-skeleton-course-thumb"></div>
+                        <div class="sh-skeleton-course-body">
+                            <div class="sh-skeleton sh-skeleton-title w-80"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-60" style="margin:8px 0 14px"></div>
+                            <div style="display:flex;gap:16px">
+                                <div class="sh-skeleton sh-skeleton-text w-30"></div>
+                                <div class="sh-skeleton sh-skeleton-text w-25"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-course">
+                        <div class="sh-skeleton sh-skeleton-course-thumb"></div>
+                        <div class="sh-skeleton-course-body">
+                            <div class="sh-skeleton sh-skeleton-title w-70"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-55" style="margin:8px 0 14px"></div>
+                            <div style="display:flex;gap:16px">
+                                <div class="sh-skeleton sh-skeleton-text w-28"></div>
+                                <div class="sh-skeleton sh-skeleton-text w-22"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-course">
+                        <div class="sh-skeleton sh-skeleton-course-thumb"></div>
+                        <div class="sh-skeleton-course-body">
+                            <div class="sh-skeleton sh-skeleton-title w-65"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-50" style="margin:8px 0 14px"></div>
+                            <div style="display:flex;gap:16px">
+                                <div class="sh-skeleton sh-skeleton-text w-26"></div>
+                                <div class="sh-skeleton sh-skeleton-text w-20"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-course">
+                        <div class="sh-skeleton sh-skeleton-course-thumb"></div>
+                        <div class="sh-skeleton-course-body">
+                            <div class="sh-skeleton sh-skeleton-title w-75"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-45" style="margin:8px 0 14px"></div>
+                            <div style="display:flex;gap:16px">
+                                <div class="sh-skeleton sh-skeleton-text w-32"></div>
+                                <div class="sh-skeleton sh-skeleton-text w-24"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="sh-col-side">
+
+            <section class="sh-section sh-side-card" id="schedule">
+                <div class="sh-section-header">
+                    <div>
+                        <h2>Today's Schedule</h2>
+                        <p id="scheduleDate"></p>
+                    </div>
+                    <a href="#" class="sh-see-all">All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="sh-schedule-list" id="scheduleList">
+                    <div class="sh-skeleton-schedule">
+                        <div style="text-align:center;min-width:42px">
+                            <div class="sh-skeleton sh-skeleton-time-num"></div>
+                            <div class="sh-skeleton sh-skeleton-time-label" style="margin-top:4px"></div>
+                        </div>
+                        <div class="sh-skeleton sh-skeleton-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-60"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-40" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-schedule">
+                        <div style="text-align:center;min-width:42px">
+                            <div class="sh-skeleton sh-skeleton-time-num"></div>
+                            <div class="sh-skeleton sh-skeleton-time-label" style="margin-top:4px"></div>
+                        </div>
+                        <div class="sh-skeleton sh-skeleton-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-50"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-35" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-schedule">
+                        <div style="text-align:center;min-width:42px">
+                            <div class="sh-skeleton sh-skeleton-time-num"></div>
+                            <div class="sh-skeleton sh-skeleton-time-label" style="margin-top:4px"></div>
+                        </div>
+                        <div class="sh-skeleton sh-skeleton-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-55"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-30" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sh-section sh-side-card">
+                <div class="sh-section-header">
+                    <div>
+                        <h2>Achievements</h2>
+                        <p>Your recent badges</p>
+                    </div>
+                </div>
+                <div class="sh-achievements" id="achievementsList">
+                    <div class="sh-skeleton-achievement">
+                        <div class="sh-skeleton sh-skeleton-badge-icon"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-45"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-60" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-achievement">
+                        <div class="sh-skeleton sh-skeleton-badge-icon"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-35"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-55" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-achievement">
+                        <div class="sh-skeleton sh-skeleton-badge-icon"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-40"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-50" style="margin-top:6px"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sh-section sh-side-card">
+                <div class="sh-section-header">
+                    <div>
+                        <h2>Announcements</h2>
+                        <p>From your instructors</p>
+                    </div>
+                </div>
+                <div class="sh-announce-list" id="announceList">
+                    <div class="sh-skeleton-announce">
+                        <div class="sh-skeleton sh-skeleton-announce-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-55"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-80" style="margin:6px 0 4px"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-30"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-announce">
+                        <div class="sh-skeleton sh-skeleton-announce-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-45"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-70" style="margin:6px 0 4px"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-25"></div>
+                        </div>
+                    </div>
+                    <div class="sh-skeleton-announce">
+                        <div class="sh-skeleton sh-skeleton-announce-dot"></div>
+                        <div style="flex:1">
+                            <div class="sh-skeleton sh-skeleton-title w-50"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-75" style="margin:6px 0 4px"></div>
+                            <div class="sh-skeleton sh-skeleton-text w-28"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <section class="sh-section sh-certificates" id="certificates">
+        <div class="sh-section-header">
+            <div>
+                <h2>My Certificates</h2>
+                <p>Credentials you have earned</p>
+            </div>
+            <a href="#" class="sh-see-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="sh-cert-grid" id="certGrid">
+            <div class="sh-skeleton-cert">
+                <div class="sh-skeleton sh-skeleton-cert-icon"></div>
+                <div style="flex:1">
+                    <div class="sh-skeleton sh-skeleton-title w-60"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-40" style="margin-top:6px"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-25" style="margin-top:4px"></div>
+                </div>
+            </div>
+            <div class="sh-skeleton-cert">
+                <div class="sh-skeleton sh-skeleton-cert-icon"></div>
+                <div style="flex:1">
+                    <div class="sh-skeleton sh-skeleton-title w-50"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-35" style="margin-top:6px"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-20" style="margin-top:4px"></div>
+                </div>
+            </div>
+            <div class="sh-skeleton-cert">
+                <div class="sh-skeleton sh-skeleton-cert-icon"></div>
+                <div style="flex:1">
+                    <div class="sh-skeleton sh-skeleton-title w-55"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-45" style="margin-top:6px"></div>
+                    <div class="sh-skeleton sh-skeleton-text w-22" style="margin-top:4px"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<nav class="sh-bottom-nav">
+    <a href="#" class="active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="./courses/"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>
+    <a href="#learning"><i class="fa-solid fa-play-circle"></i><span>Learning</span></a>
+    <a href="#schedule"><i class="fa-solid fa-calendar-days"></i><span>Schedule</span></a>
+    <a href="#certificates"><i class="fa-solid fa-award"></i><span>Certs</span></a>
+</nav>
+
+<script src="student.js"></script>
+
+</body>
+</html>

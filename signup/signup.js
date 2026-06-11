@@ -1,7 +1,69 @@
-const API_URL = "https://backend.impactacademy.site/api/signup";
+const BASE_URL = "https://backend.impactacademy.site";
+const API_URL = `${BASE_URL}/api/signup`;
+const VALIDATE_SESSION_URL = `${BASE_URL}/api/auth/validate-session`;
 
 const signupForm = document.getElementById("signupForm");
 const formMessage = document.getElementById("formMessage");
+
+/* =========================
+   ROLE → DASHBOARD MAP
+========================= */
+
+const ROLE_DASHBOARD = {
+    freelancer: "../dashboard/freelancer",
+    client:     "../dashboard/iam-client",
+    student:    "../dashboard/student"
+};
+
+function getDashboardForRole(role) {
+    if (!role) return "../dashboard/va-student";
+    const key = String(role).toLowerCase();
+    return ROLE_DASHBOARD[key] || "../dashboard/va-student";
+}
+
+/* =========================
+   SESSION CHECK ON LOAD
+   If already logged in, skip signup and go to dashboard.
+========================= */
+
+(async function checkExistingSession() {
+    try {
+        const res = await fetch(VALIDATE_SESSION_URL, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!data.success || !data.user) return;
+
+        localStorage.setItem("impactech_user", JSON.stringify(data.user));
+
+        const role =
+            data.user.accountType ||
+            data.user.role        ||
+            data.user.userType    ||
+            data.user.type;
+
+        const destination = data.redirectUrl || getDashboardForRole(role);
+
+        showMessage("Already signed in. Redirecting...", "success");
+
+        setTimeout(() => {
+            window.location.href = destination;
+        }, 400);
+
+    } catch (err) {
+        // No session or network error — stay on signup page
+    }
+})();
+
+/* =========================
+   UI HELPERS
+========================= */
 
 function showMessage(message, type = "error") {
     formMessage.style.display = "block";
@@ -40,6 +102,10 @@ function clearErrors() {
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
+/* =========================
+   SIGNUP FORM SUBMIT
+========================= */
 
 signupForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -175,8 +241,6 @@ signupForm.addEventListener("submit", async function (e) {
             localStorage.setItem("impactech_token", data.token);
         }
 
-        showMessage("Account created successfully! Redirecting...", "success");
-
         showVerifyModal(email);
         signupForm.reset();
         hideMessage();
@@ -197,6 +261,11 @@ signupForm.addEventListener("submit", async function (e) {
         signupBtn.innerHTML = originalBtnText;
     }
 });
+
+/* =========================
+   VERIFY EMAIL MODAL
+========================= */
+
 function showVerifyModal(email) {
     const verifyModal = document.getElementById("verifyModal");
     const verifyEmailText = document.getElementById("verifyEmailText");

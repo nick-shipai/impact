@@ -1,0 +1,1782 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --secondary: #06b6d4;
+    --accent: #f59e0b;
+    --dark: #0f172a;
+    --text: #1e293b;
+    --muted: #64748b;
+    --light: #f8fafc;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --soft-blue: #eff6ff;
+    --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+    --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --navbar-h: 72px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at top left,  rgba(37, 99, 235, 0.10), transparent 38%),
+        radial-gradient(circle at top right, rgba(6, 182, 212, 0.09), transparent 38%),
+        radial-gradient(circle at bottom,    rgba(245, 158, 11, 0.07), transparent 45%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+a { text-decoration: none; color: inherit; transition: 0.22s ease; }
+
+/* =============================================
+   NAVBAR
+============================================= */
+
+.vc-nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07);
+}
+
+.vc-nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: var(--navbar-h);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vc-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vc-nav-brand img {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+}
+
+.vc-nav-brand span {
+    font-weight: 800;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.vc-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.vc-nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--muted);
+    padding: 8px 16px;
+    border-radius: 10px;
+    transition: 0.22s ease;
+}
+
+.vc-nav-back:hover {
+    color: var(--primary);
+    background: var(--soft-blue);
+}
+
+/* =============================================
+   HERO / THUMBNAIL
+============================================= */
+
+.vc-hero {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+}
+
+.vc-hero-media {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.vc-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vc-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(15, 23, 42, 0.6) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.vc-hero-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(180deg, transparent, var(--light));
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* =============================================
+   THUMBNAIL PLACEHOLDER
+============================================= */
+
+.vc-thumb-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    padding: 40px;
+}
+
+.vc-thumb-icon {
+    width: 96px;
+    height: 96px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    transition: 0.3s ease;
+}
+
+.vc-thumb-placeholder:hover .vc-thumb-icon {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
+.vc-thumb-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.vc-thumb-sub {
+    font-size: 0.82rem;
+    opacity: 0.6;
+}
+
+/* =============================================
+   FLOATING SHAPES (Hero decoration)
+============================================= */
+
+.vc-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.vc-shape-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: -80px;
+    right: -60px;
+    animation: vc-float 8s ease-in-out infinite;
+}
+
+.vc-shape-2 {
+    width: 200px;
+    height: 200px;
+    background: var(--secondary);
+    bottom: -40px;
+    left: -40px;
+    animation: vc-float 6s ease-in-out infinite reverse;
+}
+
+.vc-shape-3 {
+    width: 120px;
+    height: 120px;
+    background: var(--accent);
+    top: 40%;
+    left: 30%;
+    animation: vc-float 10s ease-in-out infinite;
+}
+
+@keyframes vc-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+/* =============================================
+   MAIN LAYOUT
+============================================= */
+
+.vc-main {
+    position: relative;
+    z-index: 4;
+    padding: 0 0 80px;
+}
+
+.vc-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
+.vc-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 36px;
+    align-items: start;
+}
+
+/* =============================================
+   BREADCRUMB
+============================================= */
+
+.vc-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 0 20px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.vc-breadcrumb a {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.vc-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.vc-breadcrumb i {
+    font-size: 0.65rem;
+    opacity: 0.5;
+}
+
+/* =============================================
+   TITLE BLOCK
+============================================= */
+
+.vc-title-block {
+    margin-bottom: 24px;
+}
+
+.vc-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.vc-title-row h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.25;
+    flex: 1;
+    min-width: 280px;
+}
+
+.vc-access-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.vc-access-badge.paid {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+}
+
+.vc-access-badge.subscription {
+    background: rgba(6, 182, 212, 0.12);
+    color: #0891b2;
+}
+
+.vc-subtitle {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* =============================================
+   TEACHER CARD
+============================================= */
+
+.vc-teacher-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 28px;
+    transition: 0.22s ease;
+}
+
+.vc-teacher-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+}
+
+.vc-teacher-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.vc-teacher-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vc-teacher-avatar i {
+    color: var(--white);
+    font-size: 1.2rem;
+}
+
+.vc-teacher-info {
+    flex: 1;
+}
+
+.vc-teacher-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
+.vc-teacher-status {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.vc-follow-btn {
+    padding: 8px 18px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: 0.22s ease;
+}
+
+.vc-follow-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+}
+
+.vc-follow-btn.following {
+    background: var(--soft-blue);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.vc-follow-btn.following:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.vc-follow-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.vc-teacher-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.vc-teacher-separator {
+    color: var(--muted);
+    opacity: 0.5;
+}
+
+.vc-teacher-followers {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+/* =============================================
+   PREMIUM UPGRADE MODAL
+============================================= */
+
+.vc-upgrade-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    padding: 16px;
+}
+
+.vc-upgrade-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vc-upgrade-modal {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    box-shadow:
+        0 8px 32px rgba(15, 23, 42, 0.12),
+        0 2px 8px rgba(15, 23, 42, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.vc-upgrade-overlay.show .vc-upgrade-modal {
+    transform: translateY(0) scale(1);
+}
+
+.vc-upgrade-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(100, 116, 139, 0.08);
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s;
+    z-index: 2;
+    line-height: 1;
+}
+
+.vc-upgrade-close:hover {
+    background: rgba(100, 116, 139, 0.15);
+    color: var(--dark);
+}
+
+.vc-upgrade-top {
+    text-align: center;
+    padding: 28px 24px 0;
+}
+
+.vc-upgrade-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    display: inline-grid;
+    place-items: center;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+}
+
+.vc-upgrade-badge svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.vc-upgrade-top h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+}
+
+.vc-upgrade-top p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.vc-upgrade-body {
+    padding: 18px 24px 0;
+}
+
+.vc-upgrade-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+}
+
+.vc-upgrade-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.vc-upgrade-benefits li svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: #10b981;
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.vc-upgrade-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0;
+}
+
+.vc-upgrade-footer {
+    padding: 16px 24px 22px;
+}
+
+.vc-upgrade-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.vc-upgrade-btn {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.vc-upgrade-btn.primary {
+    background: linear-gradient(135deg, #7c3aed, #6366f1);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.3);
+}
+
+.vc-upgrade-btn.primary:hover {
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+    transform: translateY(-1px);
+}
+
+.vc-upgrade-btn.secondary {
+    background: rgba(100, 116, 139, 0.08);
+    color: var(--muted);
+}
+
+.vc-upgrade-btn.secondary:hover {
+    background: rgba(100, 116, 139, 0.14);
+    color: var(--text);
+}
+
+@media (max-width: 480px) {
+    .vc-upgrade-modal {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .vc-upgrade-top {
+        padding: 24px 20px 0;
+    }
+
+    .vc-upgrade-body {
+        padding: 16px 20px 0;
+    }
+
+    .vc-upgrade-footer {
+        padding: 14px 20px 18px;
+    }
+
+    .vc-upgrade-actions {
+        flex-direction: column;
+    }
+}
+
+/* =============================================
+   STATS ROW
+============================================= */
+
+.vc-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.vc-stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: 0.22s ease;
+}
+
+.vc-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.vc-stat i {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.vc-stat:nth-child(1) i {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+}
+
+.vc-stat:nth-child(2) i {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--secondary);
+}
+
+.vc-stat:nth-child(3) i {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--accent);
+}
+
+.vc-stat:nth-child(4) i {
+    background: rgba(251, 191, 36, 0.12);
+    color: #f59e0b;
+}
+
+.vc-stat strong {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.2;
+}
+
+.vc-stat span {
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+/* =============================================
+   SECTIONS
+============================================= */
+
+.vc-section {
+    margin-bottom: 32px;
+}
+
+.vc-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.vc-section-title i {
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+/* =============================================
+   VIDEO PLAYER (Promo + Trailer)
+============================================= */
+
+.vc-video-player {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: 0.3s ease;
+}
+
+.vc-video-player:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+}
+
+.vc-video-embed {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.vc-video-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Video placeholder */
+
+.vc-video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.vc-video-placeholder-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.vc-video-placeholder-inner h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.vc-video-placeholder-inner p {
+    font-size: 0.88rem;
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+.vc-video-format {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    margin-top: 4px;
+}
+
+/* Play ring button */
+
+.vc-video-play-ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    transition: 0.3s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.vc-video-play-ring::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: vc-pulse-ring 2s ease-in-out infinite;
+}
+
+.vc-video-placeholder:hover .vc-video-play-ring {
+    border-color: var(--primary);
+    color: var(--white);
+    background: rgba(37, 99, 235, 0.3);
+    transform: scale(1.08);
+}
+
+.vc-trailer-ring {
+    border-color: rgba(6, 182, 212, 0.3);
+}
+
+.vc-video-placeholder:hover .vc-trailer-ring {
+    border-color: var(--secondary);
+    background: rgba(6, 182, 212, 0.3);
+}
+
+@keyframes vc-pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0; }
+}
+
+/* Scanlines overlay */
+
+.vc-video-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.015) 2px,
+        rgba(255, 255, 255, 0.015) 4px
+    );
+    pointer-events: none;
+}
+
+/* Video controls */
+
+.vc-video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+}
+
+.vc-ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.vc-ctrl-btn:hover {
+    background: var(--primary);
+    transform: scale(1.1);
+}
+
+.vc-ctrl-progress {
+    flex: 1;
+}
+
+.vc-ctrl-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.vc-ctrl-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.1s linear;
+}
+
+.vc-ctrl-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* =============================================
+   DESCRIPTION
+============================================= */
+
+.vc-description {
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.8;
+}
+
+.vc-description p {
+    margin-bottom: 14px;
+}
+
+.vc-read-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--soft-blue);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.22s ease;
+    margin-top: 8px;
+}
+
+.vc-read-more-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+.vc-read-more-btn i {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+.vc-read-more-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+/* =============================================
+   TAGS
+============================================= */
+
+.vc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.vc-tag {
+    padding: 7px 16px;
+    background: var(--soft-blue);
+    color: var(--primary);
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    transition: 0.22s ease;
+    cursor: pointer;
+}
+
+.vc-tag:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+/* =============================================
+   WHAT YOU'LL LEARN
+============================================= */
+
+.vc-outcomes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.vc-outcome {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: #334155;
+    transition: 0.22s ease;
+}
+
+.vc-outcome:hover {
+    border-color: rgba(37, 99, 235, 0.2);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+}
+
+.vc-outcome i {
+    color: #10b981;
+    font-size: 0.85rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =============================================
+   CURRICULUM
+============================================= */
+
+.vc-curriculum {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vc-lesson-group {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: 0.22s ease;
+}
+
+.vc-lesson-group:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.vc-lesson-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: 0.22s ease;
+    user-select: none;
+}
+
+.vc-lesson-group-header:hover {
+    background: var(--soft-blue);
+}
+
+.vc-lesson-group-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
+.vc-lesson-group-info i {
+    color: var(--primary);
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.vc-lesson-group.open .vc-lesson-group-info i {
+    transform: rotate(180deg);
+}
+
+.vc-lesson-count {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.vc-lesson-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.vc-lesson-group.open .vc-lesson-list {
+    max-height: 1000px;
+}
+
+.vc-lesson {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 14px 52px;
+    border-top: 1px solid var(--border);
+    transition: 0.22s ease;
+}
+
+.vc-lesson:hover {
+    background: rgba(37, 99, 235, 0.03);
+}
+
+.vc-lesson-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.vc-lesson-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--soft-blue);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.vc-lesson-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.vc-lesson-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.vc-lesson-meta i {
+    color: var(--primary);
+    font-size: 0.7rem;
+}
+
+.vc-lesson-lock {
+    color: var(--muted);
+    opacity: 0.5;
+    font-size: 0.85rem;
+}
+
+/* =============================================
+   REQUIREMENTS
+============================================= */
+
+.vc-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vc-req-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: #334155;
+    transition: 0.22s ease;
+}
+
+.vc-req-item:hover {
+    border-color: rgba(37, 99, 235, 0.2);
+    transform: translateX(4px);
+}
+
+.vc-req-item i {
+    color: var(--primary);
+    font-size: 0.85rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* =============================================
+   SIDEBAR
+============================================= */
+
+.vc-sidebar {
+    position: sticky;
+    top: calc(var(--navbar-h) + 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* =============================================
+   ENROLL CARD
+============================================= */
+
+.vc-enroll-card {
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    transition: 0.22s ease;
+}
+
+.vc-enroll-card:hover {
+    box-shadow: 0 24px 64px rgba(15, 23, 42, 0.14);
+    transform: translateY(-2px);
+}
+
+.vc-enroll-price {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.vc-price-current {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.vc-price-original {
+    font-size: 1rem;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 8px;
+    -webkit-text-fill-color: var(--muted);
+}
+
+.vc-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.22s ease;
+}
+
+.vc-btn-enroll {
+    background: linear-gradient(135deg, var(--primary), #3b82f6);
+    color: var(--white);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+}
+
+.vc-btn-enroll:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.45);
+}
+
+.vc-btn-enroll:active {
+    transform: translateY(0);
+}
+
+.vc-btn-enrolled {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: var(--white);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+    cursor: default;
+}
+
+.vc-enroll-note {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+.vc-enroll-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vc-enroll-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #334155;
+}
+
+.vc-enroll-feature i {
+    color: #10b981;
+    font-size: 0.8rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* =============================================
+   SHARE CARD
+============================================= */
+
+.vc-share-card {
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.vc-share-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.vc-share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.vc-share-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--light);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.22s ease;
+}
+
+.vc-share-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* =============================================
+   SKELETON LOADER
+============================================= */
+
+.vc-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0;
+    border-radius: 8px;
+}
+
+.vc-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: vc-shimmer 1.5s infinite;
+}
+
+@keyframes vc-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* =============================================
+   SCROLL REVEAL
+============================================= */
+
+.vc-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.vc-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =============================================
+   TOAST
+============================================= */
+
+.vc-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--white);
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+.vc-toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.vc-toast.success { background: #10b981; }
+.vc-toast.error { background: #ef4444; }
+.vc-toast.info { background: var(--primary); }
+
+/* =============================================
+   RESPONSIVE
+============================================= */
+
+@media (max-width: 1024px) {
+    .vc-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .vc-sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .vc-hero {
+        height: 380px;
+    }
+
+    .vc-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vc-outcomes {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .vc-nav-inner {
+        padding: 0 16px;
+    }
+
+    .vc-container {
+        padding: 0 16px;
+    }
+
+    .vc-hero {
+        height: 280px;
+    }
+
+    .vc-title-row h1 {
+        font-size: 1.5rem;
+    }
+
+    .vc-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .vc-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .vc-stat {
+        padding: 12px;
+    }
+
+    .vc-teacher-card {
+        flex-wrap: wrap;
+    }
+
+    .vc-lesson {
+        padding-left: 20px;
+    }
+
+    .vc-enroll-card {
+        padding: 20px;
+    }
+
+    .vc-nav-back span {
+        display: none;
+    }
+
+    .vc-video-play-ring {
+        width: 64px;
+        height: 64px;
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .vc-hero {
+        height: 220px;
+    }
+
+    .vc-title-row h1 {
+        font-size: 1.3rem;
+    }
+
+    .vc-stats-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* =============================================
+   LOADING SCREEN
+============================================= */
+
+.vc-loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 24px;
+    padding: 40px;
+}
+
+.vc-loading-spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vc-loading-spinner i {
+    font-size: 2rem;
+    color: var(--primary);
+    z-index: 2;
+}
+
+.vc-spinner-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    animation: vc-spin 1s linear infinite;
+}
+
+@keyframes vc-spin {
+    to { transform: rotate(360deg); }
+}
+
+.vc-loading-screen p {
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* =============================================
+   ERROR SCREEN
+============================================= */
+
+.vc-error-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+}
+
+.vc-error-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ef4444;
+    margin-bottom: 8px;
+}
+
+.vc-error-screen h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--dark);
+}
+
+.vc-error-screen p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 400px;
+}
+
+.vc-error-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: 0.22s ease;
+}
+
+.vc-error-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+}
+
+/* =============================================
+   CURRICULUM PLACEHOLDER
+============================================= */
+
+.vc-curriculum-placeholder {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.vc-curriculum-placeholder-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--soft-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.vc-curriculum-placeholder h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+
+.vc-curriculum-placeholder p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.vc-curriculum-note {
+    font-size: 0.82rem;
+    color: var(--primary);
+    font-weight: 600;
+    padding: 6px 14px;
+    background: var(--soft-blue);
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* =============================================
+   VIDEO EMBED (iframe/video)
+============================================= */
+
+.vc-video-embed {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #000;
+}
+
+.vc-video-embed iframe,
+.vc-video-embed video {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Custom player container inside embed */
+.vc-video-embed .vc-player-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.vc-video-embed .vc-player-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

@@ -40,7 +40,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   const auth = await AuthenticateUser();
 
   if (!auth.success) {
-    window.location.href = "../../signin";
+    window.location.href = "../../../signin/";
+    return;
+  }
+
+  var userType = (auth.user?.accountType || "").toLowerCase().trim();
+  if (userType !== "freelancer") {
+    window.location.href = "/404.html";
     return;
   }
 
@@ -1268,7 +1274,7 @@ async function deleteAccount() {
     }
 
     showToast("Account permanently deleted. Redirecting…", "success");
-    setTimeout(() => { window.location.href = "../../signin"; }, 2000);
+    setTimeout(() => { window.location.href = "../../../signin/"; }, 2000);
 
   } catch (error) {
     console.error("deleteAccount error:", error);
