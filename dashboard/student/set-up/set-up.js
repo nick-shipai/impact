@@ -42,19 +42,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     var auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../../../signin//";
+        window.location.href = "../../../signin/";
         return;
     }
 
     var allowedStudentTypes = ["student", "va-student"];
     var userType = (auth.user?.accountType || "").toLowerCase().trim();
     if (!allowedStudentTypes.includes(userType)) {
-        window.location.href = "/404.html";
+        window.location.href = "../../../404.html";
         return;
     }
 
-    if (auth.user?.setup?.completed) {
-        window.location.href = "../student";
+    if (auth.user?.setupCompleted === true || auth.user?.setup?.completed) {
+        window.location.href = "../";
         return;
     }
 

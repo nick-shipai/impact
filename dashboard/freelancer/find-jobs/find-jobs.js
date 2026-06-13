@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   var userType = (auth.user?.accountType || "").toLowerCase().trim();
   if (userType !== "freelancer") {
-    window.location.href = "/404.html";
+    window.location.href = "../../../404.html";
     return;
   }
 

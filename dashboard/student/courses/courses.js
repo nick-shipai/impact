@@ -75,15 +75,13 @@ async function AuthenticateUser() {
 
 async function fetchStudentCourses() {
     try {
-        var res = await fetch(API_URL + "/api/student/courses", {
-            credentials: "include"
-        });
+        var urlParams = new URLSearchParams(window.location.search);
+        var searchQuery = urlParams.get("search") || "";
+        var url = API_URL + "/api/student/courses";
+        if (searchQuery) url += "?search=" + encodeURIComponent(searchQuery);
+
+        var res = await fetch(url, { credentials: "include", cache: "no-store" });
         var data = await res.json();
-        if (data.courses) {
-            data.courses.forEach(function (c) {
-                console.log("[API RESPONSE] courseId=" + c.courseId + " accessType=" + JSON.stringify(c.accessType));
-            });
-        }
         return data;
     } catch (err) {
         console.error("fetchStudentCourses error:", err);
@@ -538,31 +536,55 @@ function applyFilter(filter) {
 }
 
 function initSearch() {
-    var searchInput = document.getElementById("mainSearchInput");
     var navSearchInput = document.getElementById("courseSearchInput");
+    var heroSearchInput = document.getElementById("mainSearchInput");
+    var heroSearchBtn = heroSearchInput ? heroSearchInput.parentElement.querySelector(".crs-search-btn") : null;
 
-    function handleSearch(query) {
-        var q = query.toLowerCase().trim();
-        var cards = document.querySelectorAll(".crs-feed-card");
-        cards.forEach(function (card) {
-            var text = card.textContent.toLowerCase();
-            if (!q || text.includes(q)) {
-                card.style.display = "";
+    function bindToPopup(el) {
+        if (!el) return;
+        el.addEventListener("focus", function (e) {
+            e.preventDefault();
+            el.blur();
+            openSearchPopup(el);
+        });
+        el.addEventListener("click", function (e) {
+            e.preventDefault();
+            openSearchPopup(el);
+        });
+    }
+
+    bindToPopup(navSearchInput);
+    bindToPopup(heroSearchInput);
+
+    /* Hero search button opens popup and submits */
+    if (heroSearchBtn) {
+        heroSearchBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            var q = (heroSearchInput.value || "").trim();
+            if (q) {
+                SearchPopup.input.value = q;
+                syncSourceInputs(q);
+                submitSearch();
             } else {
-                card.style.display = "none";
+                openSearchPopup(heroSearchInput);
             }
         });
     }
 
-    if (searchInput) {
-        searchInput.addEventListener("input", function () {
-            handleSearch(this.value);
-        });
-    }
-    if (navSearchInput) {
-        navSearchInput.addEventListener("input", function () {
-            handleSearch(this.value);
-            if (searchInput) searchInput.value = this.value;
+    /* Hero input Enter key submits directly */
+    if (heroSearchInput) {
+        heroSearchInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                var q = (heroSearchInput.value || "").trim();
+                if (q) {
+                    SearchPopup.input.value = q;
+                    syncSourceInputs(q);
+                    submitSearch();
+                } else {
+                    openSearchPopup(heroSearchInput);
+                }
+            }
         });
     }
 }
@@ -989,7 +1011,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     var allowedStudentTypes = ["student", "va-student"];
     var userType = (user?.accountType || "").toLowerCase().trim();
     if (!allowedStudentTypes.includes(userType)) {
-        window.location.href = "../../404.html";
+        window.location.href = "../../../404.html";
         return;
     }
 
@@ -1136,6 +1158,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     showBrowseSkeleton();
     showCategoriesSkeleton();
 
+    /* Show search loader if ?search= in URL on page load */
+    var urlSearchParam = new URLSearchParams(window.location.search).get("search");
+    if (urlSearchParam) {
+        SearchLoader.show(urlSearchParam);
+        syncSourceInputs(urlSearchParam);
+    }
+
     /* Fetch both endpoints in parallel */
     var results = await Promise.allSettled([fetchStudentCourses(), fetchDashboard()]);
     var coursesResult = results[0].status === "fulfilled" ? results[0].value : { success: false, courses: [] };
@@ -1146,11 +1175,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     /* Handle courses catalog error */
     if (!coursesResult.success) {
         showError("browseGrid", coursesResult.message || "Failed to load courses.");
+        if (urlSearchParam) SearchLoader.hide("error");
     } else {
         renderBrowseCourses(coursesResult.courses || []);
         renderCategories(coursesResult.courses || []);
         updateHeroStats(coursesResult.total || (coursesResult.courses || []).length);
         initViewTracking();
+        /* Show search status if ?search= was in URL on load */
+        if (urlSearchParam) {
+            updateSearchStatus(urlSearchParam, coursesResult);
+            SearchLoader.hide("done", urlSearchParam);
+            setTimeout(function () {
+                scrollToBrowseSection();
+            }, 500);
+        }
     }
 
     /* Handle enrolled / dashboard error */
@@ -1159,4 +1197,831 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else {
         renderEnrolledCourses(dashResult.courses || []);
     }
+
+    /* ── Initialize Search Popup ── */
+    initSearchPopup();
 });
+
+/* ═══════════════════════════════════════════════
+   SEARCH POPUP
+═══════════════════════════════════════════════ */
+
+var SearchPopup = {
+    overlay: null,
+    popup: null,
+    input: null,
+    clearBtn: null,
+    submitBtn: null,
+    closeBtn: null,
+    isOpen: false,
+    debounceTimer: null,
+    recCache: null,
+    trendingCache: null,
+    categoriesCache: null,
+    recentCache: null,
+    sourceInput: null
+};
+
+function initSearchPopup() {
+    SearchPopup.overlay = document.getElementById("searchOverlay");
+    SearchPopup.popup = document.getElementById("searchPopup");
+    SearchPopup.input = document.getElementById("searchPopupInput");
+    SearchPopup.clearBtn = document.getElementById("searchClearBtn");
+    SearchPopup.submitBtn = document.getElementById("searchSubmitBtn");
+    SearchPopup.closeBtn = document.getElementById("searchCloseBtn");
+
+    if (!SearchPopup.input) return;
+
+    /* Close buttons */
+    if (SearchPopup.closeBtn) SearchPopup.closeBtn.addEventListener("click", closeSearchPopup);
+    if (SearchPopup.overlay) SearchPopup.overlay.addEventListener("click", closeSearchPopup);
+
+    /* Clear button */
+    if (SearchPopup.clearBtn) {
+        SearchPopup.clearBtn.addEventListener("click", function () {
+            SearchPopup.input.value = "";
+            SearchPopup.input.focus();
+            updateClearBtn();
+            showDefaultState();
+        });
+    }
+
+    /* Input events: live search */
+    SearchPopup.input.addEventListener("input", function () {
+        updateClearBtn();
+        var q = SearchPopup.input.value.trim();
+        syncSourceInputs(q);
+        if (q.length >= 2) {
+            showLiveResults(q);
+        } else {
+            showDefaultState();
+        }
+    });
+
+    /* Submit on Enter */
+    SearchPopup.input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            submitSearch();
+        }
+    });
+
+    /* Submit on button click */
+    if (SearchPopup.submitBtn) {
+        SearchPopup.submitBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            submitSearch();
+        });
+    }
+
+    /* Global ESC */
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && SearchPopup.isOpen) {
+            closeSearchPopup();
+        }
+    });
+
+    /* Clear recent searches button */
+    var clearRecentBtn = document.getElementById("clearRecentBtn");
+    if (clearRecentBtn) {
+        clearRecentBtn.addEventListener("click", function () {
+            clearAllRecentSearches();
+        });
+    }
+}
+
+function openSearchPopup(sourceEl) {
+    SearchPopup.isOpen = true;
+    SearchPopup.sourceInput = sourceEl || null;
+    SearchPopup.overlay.classList.add("active");
+    SearchPopup.popup.classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    /* Pre-fill from source input, URL, or nav input */
+    var val = "";
+    if (sourceEl && sourceEl.value) {
+        val = sourceEl.value;
+    } else {
+        var urlParams = new URLSearchParams(window.location.search);
+        val = urlParams.get("search") || "";
+        if (!val) {
+            var navInput = document.getElementById("courseSearchInput");
+            var heroInput = document.getElementById("mainSearchInput");
+            if (navInput && navInput.value) val = navInput.value;
+            else if (heroInput && heroInput.value) val = heroInput.value;
+        }
+    }
+    SearchPopup.input.value = val;
+    updateClearBtn();
+    if (val && val.length >= 2) {
+        showLiveResults(val);
+    } else {
+        showDefaultState();
+    }
+    setTimeout(function () { SearchPopup.input.focus(); }, 300);
+    loadRecentSearches();
+    loadTrendingSearches();
+    loadCategories();
+    loadRecommendations();
+}
+
+function closeSearchPopup() {
+    SearchPopup.isOpen = false;
+    SearchPopup.overlay.classList.remove("active");
+    SearchPopup.popup.classList.remove("active");
+    document.body.style.overflow = "";
+    SearchPopup.input.value = "";
+    updateClearBtn();
+}
+
+/* ── Sync both page inputs ── */
+
+function syncSourceInputs(val) {
+    var navInput = document.getElementById("courseSearchInput");
+    var heroInput = document.getElementById("mainSearchInput");
+    if (navInput) navInput.value = val;
+    if (heroInput) heroInput.value = val;
+}
+
+function updateClearBtn() {
+    if (SearchPopup.clearBtn) {
+        SearchPopup.clearBtn.classList.toggle("visible", SearchPopup.input.value.length > 0);
+    }
+}
+
+/* ── State Management ── */
+
+function hideAllStates() {
+    ["searchDefaultState", "searchLiveState", "searchLoadingState", "searchEmptyState"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+}
+
+function showDefaultState() {
+    hideAllStates();
+    var def = document.getElementById("searchDefaultState");
+    if (def) def.style.display = "";
+}
+
+function showLiveResults(query) {
+    hideAllStates();
+    var live = document.getElementById("searchLiveState");
+    if (live) live.style.display = "";
+
+    var title = document.getElementById("searchLiveTitle");
+    if (title) title.textContent = "Searching...";
+
+    var list = document.getElementById("searchLiveList");
+    if (list) list.innerHTML = '<div class="crs-search-loading"><i class="fa-solid fa-spinner"></i> Searching...</div>';
+
+    clearTimeout(SearchPopup.debounceTimer);
+    SearchPopup.debounceTimer = setTimeout(function () {
+        fetch(API_URL + "/api/student/courses/search?q=" + encodeURIComponent(query) + "&limit=8", {
+            credentials: "include",
+            cache: "no-store"
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (title) title.textContent = data.success ? (data.total + " result" + (data.total !== 1 ? "s" : "")) : "No results";
+            if (list) {
+                if (data.success && data.courses && data.courses.length > 0) {
+                    list.innerHTML = "";
+                    data.courses.forEach(function (course, i) {
+                        list.appendChild(buildLiveResultItem(course, i));
+                    });
+                } else {
+                    list.innerHTML = '<div class="crs-search-empty" style="padding:24px 0"><div class="crs-search-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3>No results found</h3><p>Try different keywords or browse the categories below.</p></div>';
+                }
+            }
+        })
+        .catch(function () {
+            if (title) title.textContent = "Search failed";
+            if (list) list.innerHTML = '<div class="crs-search-empty" style="padding:24px 0"><p>Something went wrong. Please try again.</p></div>';
+        });
+    }, 300);
+}
+
+function showLoading() {
+    hideAllStates();
+    var el = document.getElementById("searchLoadingState");
+    if (el) el.style.display = "";
+}
+
+function showEmpty() {
+    hideAllStates();
+    var el = document.getElementById("searchEmptyState");
+    if (el) el.style.display = "";
+}
+
+/* ── Search Submission ── */
+
+function submitSearch() {
+    var q = (SearchPopup.input.value || "").trim();
+    if (!q) return;
+
+    saveRecentSearch(q);
+
+    /* Show global search loader */
+    SearchLoader.show(q);
+
+    /* Update URL */
+    var url = new URL(window.location);
+    url.searchParams.set("search", q);
+    window.history.replaceState({}, "", url);
+
+    /* Sync both page inputs */
+    syncSourceInputs(q);
+
+    /* Close popup */
+    closeSearchPopup();
+
+    /* Reload courses with search */
+    loadCoursesWithSearch(q);
+}
+
+function loadCoursesWithSearch(query) {
+    showBrowseSkeleton();
+    showCategoriesSkeleton();
+
+    var url = API_URL + "/api/student/courses";
+    if (query) url += "?search=" + encodeURIComponent(query);
+
+    fetch(url, { credentials: "include", cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        hideSkeletons();
+        if (!data.success) {
+            showError("browseGrid", data.message || "Failed to load courses.");
+            SearchLoader.hide("error");
+        } else {
+            renderBrowseCourses(data.courses || []);
+            renderCategories(data.courses || []);
+            updateHeroStats(data.total || (data.courses || []).length);
+            initViewTracking();
+            SearchLoader.hide("done", query);
+        }
+        updateSearchStatus(query, data);
+        /* Auto-scroll to results */
+        if (query) {
+            setTimeout(function () {
+                scrollToBrowseSection();
+            }, 500);
+        }
+    })
+    .catch(function () {
+        hideSkeletons();
+        showError("browseGrid", "Network error. Please try again.");
+        SearchLoader.hide("error");
+    });
+}
+
+function updateSearchStatus(query, data) {
+    var feedSection = document.getElementById("browseGrid");
+    var existingStatus = document.getElementById("crs-search-status");
+    if (existingStatus) existingStatus.remove();
+
+    if (!query) return;
+
+    var total = (data.courses || []).length;
+    var statusEl = document.createElement("div");
+    statusEl.id = "crs-search-status";
+    statusEl.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:10px 16px;margin-bottom:16px;border-radius:12px;background:var(--light);border:1px solid var(--border);";
+
+    var text = document.createElement("span");
+    text.style.cssText = "font-size:14px;font-weight:600;color:var(--text);";
+    text.textContent = total + " result" + (total !== 1 ? "s" : "") + " for \"" + query + "\"";
+
+    var clearBtn = document.createElement("button");
+    clearBtn.style.cssText = "padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--white);color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all 0.15s;";
+    clearBtn.textContent = "Clear search";
+    clearBtn.addEventListener("mouseenter", function () { this.style.borderColor = "var(--primary)"; this.style.color = "var(--primary)"; });
+    clearBtn.addEventListener("mouseleave", function () { this.style.borderColor = "var(--border)"; this.style.color = "var(--muted)"; });
+    clearBtn.addEventListener("click", function () {
+        var url = new URL(window.location);
+        url.searchParams.delete("search");
+        window.history.replaceState({}, "", url);
+        syncSourceInputs("");
+        loadCoursesWithSearch("");
+    });
+
+    statusEl.appendChild(text);
+    statusEl.appendChild(clearBtn);
+    if (feedSection) feedSection.parentNode.insertBefore(statusEl, feedSection);
+}
+
+/* ── Scroll to Browse Section ── */
+
+function scrollToBrowseSection() {
+    requestAnimationFrame(function () {
+        var browseSection = document.querySelector(".crs-browse-section");
+        if (!browseSection) return;
+
+        var navbar = document.querySelector(".sh-navbar");
+        var navbarHeight = navbar ? navbar.offsetHeight : 72;
+        var offset = navbarHeight + 16;
+
+        var rect = browseSection.getBoundingClientRect();
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var targetTop = rect.top + scrollTop - offset;
+
+        window.scrollTo({ top: targetTop, behavior: "smooth" });
+    });
+}
+
+function loadRecentSearches() {
+    var section = document.getElementById("searchRecentSection");
+    var list = document.getElementById("searchRecentList");
+    if (!section || !list) return;
+
+    fetch(API_URL + "/api/student/search/recent?limit=10", {
+        credentials: "include",
+        cache: "no-store"
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success && data.searches && data.searches.length > 0) {
+            SearchPopup.recentCache = data.searches;
+            section.style.display = "";
+            list.innerHTML = "";
+            data.searches.forEach(function (item) {
+                var chip = document.createElement("div");
+                chip.className = "crs-search-recent-chip";
+                chip.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> ' + esc(item.query) +
+                    '<button class="crs-search-recent-remove" data-query="' + esc(item.query) + '"><i class="fa-solid fa-xmark"></i></button>';
+
+                chip.addEventListener("click", function (e) {
+                    if (e.target.closest(".crs-search-recent-remove")) return;
+                    SearchPopup.input.value = item.query;
+                    updateClearBtn();
+                    submitSearch();
+                });
+
+                var removeBtn = chip.querySelector(".crs-search-recent-remove");
+                if (removeBtn) {
+                    removeBtn.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        removeRecentSearch(item.query, chip);
+                    });
+                }
+
+                list.appendChild(chip);
+            });
+        } else {
+            section.style.display = "none";
+        }
+    })
+    .catch(function () {
+        section.style.display = "none";
+    });
+}
+
+function saveRecentSearch(query) {
+    fetch(API_URL + "/api/student/search/recent", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query })
+    }).catch(function () {});
+}
+
+function removeRecentSearch(query, chipEl) {
+    fetch(API_URL + "/api/student/search/recent/" + encodeURIComponent(query), {
+        method: "DELETE",
+        credentials: "include"
+    })
+    .then(function () {
+        if (chipEl) chipEl.remove();
+        var section = document.getElementById("searchRecentSection");
+        var list = document.getElementById("searchRecentList");
+        if (section && list && list.children.length === 0) {
+            section.style.display = "none";
+        }
+    })
+    .catch(function () {});
+}
+
+function clearAllRecentSearches() {
+    fetch(API_URL + "/api/student/search/recent", {
+        method: "DELETE",
+        credentials: "include"
+    })
+    .then(function () {
+        var section = document.getElementById("searchRecentSection");
+        var list = document.getElementById("searchRecentList");
+        if (section) section.style.display = "none";
+        if (list) list.innerHTML = "";
+        SearchPopup.recentCache = null;
+    })
+    .catch(function () {});
+}
+
+/* ── Trending Searches ── */
+
+function loadTrendingSearches() {
+    if (SearchPopup.trendingCache) {
+        renderTrendingTags(SearchPopup.trendingCache);
+        return;
+    }
+
+    fetch(API_URL + "/api/student/courses/trending", {
+        credentials: "include",
+        cache: "no-store"
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success) {
+            SearchPopup.trendingCache = data;
+            renderTrendingTags(data);
+        }
+    })
+    .catch(function () {});
+}
+
+var TRENDING_TAG_ICONS = ["fa-fire", "fa-arrow-trend-up", "fa-bolt", "fa-star", "fa-heart"];
+
+function renderTrendingTags(data) {
+    var container = document.getElementById("searchTrendingTags");
+    if (!container || !data.trending) return;
+
+    container.innerHTML = "";
+    data.trending.forEach(function (item, i) {
+        var tag = document.createElement("button");
+        tag.className = "crs-search-tag";
+        tag.innerHTML = '<i class="fa-solid ' + (TRENDING_TAG_ICONS[i % TRENDING_TAG_ICONS.length]) + '"></i> ' + esc(item.category);
+        tag.addEventListener("click", function () {
+            SearchPopup.input.value = item.category;
+            updateClearBtn();
+            submitSearch();
+        });
+        container.appendChild(tag);
+    });
+}
+
+/* ── Categories ── */
+
+function loadCategories() {
+    if (SearchPopup.categoriesCache) {
+        renderCategoryCards(SearchPopup.categoriesCache);
+        return;
+    }
+
+    fetch(API_URL + "/api/student/courses/categories", {
+        credentials: "include",
+        cache: "no-store"
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success && data.categories) {
+            SearchPopup.categoriesCache = data.categories;
+            renderCategoryCards(data.categories);
+        }
+    })
+    .catch(function () {});
+}
+
+var CAT_ICONS = {
+    "ai": "fa-robot", "technology": "fa-microchip", "tech": "fa-microchip",
+    "design": "fa-pen-nib", "business": "fa-briefcase", "marketing": "fa-bullhorn",
+    "finance": "fa-coins", "health": "fa-heart-pulse", "education": "fa-graduation-cap",
+    "development": "fa-code", "programming": "fa-code", "web": "fa-globe",
+    "default": "fa-folder"
+};
+
+var CAT_COLORS = [
+    "rgba(37,99,235,0.10)", "rgba(6,182,212,0.10)", "rgba(245,158,11,0.10)", "rgba(168,85,247,0.10)",
+    "rgba(239,68,68,0.10)", "rgba(34,197,94,0.10)", "rgba(236,72,153,0.10)", "rgba(99,102,241,0.10)"
+];
+
+function renderCategoryCards(categories) {
+    var grid = document.getElementById("searchCategoriesGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+    categories.forEach(function (cat, i) {
+        var key = cat.category.toLowerCase();
+        var icon = CAT_ICONS["default"];
+        Object.keys(CAT_ICONS).forEach(function (k) {
+            if (key.includes(k)) icon = CAT_ICONS[k];
+        });
+
+        var card = document.createElement("div");
+        card.className = "crs-search-cat-card";
+        card.innerHTML =
+            '<div class="crs-search-cat-icon" style="background:' + (CAT_COLORS[i % CAT_COLORS.length]) + '">' +
+            '<i class="fa-solid ' + icon + '"></i>' +
+            '</div>' +
+            '<div class="crs-search-cat-info">' +
+            '<div class="crs-search-cat-name">' + esc(cat.category) + '</div>' +
+            '<div class="crs-search-cat-count">' + cat.count + ' courses</div>' +
+            '</div>';
+        card.addEventListener("click", function () {
+            SearchPopup.input.value = cat.category;
+            updateClearBtn();
+            submitSearch();
+        });
+        grid.appendChild(card);
+    });
+}
+
+/* ── Recommendations ── */
+
+function loadRecommendations() {
+    if (SearchPopup.recCache) {
+        renderRecommendations(SearchPopup.recCache);
+        return;
+    }
+
+    var grid = document.getElementById("searchRecGrid");
+    if (!grid) return;
+
+    fetch(API_URL + "/api/student/recommended-courses?limit=8", {
+        credentials: "include",
+        cache: "no-store"
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success && data.courses && data.courses.length > 0) {
+            SearchPopup.recCache = data.courses;
+            renderRecommendations(data.courses);
+        } else {
+            loadFallbackRecommendations();
+        }
+    })
+    .catch(function () {
+        loadFallbackRecommendations();
+    });
+}
+
+function loadFallbackRecommendations() {
+    fetch(API_URL + "/api/student/courses", {
+        credentials: "include",
+        cache: "no-store"
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success && data.courses && data.courses.length > 0) {
+            var top = data.courses.slice(0, 8);
+            SearchPopup.recCache = top;
+            renderRecommendations(top);
+        } else {
+            var grid = document.getElementById("searchRecGrid");
+            if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:14px;padding:32px 0;">No recommendations available yet.</p>';
+        }
+    })
+    .catch(function () {
+        var grid = document.getElementById("searchRecGrid");
+        if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:14px;padding:32px 0;">Could not load recommendations.</p>';
+    });
+}
+
+var REC_PLACEHOLDER_COLORS = ["#2563eb","#06b6d4","#f59e0b","#a855f7","#ef4444","#22c55e","#ec4899","#6366f1"];
+var REC_PLACEHOLDER_ICONS = ["fa-robot","fa-code","fa-bullhorn","fa-pen-nib","fa-headset","fa-file-lines","fa-calculator","fa-lightbulb"];
+
+function renderRecommendations(courses) {
+    var grid = document.getElementById("searchRecGrid");
+    if (!grid || !courses || courses.length === 0) return;
+
+    grid.innerHTML = "";
+    courses.forEach(function (course, i) {
+        var card = document.createElement("div");
+        card.className = "crs-search-rec-card";
+        card.setAttribute("data-course-id", course.courseId);
+
+        var thumbHtml = "";
+        if (course.thumbnail) {
+            thumbHtml = '<img src="' + esc(course.thumbnail) + '" alt="">';
+        } else {
+            thumbHtml = '<div class="crs-search-rec-thumb-placeholder" style="background:' + REC_PLACEHOLDER_COLORS[i % REC_PLACEHOLDER_COLORS.length] + '">' +
+                '<i class="fa-solid ' + (REC_PLACEHOLDER_ICONS[i % REC_PLACEHOLDER_ICONS.length]) + '"></i></div>';
+        }
+
+        var accessType = String(course.accessType || "free").toLowerCase();
+        var accessLabel = accessType === "paid" ? "Paid" : accessType === "subscription" ? "Pro" : "Free";
+
+        var teacherName = course.teacher?.fullname || "Unknown";
+        var teacherPhoto = course.teacher?.photoURL || "";
+        var teacherMeta = "";
+        if (teacherPhoto) {
+            teacherMeta = '<img src="' + esc(teacherPhoto) + '" alt="">';
+        } else {
+            teacherMeta = '<div class="crs-search-rec-meta-placeholder">' + getInitials(teacherName) + '</div>';
+        }
+
+        var reason = course.recommendationReason;
+        var reasonHtml = "";
+        if (reason && reason.text) {
+            var reasonIcon = "fa-sparkles";
+            var rType = String(reason.type || "").toLowerCase();
+            if (rType === "interest" || rType === "category") reasonIcon = "fa-bullseye";
+            else if (rType === "follow" || rType === "viewed_teacher" || rType === "enrolled_teacher") reasonIcon = "fa-user-check";
+            else if (rType === "viewed") reasonIcon = "fa-eye";
+            else if (rType === "learning") reasonIcon = "fa-graduation-cap";
+            else if (rType === "tag") reasonIcon = "fa-tags";
+            else if (rType === "popular") reasonIcon = "fa-fire";
+            else if (rType === "new") reasonIcon = "fa-certificate";
+            else if (rType === "free") reasonIcon = "fa-gift";
+            else if (rType === "recommended") reasonIcon = "fa-wand-magic-sparkles";
+            reasonHtml = '<div class="crs-search-rec-reason"><i class="fa-solid ' + reasonIcon + '"></i><span>' + esc(reason.text) + '</span></div>';
+        }
+
+        card.innerHTML =
+            '<div class="crs-search-rec-thumb">' + thumbHtml +
+            '<span class="crs-search-rec-access">' + accessLabel + '</span>' +
+            '</div>' +
+            '<div class="crs-search-rec-info">' +
+            '<div class="crs-search-rec-title">' + esc(course.title) + '</div>' +
+            '<div class="crs-search-rec-meta">' + teacherMeta + '<span>' + esc(teacherName) + '</span></div>' +
+            reasonHtml +
+            '</div>';
+
+        card.addEventListener("click", function () {
+            window.location.href = "../view-course/?cid=" + encodeURIComponent(course.courseId);
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+/* ── Live Result Item Builder ── */
+
+var LIVE_PLACEHOLDER_COLORS = ["#2563eb","#06b6d4","#f59e0b","#a855f7","#ef4444","#22c55e"];
+var LIVE_PLACEHOLDER_ICONS = ["fa-robot","fa-code","fa-bullhorn","fa-pen-nib","fa-headset","fa-file-lines"];
+
+function buildLiveResultItem(course, index) {
+    var el = document.createElement("div");
+    el.className = "crs-search-live-item";
+
+    var thumbHtml = "";
+    if (course.thumbnail) {
+        thumbHtml = '<img src="' + esc(course.thumbnail) + '" alt="">';
+    } else {
+        thumbHtml = '<div class="crs-search-live-thumb-placeholder" style="background:' + LIVE_PLACEHOLDER_COLORS[index % LIVE_PLACEHOLDER_COLORS.length] + '">' +
+            '<i class="fa-solid ' + (LIVE_PLACEHOLDER_ICONS[index % LIVE_PLACEHOLDER_ICONS.length]) + '"></i></div>';
+    }
+
+    var accessType = String(course.accessType || "free").toLowerCase();
+    var badgeClass = "crs-search-live-badge";
+    if (accessType === "paid") badgeClass += " paid";
+    var badgeText = accessType === "paid" ? "Paid" : accessType === "subscription" ? "Pro" : "Free";
+
+    el.innerHTML =
+        '<div class="crs-search-live-thumb">' + thumbHtml + '</div>' +
+        '<div class="crs-search-live-info">' +
+        '<div class="crs-search-live-title">' + esc(course.title) + '</div>' +
+        '<div class="crs-search-live-meta">' + esc(course.teacher?.fullname || "Unknown") + ' &middot; ' + esc(course.category || "") + '</div>' +
+        '</div>' +
+        '<span class="crs-search-live-badge ' + badgeClass + '">' + badgeText + '</span>';
+
+    el.addEventListener("click", function () {
+        saveRecentSearch(course.title);
+        window.location.href = "../view-course/?cid=" + encodeURIComponent(course.courseId);
+    });
+
+    return el;
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL SEARCH LOADER
+   ═══════════════════════════════════════════════ */
+
+var SearchLoader = {
+    overlay: null,
+    card: null,
+    iconWrap: null,
+    textEl: null,
+    subtextEl: null,
+    dotsEl: null,
+    rotateTimer: null,
+    forceTimer: null,
+    doneTimer: null,
+    _active: false,
+
+    MESSAGES: [
+        "Searching courses...",
+        "Finding the best matches...",
+        "Looking through categories...",
+        "Checking recommendations...",
+        "Preparing results...",
+        "Scanning instructors...",
+        "Filtering by relevance..."
+    ],
+
+    init: function () {
+        if (this.overlay) return;
+
+        this.overlay = document.createElement("div");
+        this.overlay.className = "crs-search-loader-overlay";
+
+        this.card = document.createElement("div");
+        this.card.className = "crs-search-loader-card";
+
+        this.iconWrap = document.createElement("div");
+        this.iconWrap.className = "crs-search-loader-icon-wrap";
+        this.iconWrap.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+
+        this.textEl = document.createElement("div");
+        this.textEl.className = "crs-search-loader-text";
+        this.textEl.textContent = "Searching...";
+
+        this.subtextEl = document.createElement("div");
+        this.subtextEl.className = "crs-search-loader-subtext";
+        this.subtextEl.textContent = this.MESSAGES[0];
+
+        this.dotsEl = document.createElement("div");
+        this.dotsEl.className = "crs-search-loader-dots";
+        this.dotsEl.innerHTML = "<span></span><span></span><span></span>";
+
+        this.card.appendChild(this.iconWrap);
+        this.card.appendChild(this.textEl);
+        this.card.appendChild(this.subtextEl);
+        this.card.appendChild(this.dotsEl);
+        this.overlay.appendChild(this.card);
+        document.body.appendChild(this.overlay);
+    },
+
+    show: function (query) {
+        this.init();
+        var self = this;
+        this._active = true;
+
+        /* Reset to loading state */
+        this.iconWrap.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+        this.iconWrap.className = "crs-search-loader-icon-wrap";
+        this.textEl.textContent = "Searching...";
+        this.subtextEl.textContent = this.MESSAGES[0];
+        this.dotsEl.style.display = "";
+
+        /* Show overlay */
+        requestAnimationFrame(function () {
+            self.overlay.classList.add("show");
+        });
+
+        /* Rotate subtext messages */
+        var msgIdx = 0;
+        clearInterval(this.rotateTimer);
+        this.rotateTimer = setInterval(function () {
+            if (!self._active) { clearInterval(self.rotateTimer); return; }
+            msgIdx = (msgIdx + 1) % self.MESSAGES.length;
+            self.subtextEl.style.opacity = "0";
+            setTimeout(function () {
+                self.subtextEl.textContent = self.MESSAGES[msgIdx];
+                self.subtextEl.style.opacity = "1";
+            }, 200);
+        }, 2200);
+
+        /* Force cleanup after 12s max */
+        clearTimeout(this.forceTimer);
+        this.forceTimer = setTimeout(function () {
+            if (self._active) self.hide("done");
+        }, 12000);
+    },
+
+    hide: function (state, query) {
+        if (!this.overlay || !this._active) return;
+        var self = this;
+        this._active = false;
+
+        clearInterval(this.rotateTimer);
+        clearTimeout(this.forceTimer);
+
+        /* Show done state briefly */
+        if (state === "done") {
+            this.iconWrap.innerHTML = '<i class="fa-solid fa-check"></i>';
+            this.iconWrap.className = "crs-search-loader-done-icon";
+            this.textEl.textContent = query ? 'Found results for "' + query + '"' : "Results ready";
+            this.subtextEl.textContent = "Loading your courses";
+            this.dotsEl.style.display = "none";
+        } else if (state === "error") {
+            this.iconWrap.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            this.iconWrap.className = "crs-search-loader-done-icon";
+            this.iconWrap.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+            this.textEl.textContent = "Search failed";
+            this.subtextEl.textContent = "Please check your connection and try again";
+            this.dotsEl.style.display = "none";
+        }
+
+        /* Fade out after brief delay */
+        clearTimeout(this.doneTimer);
+        var delay = (state === "error") ? 1800 : 800;
+        this.doneTimer = setTimeout(function () {
+            self.overlay.classList.add("fade-out");
+            setTimeout(function () {
+                self.overlay.classList.remove("show", "fade-out");
+                /* Reset for next use */
+                self.iconWrap.className = "crs-search-loader-icon-wrap";
+                self.iconWrap.style.background = "";
+            }, 400);
+        }, delay);
+    },
+
+    abort: function () {
+        this._active = false;
+        clearInterval(this.rotateTimer);
+        clearTimeout(this.forceTimer);
+        clearTimeout(this.doneTimer);
+        if (this.overlay) {
+            this.overlay.classList.remove("show", "fade-out");
+        }
+    }
+};

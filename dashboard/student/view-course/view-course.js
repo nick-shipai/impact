@@ -19,6 +19,7 @@
 
     /* State */
     var courseData = null;
+    var userData = null;
 
     /* =============================================
        UTILITIES
@@ -74,6 +75,33 @@
     }
 
     /* =============================================
+       AUTHENTICATION
+    ============================================= */
+
+    async function AuthenticateUser() {
+        try {
+            var response = await fetch(API_BASE + "/api/auth/validate-session", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" }
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok || !data.success) {
+                localStorage.removeItem("impactech_user");
+                localStorage.removeItem("impactech_token");
+                return { success: false, user: null };
+            }
+            if (data.user) {
+                localStorage.setItem("impactech_user", JSON.stringify(data.user));
+            }
+            return { success: true, user: data.user };
+        } catch (error) {
+            console.error("[VIEW COURSE] AuthenticateUser error:", error);
+            return { success: false, user: null };
+        }
+    }
+
+    /* =============================================
        LOADING / ERROR STATES
     ============================================= */
 
@@ -122,10 +150,6 @@
             cache: "no-store"
         })
         .then(function (res) {
-            if (res.status === 401) {
-                window.location.href = "../login/";
-                throw new Error("Unauthorized");
-            }
             if (!res.ok) {
                 throw new Error("Course not found");
             }
@@ -144,7 +168,15 @@
             renderCourse(courseData);
             showContent();
             initReveal();
-            checkFollowStatus();
+
+            /* Only init protected actions if user is logged in */
+            if (userData) {
+                initEnroll();
+                initFollow();
+                checkFollowStatus();
+            } else {
+                renderGuestActions();
+            }
         })
         .catch(function (err) {
             console.error("[VIEW COURSE] Fetch error:", err);
@@ -153,12 +185,94 @@
     }
 
     /* =============================================
+       PAGE METADATA (SEO / Social Sharing)
+    ============================================= */
+
+    var DEFAULT_IMAGE = "https://impactacademy.site/images/icon.png";
+    var SITE_NAME = "IMPACTECH ACADEMY";
+
+    function updatePageMetadata(c) {
+        if (!c) return;
+
+        var title = (c.title || "Course") + " | " + SITE_NAME;
+        var description = buildMetaDescription(c);
+        var image = c.thumbnail || DEFAULT_IMAGE;
+        var pageUrl = window.location.href;
+
+        /* Title */
+        document.title = title;
+
+        /* Helper to set or create meta tags */
+        function setMeta(attr, key, content) {
+            var el = document.querySelector('meta[' + attr + '="' + key + '"]');
+            if (el) {
+                el.setAttribute("content", content);
+            } else {
+                el = document.createElement("meta");
+                el.setAttribute(attr, key);
+                el.setAttribute("content", content);
+                document.head.appendChild(el);
+            }
+        }
+
+        /* Standard meta */
+        setMeta("name", "description", description);
+
+        /* Open Graph */
+        setMeta("property", "og:title", title);
+        setMeta("property", "og:description", description);
+        setMeta("property", "og:image", image);
+        setMeta("property", "og:url", pageUrl);
+        setMeta("property", "og:type", "article");
+        setMeta("property", "og:site_name", SITE_NAME);
+
+        /* Twitter */
+        setMeta("name", "twitter:title", title);
+        setMeta("name", "twitter:description", description);
+        setMeta("name", "twitter:image", image);
+        setMeta("name", "twitter:card", "summary_large_image");
+    }
+
+    function buildMetaDescription(c) {
+        var parts = [];
+
+        /* Course description — first 120 chars */
+        var desc = (c.description || c.subtitle || "").trim();
+        if (desc) {
+            if (desc.length > 120) desc = desc.substring(0, 117).replace(/\s+\S*$/, "") + "...";
+            parts.push(desc);
+        }
+
+        /* Stats line */
+        var stats = [];
+        var views = Number(c.views) || 0;
+        var rating = Number(c.rating) || 0;
+
+        if (views > 0) {
+            stats.push(formatNumber(views) + " view" + (views !== 1 ? "s" : ""));
+        }
+        if (rating > 0) {
+            stats.push(rating.toFixed(1) + "/5 rating");
+        }
+
+        if (stats.length > 0) {
+            parts.push(stats.join(" \u2022 "));
+        }
+
+        if (parts.length === 0) {
+            return "Explore this course on " + SITE_NAME + ". Learn new skills from expert instructors.";
+        }
+
+        return parts.join(". ") + ".";
+    }
+
+    /* =============================================
        RENDER COURSE DATA
     ============================================= */
 
     function renderCourse(c) {
-        /* Page title */
-        document.title = esc(c.title || "Course") + " | IMPACTECH ACADEMY";
+        /* Update page metadata for SEO / social sharing */
+        updatePageMetadata(c);
 
         /* Thumbnail */
         renderThumbnail(c.thumbnail);
@@ -641,6 +755,12 @@
     function handleEnroll() {
         if (!courseData) return;
 
+        /* Guest users — redirect to sign-in */
+        if (!userData) {
+            window.location.href = "../../../signin/";
+            return;
+        }
+
         var access = String(courseData.accessType || "free").toLowerCase();
 
         /* Free courses — enroll directly */
@@ -649,33 +769,15 @@
             return;
         }
 
-        /* Paid courses — check subscription */
+        /* Paid/Subscription courses — check subscription using cached user data */
         if (access === "paid" || access === "subscription") {
-            fetch(API_BASE + "/api/auth/validate-session", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                cache: "no-store"
-            })
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
-                if (data.success && data.user) {
-                    var user = data.user;
-                    if (user.isPro || user.isElite) {
-                        /* User has subscription — proceed with enrollment */
-                        showToast("Enrollment coming soon!", "info");
-                    } else {
-                        /* No subscription — show upgrade modal */
-                        showUpgradeModal();
-                    }
-                } else {
-                    window.location.href = "../login/";
-                }
-            })
-            .catch(function (err) {
-                console.log("[VIEW COURSE] Subscription check failed:", err);
-                showToast("Please check your connection", "error");
-            });
+            if (userData.isPro || userData.isElite) {
+                /* User has subscription — proceed with enrollment */
+                showToast("Enrollment coming soon!", "info");
+            } else {
+                /* No subscription — show upgrade modal */
+                showUpgradeModal();
+            }
             return;
         }
 
@@ -690,6 +792,32 @@
             e.stopPropagation();
             handleEnroll();
         });
+    }
+
+    /* =============================================
+       GUEST ACTIONS — Show sign-in prompts
+    ============================================= */
+
+    function renderGuestActions() {
+        /* Enroll button — redirect to sign-in */
+        var enrollBtn = document.getElementById("vcEnrollBtn");
+        if (enrollBtn) {
+            enrollBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Enroll';
+            enrollBtn.onclick = function (e) {
+                e.preventDefault();
+                window.location.href = "../../../signin/";
+            };
+        }
+
+        /* Follow button — redirect to sign-in */
+        var followBtn = document.getElementById("vcFollowBtn");
+        if (followBtn) {
+            followBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Follow';
+            followBtn.onclick = function (e) {
+                e.preventDefault();
+                window.location.href = "../../../signin/";
+            };
+        }
     }
 
     /* =============================================
@@ -728,6 +856,12 @@
         if (followState.loading) return;
         if (!courseData || !courseData.teacher || !courseData.teacher.uid) return;
 
+        /* Guest users — redirect to sign-in */
+        if (!userData) {
+            window.location.href = "../../../signin/";
+            return;
+        }
+
         followState.loading = true;
         updateFollowUI();
 
@@ -744,7 +878,7 @@
         })
         .then(function (res) {
             if (res.status === 401) {
-                window.location.href = "../login/";
+                window.location.href = "../../../signin/";
                 throw new Error("Unauthorized");
             }
             return res.json();
@@ -807,11 +941,32 @@
        INIT
     ============================================= */
 
-    document.addEventListener("DOMContentLoaded", function () {
-        fetchCourse();
+    document.addEventListener("DOMContentLoaded", async function () {
+        /* Attempt authentication — optional for viewing course */
+        showLoading();
+        var auth = await AuthenticateUser();
+
+        if (auth.success && auth.user) {
+            userData = auth.user;
+
+            /* Verify student account type if logged in */
+            var allowedStudentTypes = ["student", "va-student"];
+            var userType = (userData?.accountType || "").toLowerCase().trim();
+            if (!allowedStudentTypes.includes(userType)) {
+                userData = null;
+            }
+
+            /* Check setup completion */
+            if (userData && userData.setupCompleted === false) {
+                userData = null;
+            }
+        } else {
+            userData = null;
+        }
+
+        /* Load course data — works for guests and authenticated users */
         initShare();
-        initEnroll();
-        initFollow();
+        fetchCourse();
     });
 
 })();

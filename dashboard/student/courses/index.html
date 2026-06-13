@@ -190,6 +190,85 @@
 
 </main>
 
+<!-- Search Popup Overlay -->
+<div class="crs-search-overlay" id="searchOverlay"></div>
+
+<!-- Search Popup -->
+<div class="crs-search-popup" id="searchPopup">
+    <div class="crs-search-header">
+        <div class="crs-search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="crs-search-input" id="searchPopupInput" placeholder="Search courses, categories, instructors..." autocomplete="off">
+            <button class="crs-search-clear" id="searchClearBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <button class="crs-search-submit" id="searchSubmitBtn"><i class="fa-solid fa-arrow-right"></i></button>
+        <button class="crs-search-close" id="searchCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="crs-search-body" id="searchBody">
+        <!-- Default state: recent + trending + categories + recommendations -->
+        <div id="searchDefaultState">
+            <!-- Recent Searches -->
+            <div class="crs-search-section" id="searchRecentSection" style="display:none;">
+                <div class="crs-search-section-header">
+                    <span class="crs-search-section-title">Recent Searches</span>
+                    <button class="crs-search-section-action" id="clearRecentBtn">Clear all</button>
+                </div>
+                <div class="crs-search-recent-list" id="searchRecentList"></div>
+            </div>
+            <!-- Trending Searches -->
+            <div class="crs-search-section" id="searchTrendingSection">
+                <div class="crs-search-section-header">
+                    <span class="crs-search-section-title">Trending</span>
+                </div>
+                <div class="crs-search-tags" id="searchTrendingTags"></div>
+            </div>
+            <!-- Popular Categories -->
+            <div class="crs-search-section" id="searchCategoriesSection">
+                <div class="crs-search-section-header">
+                    <span class="crs-search-section-title">Popular Categories</span>
+                </div>
+                <div class="crs-search-categories-grid" id="searchCategoriesGrid"></div>
+            </div>
+            <!-- Recommended Courses -->
+            <div class="crs-search-section" id="searchRecSection">
+                <div class="crs-search-section-header">
+                    <span class="crs-search-section-title">Recommended for you</span>
+                </div>
+                <div class="crs-search-rec-grid" id="searchRecGrid">
+                    <div class="crs-search-rec-skeleton"></div>
+                    <div class="crs-search-rec-skeleton"></div>
+                    <div class="crs-search-rec-skeleton"></div>
+                    <div class="crs-search-rec-skeleton"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Live search results -->
+        <div id="searchLiveState" style="display:none;">
+            <div class="crs-search-section">
+                <div class="crs-search-section-header">
+                    <span class="crs-search-section-title" id="searchLiveTitle">Results</span>
+                </div>
+                <div class="crs-search-live-list" id="searchLiveList"></div>
+            </div>
+        </div>
+        <!-- Loading state -->
+        <div id="searchLoadingState" style="display:none;">
+            <div class="crs-search-loading">
+                <i class="fa-solid fa-spinner"></i>
+                Searching...
+            </div>
+        </div>
+        <!-- Empty state -->
+        <div id="searchEmptyState" style="display:none;">
+            <div class="crs-search-empty">
+                <div class="crs-search-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h3>No results found</h3>
+                <p>Try different keywords or browse the categories below.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav class="sh-bottom-nav">
     <a href="../index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="./" class="active"><i class="fa-solid fa-book-open"></i><span>Courses</span></a>

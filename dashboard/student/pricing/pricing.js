@@ -140,7 +140,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     var allowedStudentTypes = ["student", "va-student"];
     var userType = (user?.accountType || "").toLowerCase().trim();
     if (!allowedStudentTypes.includes(userType)) {
-        window.location.href = "/404.html";
+        window.location.href = "../../../404.html";
+        return;
+    }
+
+    /* --- Setup Completion Check --- */
+    if (user.setupCompleted === false) {
+        window.location.href = "../set-up/";
         return;
     }
 

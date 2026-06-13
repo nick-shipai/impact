@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const auth = await AuthenticateUser();
 
     if (!auth.success) {
-        window.location.href = "../../../signin/";
+        window.location.href = "../../signin/";
         return;
     }
 
@@ -91,8 +91,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    if (auth.user?.setup && !auth.user.setup.completed) {
-        window.location.href = "../iam-client/set-up/";
+    if (auth.user?.setupCompleted === false || (auth.user?.setup && !auth.user.setup.completed)) {
+        window.location.href = "./set-up/";
         return;
     }
 
