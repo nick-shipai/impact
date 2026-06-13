@@ -216,6 +216,9 @@
                         <button class="vc-btn vc-btn-enroll" id="vcEnrollBtn">
                             <i class="fa-solid fa-rocket"></i> Enroll Now
                         </button>
+                        <button class="vc-btn vc-btn-save" id="vcSaveBtn">
+                            <i class="fa-regular fa-bookmark"></i> Save Course
+                        </button>
                         <p class="vc-enroll-note">Get instant access to all course materials</p>
                         <div class="vc-enroll-features">
                             <div class="vc-enroll-feature"><i class="fa-solid fa-check"></i> Full lifetime access</div>
@@ -229,10 +232,13 @@
                     <div class="vc-share-card vc-reveal">
                         <h3>Share this course</h3>
                         <div class="vc-share-buttons">
-                            <button class="vc-share-btn" title="Copy link"><i class="fa-solid fa-link"></i></button>
-                            <button class="vc-share-btn" title="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></button>
-                            <button class="vc-share-btn" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></button>
-                            <button class="vc-share-btn" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                            <button class="vc-share-btn" data-platform="copy" title="Copy link"><i class="fa-solid fa-link"></i></button>
+                            <button class="vc-share-btn" data-platform="whatsapp" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                            <button class="vc-share-btn" data-platform="twitter" title="Share on X/Twitter"><i class="fa-brands fa-x-twitter"></i></button>
+                            <button class="vc-share-btn" data-platform="facebook" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+                            <button class="vc-share-btn" data-platform="telegram" title="Share on Telegram"><i class="fa-brands fa-telegram"></i></button>
+                            <button class="vc-share-btn" data-platform="linkedin" title="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></button>
+                            <button class="vc-share-btn vc-share-btn-native" data-platform="native" title="Share via device"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
                     </div>
 

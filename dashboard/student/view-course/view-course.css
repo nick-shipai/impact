@@ -1350,6 +1350,35 @@ a { text-decoration: none; color: inherit; transition: 0.22s ease; }
     cursor: default;
 }
 
+/* Save Button */
+.vc-btn-save {
+    background: var(--light);
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    margin-top: 10px;
+}
+
+.vc-btn-save i {
+    font-size: 1rem;
+}
+
+.vc-btn-save:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--soft-blue);
+}
+
+.vc-btn-save.saved {
+    background: var(--soft-blue);
+    color: var(--primary);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.vc-btn-save:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
 .vc-enroll-note {
     text-align: center;
     font-size: 0.82rem;
@@ -1426,6 +1455,17 @@ a { text-decoration: none; color: inherit; transition: 0.22s ease; }
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+}
+
+.vc-share-btn-native {
+    background: var(--soft-blue);
+    color: var(--primary);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+.vc-share-btn-native:hover {
+    background: var(--primary);
+    color: var(--white);
 }
 
 /* =============================================
@@ -1779,4 +1819,103 @@ a { text-decoration: none; color: inherit; transition: 0.22s ease; }
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+/* =========================
+   SPONSORED AD CARD
+   3 placements: header, mid-content, sidebar
+   Responsive ad sizes
+========================= */
+
+.vc-ad-slot {
+    margin: 24px 0;
+}
+
+.vc-ad-slot .vc-ad-tall {
+    margin: 0;
+}
+
+.vc-sponsored-ad-card {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 24px;
+    padding: 14px;
+    box-shadow: var(--shadow-sm, 0 10px 30px rgba(15, 23, 42, 0.08));
+    overflow: hidden;
+}
+
+.vc-ad-wide {
+    padding: 14px 20px;
+}
+
+.vc-ad-tall {
+    border-radius: 20px;
+    padding: 12px;
+}
+
+.vc-sponsored-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.vc-ad-wide .vc-sponsored-top {
+    margin-bottom: 8px;
+}
+
+.vc-sponsored-top span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245, 158, 11, 0.14);
+    color: #b45309;
+    border: 1px solid rgba(245, 158, 11, 0.24);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.vc-ad-tall .vc-sponsored-top span {
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+.vc-sponsored-top small {
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 11px;
+}
+
+.vc-sponsored-body {
+    display: flex;
+    justify-content: center;
+}
+
+.vc-monetag-ad-slot {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.vc-adsterra-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.vc-adsterra-container iframe {
+    border: none;
+    display: block;
+}
+
+/* Sidebar ad — sticky on desktop */
+.vc-sidebar .vc-ad-slot {
+    position: sticky;
+    top: 20px;
 }

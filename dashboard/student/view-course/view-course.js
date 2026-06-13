@@ -166,6 +166,7 @@
             console.log("[VIEW COURSE] course.trailerVideo:", courseData.trailerVideo ? courseData.trailerVideo.substring(0, 80) + "..." : "null");
             console.log("[VIEW COURSE] course.thumbnail:", courseData.thumbnail ? courseData.thumbnail.substring(0, 80) + "..." : "null");
             renderCourse(courseData);
+            renderViewCourseAds();
             showContent();
             initReveal();
 
@@ -652,31 +653,190 @@
        SHARE BUTTONS
     ============================================= */
 
+    /* =============================================
+       SAVE COURSE
+    ============================================= */
+
+    var saveState = { saved: false, loading: false };
+
+    function checkSaveStatus() {
+        if (!userData || !courseId) return;
+
+        fetch(API_BASE + "/api/student/save-status/" + encodeURIComponent(courseId), {
+            method: "GET",
+            credentials: "include",
+            headers: { "Accept": "application/json" },
+            cache: "no-store"
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.success) {
+                saveState.saved = data.saved;
+                updateSaveUI();
+            }
+        })
+        .catch(function () {});
+    }
+
+    function toggleSave() {
+        if (saveState.loading) return;
+
+        /* Guest users — redirect to sign-in */
+        if (!userData) {
+            window.location.href = "../../../signin/";
+            return;
+        }
+
+        saveState.loading = true;
+        updateSaveUI();
+
+        var action = saveState.saved ? "unsave-course" : "save-course";
+
+        fetch(API_BASE + "/api/student/" + action, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ courseId: courseId })
+        })
+        .then(function (r) {
+            if (r.status === 401) {
+                window.location.href = "../../../signin/";
+                throw new Error("Unauthorized");
+            }
+            return r.json();
+        })
+        .then(function (data) {
+            saveState.loading = false;
+            if (data.success) {
+                saveState.saved = data.saved;
+                updateSaveUI();
+                showToast(data.saved ? "Course saved!" : "Removed from saved", "success");
+            } else {
+                showToast(data.message || "Action failed", "error");
+                updateSaveUI();
+            }
+        })
+        .catch(function () {
+            saveState.loading = false;
+            updateSaveUI();
+        });
+    }
+
+    function updateSaveUI() {
+        var btn = document.getElementById("vcSaveBtn");
+        if (!btn) return;
+
+        if (saveState.loading) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            return;
+        }
+
+        btn.disabled = false;
+        if (saveState.saved) {
+            btn.className = "vc-btn vc-btn-save saved";
+            btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
+        } else {
+            btn.className = "vc-btn vc-btn-save";
+            btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save Course';
+        }
+    }
+
+    function initSave() {
+        var btn = document.getElementById("vcSaveBtn");
+        if (!btn) return;
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSave();
+        });
+        checkSaveStatus();
+    }
+
+    /* =============================================
+       SHARE COURSE
+    ============================================= */
+
     function initShare() {
         var buttons = document.querySelectorAll(".vc-share-btn");
         buttons.forEach(function (btn) {
             btn.addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var title = courseData ? courseData.title : "Course";
-                /* Use backend SSR URL for social sharing (has server-rendered meta tags) */
-                var shareUrl = "https://backend.impactacademy.site/course/" + encodeURIComponent(courseId);
-
-                if (btn.querySelector(".fa-link")) {
-                    navigator.clipboard.writeText(shareUrl).then(function () {
-                        showToast("Link copied!", "success");
-                    }).catch(function () {
-                        showToast("Failed to copy link", "error");
-                    });
-                } else if (btn.querySelector(".fa-x-twitter")) {
-                    window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(shareUrl), "_blank");
-                } else if (btn.querySelector(".fa-facebook-f")) {
-                    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank");
-                } else if (btn.querySelector(".fa-whatsapp")) {
-                    window.open("https://wa.me/?text=" + encodeURIComponent(title + " " + shareUrl), "_blank");
-                }
+                handleShare(btn);
             });
         });
+    }
+
+    function handleShare(btn) {
+        var platform = btn.getAttribute("data-platform");
+        var title = courseData ? courseData.title : "Course";
+        /* Use backend SSR URL for social sharing (has server-rendered meta tags) */
+        var shareUrl = "https://backend.impactacademy.site/course/" + encodeURIComponent(courseId);
+        var text = title + " — Check out this course on IMPACTECH ACADEMY";
+
+        switch (platform) {
+            case "copy":
+                navigator.clipboard.writeText(shareUrl).then(function () {
+                    showToast("Link copied!", "success");
+                    trackShare("copy");
+                }).catch(function () {
+                    showToast("Failed to copy link", "error");
+                });
+                break;
+
+            case "whatsapp":
+                window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + shareUrl), "_blank");
+                trackShare("whatsapp");
+                break;
+
+            case "twitter":
+                window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(shareUrl), "_blank");
+                trackShare("twitter");
+                break;
+
+            case "facebook":
+                window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank");
+                trackShare("facebook");
+                break;
+
+            case "telegram":
+                window.open("https://t.me/share/url?url=" + encodeURIComponent(shareUrl) + "&text=" + encodeURIComponent(text), "_blank");
+                trackShare("telegram");
+                break;
+
+            case "linkedin":
+                window.open("https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(shareUrl), "_blank");
+                trackShare("linkedin");
+                break;
+
+            case "native":
+                if (navigator.share) {
+                    navigator.share({ title: title, text: text, url: shareUrl })
+                    .then(function () { trackShare("native"); })
+                    .catch(function () {});
+                } else {
+                    /* Fallback: copy link */
+                    navigator.clipboard.writeText(shareUrl).then(function () {
+                        showToast("Link copied!", "success");
+                        trackShare("copy");
+                    }).catch(function () {});
+                }
+                break;
+        }
+    }
+
+    function trackShare(platform) {
+        if (!courseId) return;
+        fetch(API_BASE + "/api/course/share", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId: courseId, platform: platform })
+        }).catch(function () {});
     }
 
     /* =============================================
@@ -939,6 +1099,128 @@
     }
 
     /* =============================================
+       IN-APP AD SYSTEM
+       HighPerformanceFormat / Adsterra
+       Each ad isolated in its own iframe (no global atOptions conflict)
+       Only shown to free (non-subscribed) users
+    ============================================= */
+
+    var AD_PUBLISHER_KEY = "1861361b791c986f9a927974e0eef766";
+
+    var AD_UNITS = {
+        banner468:   { width: 468, height: 60  },
+        banner320:   { width: 320, height: 50  },
+        square300:   { width: 300, height: 250 },
+        skyscraper:  { width: 160, height: 300 },
+        largeVert:   { width: 160, height: 600 },
+        leaderboard: { width: 728, height: 90  }
+    };
+
+    function isUserPremium() {
+        if (!userData) return false;
+        return !!(userData.isPro || userData.isElite);
+    }
+
+    /*
+      Each ad gets its own isolated iframe so atOptions never conflicts.
+      The iframe contains its own window.atOptions + invoke.js script.
+    */
+    function loadAdIsolated(containerId, key, width, height) {
+        var container = document.getElementById(containerId);
+        if (!container || container.dataset.loaded) return;
+        container.dataset.loaded = "true";
+
+        /* Set exact container dimensions to match ad size */
+        container.style.width = width + "px";
+        container.style.height = height + "px";
+        container.style.maxWidth = "100%";
+        container.style.overflow = "hidden";
+        container.style.position = "relative";
+
+        var iframe = document.createElement("iframe");
+        iframe.width = width;
+        iframe.height = height;
+        iframe.style.border = "none";
+        iframe.style.borderRadius = "12px";
+        iframe.style.display = "block";
+        iframe.style.position = "absolute";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+
+        var html = '<!DOCTYPE html><html><head></head>' +
+            '<body style="margin:0;padding:0;overflow:hidden;">' +
+            '<script>window.atOptions={"key":"' + key + '","format":"iframe","height":' + height + ',"width":' + width + ',"params":{}};</script>' +
+            '<script src="https://www.highperformanceformat.com/' + key + '/invoke.js" async></script>' +
+            '</body></html>';
+
+        iframe.srcdoc = html;
+        container.appendChild(iframe);
+    }
+
+    function createSponsoredAd(index, slotType) {
+        var size = AD_UNITS[slotType];
+        var adId = "vc-ad-slot-" + index;
+
+        /* Stagger each ad load so iframes initialize independently */
+        setTimeout(function () {
+            loadAdIsolated(adId, AD_PUBLISHER_KEY, size.width, size.height);
+        }, 200 + (index * 250));
+
+        var adClass = slotType === "leaderboard" ? "vc-sponsored-ad-card vc-ad-wide" :
+                      slotType === "skyscraper" || slotType === "largeVert" ? "vc-sponsored-ad-card vc-ad-tall" :
+                      "vc-sponsored-ad-card";
+
+        return '' +
+            '<div class="vc-ad-slot">' +
+            '<article class="' + adClass + '">' +
+            '<div class="vc-sponsored-top">' +
+            '<span><i class="fa-solid fa-bullhorn"></i> Sponsored</span>' +
+            '<small>Ad</small>' +
+            '</div>' +
+            '<div class="vc-sponsored-body">' +
+            '<div class="vc-monetag-ad-slot">' +
+            '<div id="' + adId + '" class="vc-adsterra-container"></div>' +
+            '</div>' +
+            '</div>' +
+            '</article>' +
+            '</div>';
+    }
+
+    function renderViewCourseAds() {
+        if (isUserPremium()) return;
+
+        var contentEl = document.querySelector(".vc-content");
+        var sidebarEl = document.querySelector(".vc-sidebar");
+        var adIndex = 0;
+
+        /* 1. Below course header — leaderboard on desktop, square on mobile */
+        var statsRow = document.getElementById("vcStatsRow");
+        if (statsRow && contentEl) {
+            var headerAdType = window.innerWidth >= 1024 ? "leaderboard" : "square300";
+            var wrapper1 = document.createElement("div");
+            wrapper1.innerHTML = createSponsoredAd(adIndex++, headerAdType);
+            statsRow.parentNode.insertBefore(wrapper1.firstElementChild, statsRow.nextSibling);
+        }
+
+        /* 2. Mid content — after description section */
+        var descSection = document.getElementById("vcDescription");
+        if (descSection && descSection.closest(".vc-section")) {
+            var anchor = descSection.closest(".vc-section");
+            var wrapper2 = document.createElement("div");
+            wrapper2.innerHTML = createSponsoredAd(adIndex++, "square300");
+            anchor.parentNode.insertBefore(wrapper2.firstElementChild, anchor.nextSibling);
+        }
+
+        /* 3. Sidebar — skyscraper or largeVert */
+        if (sidebarEl) {
+            var sidebarAdType = window.innerWidth >= 1280 ? "largeVert" : "skyscraper";
+            var wrapper3 = document.createElement("div");
+            wrapper3.innerHTML = createSponsoredAd(adIndex++, sidebarAdType);
+            sidebarEl.appendChild(wrapper3.firstElementChild);
+        }
+    }
+
+    /* =============================================
        INIT
     ============================================= */
 
@@ -967,6 +1249,7 @@
 
         /* Load course data — works for guests and authenticated users */
         initShare();
+        initSave();
         fetchCourse();
     });
 

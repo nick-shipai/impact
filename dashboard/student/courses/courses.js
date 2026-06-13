@@ -1,5 +1,52 @@
 var API_URL = "https://backend.impactacademy.site";
 
+/* =========================
+   PREMIUM LOADER
+========================= */
+
+var CourseLoader = {
+    _hidden: false,
+    _fallbackTimer: null,
+
+    init: function () {
+        this._generateParticles();
+        /* Safe fallback: force-hide after 10s no matter what */
+        var self = this;
+        this._fallbackTimer = setTimeout(function () { self.hide(); }, 10000);
+    },
+
+    _generateParticles: function () {
+        var container = document.getElementById("crsPreloaderParticles");
+        if (!container) return;
+        var count = window.innerWidth < 768 ? 20 : 40;
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement("div");
+            p.className = "crs-preloader-particle";
+            p.style.left = Math.random() * 100 + "%";
+            p.style.animationDuration = (3 + Math.random() * 5) + "s";
+            p.style.animationDelay = (Math.random() * 5) + "s";
+            p.style.width = p.style.height = (2 + Math.random() * 3) + "px";
+            var colors = ["rgba(96,165,250,0.5)", "rgba(167,139,250,0.4)", "rgba(244,114,182,0.35)", "rgba(52,211,153,0.3)"];
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            container.appendChild(p);
+        }
+    },
+
+    hide: function () {
+        if (this._hidden) return;
+        this._hidden = true;
+        clearTimeout(this._fallbackTimer);
+        var el = document.getElementById("crsPreloader");
+        if (el) {
+            el.classList.add("fade-out");
+            setTimeout(function () { el.remove(); }, 700);
+        }
+    }
+};
+
+/* Init loader immediately (before DOMContentLoaded) */
+CourseLoader.init();
+
 var COURSE_COLORS = [
     "linear-gradient(135deg, #2563eb, #06b6d4)",
     "linear-gradient(135deg, #8b5cf6, #ec4899)",
@@ -259,6 +306,16 @@ function renderBrowseCourses(courses) {
 
     container.innerHTML = "";
 
+    var showAds = !isUserPremium();
+    var adIndex = 0;
+
+    /* Top leaderboard ad for wide screens */
+    if (showAds && window.innerWidth >= 1024) {
+        var topAd = document.createElement("div");
+        topAd.innerHTML = createSponsoredAdCard(adIndex++, "leaderboard");
+        container.appendChild(topAd.firstElementChild);
+    }
+
     courses.forEach(function (course, i) {
         var category = course.category || "";
         var tags = Array.isArray(course.tags) ? course.tags : [];
@@ -386,12 +443,20 @@ function renderBrowseCourses(courses) {
             '</div>' +
             '<div class="crs-feed-actions">' +
             '<button class="crs-feed-action-btn primary">' + SVG.education + ' Join Course</button>' +
-            '<button class="crs-feed-action-btn"><i class="fa-regular fa-bookmark"></i> Save</button>' +
-            '<button class="crs-feed-action-btn">' + SVG.share + ' Share</button>' +
+            '<button class="crs-feed-action-btn crs-save-btn" data-course-id="' + esc(course.courseId || "") + '"><i class="fa-regular fa-bookmark"></i> Save</button>' +
+            '<button class="crs-feed-action-btn crs-share-btn" data-course-id="' + esc(course.courseId || "") + '" data-course-title="' + esc(course.title || "") + '">' + SVG.share + ' Share</button>' +
             '<button class="crs-feed-action-btn">Details <i class="fa-solid fa-arrow-right"></i></button>' +
             '</div>';
 
         container.appendChild(card);
+
+        /* Inject sponsored ad every 4 courses for free users */
+        if (showAds && (i + 1) % 4 === 0) {
+            var adWrapper = document.createElement("div");
+            adWrapper.innerHTML = createSponsoredAdCard(adIndex++);
+            var adEl = adWrapper.firstElementChild;
+            container.appendChild(adEl);
+        }
     });
 
     initFilterButtons();
@@ -407,19 +472,270 @@ function initCardClicks() {
     var cards = document.querySelectorAll(".crs-feed-card[data-course-id]");
     cards.forEach(function (card) {
         card.addEventListener("click", function (e) {
-            /* Ignore clicks on Save, Share, and menu buttons */
+            /* Ignore clicks on Save, Share, menu, and primary action buttons */
             if (e.target.closest(".crs-feed-menu-btn")) return;
-            if (e.target.closest(".crs-feed-action-btn") && !e.target.closest(".crs-feed-action-btn.primary")) {
-                var btnText = e.target.closest(".crs-feed-action-btn").textContent || "";
-                if (btnText.indexOf("Save") !== -1 || btnText.indexOf("Share") !== -1) return;
+            if (e.target.closest(".crs-save-btn")) return;
+            if (e.target.closest(".crs-share-btn")) return;
+            if (e.target.closest(".crs-feed-action-btn.primary")) return;
+            /* Only navigate if clicking Details or card body */
+            var btn = e.target.closest(".crs-feed-action-btn");
+            if (btn) {
+                var cid = card.getAttribute("data-course-id");
+                if (cid) window.location.href = "../view-course/?cid=" + encodeURIComponent(cid);
+                return;
             }
+            /* Click on card body → navigate */
             var cid = card.getAttribute("data-course-id");
-            if (cid) {
-                window.location.href = "../view-course/?cid=" + encodeURIComponent(cid);
-            }
+            if (cid) window.location.href = "../view-course/?cid=" + encodeURIComponent(cid);
         });
         card.style.cursor = "pointer";
     });
+
+    initSaveButtons();
+    initShareButtons();
+}
+
+/* =========================
+   SAVE COURSE (per card)
+========================= */
+
+var cardSaveCache = {}; /* courseId → true/false */
+
+function initSaveButtons() {
+    document.querySelectorAll(".crs-save-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var cid = btn.getAttribute("data-course-id");
+            if (!cid) return;
+            toggleCardSave(cid, btn);
+        });
+    });
+    /* Load save status for all visible cards */
+    loadCardSaveStatuses();
+}
+
+function loadCardSaveStatuses() {
+    var userRaw = localStorage.getItem("impactech_user");
+    if (!userRaw) return;
+    var user;
+    try { user = JSON.parse(userRaw); } catch (e) { return; }
+    if (!user || !user.uid) return;
+
+    var btns = document.querySelectorAll(".crs-save-btn[data-course-id]");
+    btns.forEach(function (btn) {
+        var cid = btn.getAttribute("data-course-id");
+        if (!cid || cardSaveCache[cid] !== undefined) return;
+
+        fetch(API_URL + "/api/student/save-status/" + encodeURIComponent(cid), {
+            credentials: "include",
+            cache: "no-store"
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.success) {
+                cardSaveCache[cid] = data.saved;
+                updateCardSaveUI(btn, data.saved);
+            }
+        })
+        .catch(function () {});
+    });
+}
+
+function toggleCardSave(courseId, btn) {
+    var userRaw = localStorage.getItem("impactech_user");
+    if (!userRaw) {
+        window.location.href = "../signin/";
+        return;
+    }
+
+    var isSaved = cardSaveCache[courseId] || false;
+    var action = isSaved ? "unsave-course" : "save-course";
+
+    /* Optimistic update */
+    cardSaveCache[courseId] = !isSaved;
+    updateCardSaveUI(btn, !isSaved);
+
+    fetch(API_URL + "/api/student/" + action, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseId: courseId })
+    })
+    .then(function (r) {
+        if (r.status === 401) {
+            cardSaveCache[courseId] = isSaved;
+            updateCardSaveUI(btn, isSaved);
+            window.location.href = "../signin/";
+            throw new Error("Unauthorized");
+        }
+        return r.json();
+    })
+    .then(function (data) {
+        if (!data.success) {
+            cardSaveCache[courseId] = isSaved;
+            updateCardSaveUI(btn, isSaved);
+        }
+    })
+    .catch(function () {
+        cardSaveCache[courseId] = isSaved;
+        updateCardSaveUI(btn, isSaved);
+    });
+}
+
+function updateCardSaveUI(btn, saved) {
+    if (!btn) return;
+    if (saved) {
+        btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
+        btn.classList.add("saved");
+    } else {
+        btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save';
+        btn.classList.remove("saved");
+    }
+}
+
+/* =========================
+   SHARE COURSE (per card)
+========================= */
+
+function initShareButtons() {
+    document.querySelectorAll(".crs-share-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var cid = btn.getAttribute("data-course-id");
+            var title = btn.getAttribute("data-course-title") || "Course";
+            showCardSharePopup(cid, title, btn);
+        });
+    });
+}
+
+function showCardSharePopup(courseId, title, anchorBtn) {
+    /* Remove existing popup */
+    var existing = document.getElementById("crsSharePopup");
+    if (existing) existing.remove();
+
+    var shareUrl = "https://backend.impactacademy.site/course/" + encodeURIComponent(courseId);
+    var text = title + " — Check out this course on IMPACTECH ACADEMY";
+
+    var popup = document.createElement("div");
+    popup.className = "crs-share-popup";
+    popup.id = "crsSharePopup";
+    popup.innerHTML =
+        '<div class="crs-share-popup-header">' +
+        '<span>Share this course</span>' +
+        '<button class="crs-share-popup-close" id="crsShareClose"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>' +
+        '<div class="crs-share-popup-grid">' +
+        '<button class="crs-share-option" data-action="copy"><div class="crs-share-icon-wrap copy"><i class="fa-solid fa-link"></i></div><span>Copy Link</span></button>' +
+        '<button class="crs-share-option" data-action="whatsapp"><div class="crs-share-icon-wrap whatsapp"><i class="fa-brands fa-whatsapp"></i></div><span>WhatsApp</span></button>' +
+        '<button class="crs-share-option" data-action="twitter"><div class="crs-share-icon-wrap twitter"><i class="fa-brands fa-x-twitter"></i></div><span>X / Twitter</span></button>' +
+        '<button class="crs-share-option" data-action="facebook"><div class="crs-share-icon-wrap facebook"><i class="fa-brands fa-facebook-f"></i></div><span>Facebook</span></button>' +
+        '<button class="crs-share-option" data-action="telegram"><div class="crs-share-icon-wrap telegram"><i class="fa-brands fa-telegram"></i></div><span>Telegram</span></button>' +
+        '<button class="crs-share-option" data-action="linkedin"><div class="crs-share-icon-wrap linkedin"><i class="fa-brands fa-linkedin-in"></i></div><span>LinkedIn</span></button>' +
+        (navigator.share ? '<button class="crs-share-option" data-action="native"><div class="crs-share-icon-wrap native"><i class="fa-solid fa-share-nodes"></i></div><span>More...</span></button>' : '') +
+        '</div>';
+
+    document.body.appendChild(popup);
+
+    /* Position popup near the button */
+    var rect = anchorBtn.getBoundingClientRect();
+    popup.style.position = "fixed";
+    popup.style.top = Math.min(rect.top, window.innerHeight - 340) + "px";
+    popup.style.left = Math.min(rect.left, window.innerWidth - 280) + "px";
+    popup.style.zIndex = "99999";
+
+    requestAnimationFrame(function () { popup.classList.add("show"); });
+
+    /* Close handler */
+    popup.querySelector("#crsShareClose").addEventListener("click", function () {
+        popup.classList.remove("show");
+        setTimeout(function () { popup.remove(); }, 200);
+    });
+
+    /* Click outside to close */
+    setTimeout(function () {
+        document.addEventListener("click", function closePopup(ev) {
+            if (!popup.contains(ev.target) && !anchorBtn.contains(ev.target)) {
+                popup.classList.remove("show");
+                setTimeout(function () { popup.remove(); }, 200);
+                document.removeEventListener("click", closePopup);
+            }
+        });
+    }, 10);
+
+    /* Share option handlers */
+    popup.querySelectorAll(".crs-share-option").forEach(function (opt) {
+        opt.addEventListener("click", function () {
+            var action = opt.getAttribute("data-action");
+            handleCardShare(action, courseId, title, shareUrl, text);
+            popup.classList.remove("show");
+            setTimeout(function () { popup.remove(); }, 200);
+        });
+    });
+}
+
+function handleCardShare(platform, courseId, title, shareUrl, text) {
+    switch (platform) {
+        case "copy":
+            navigator.clipboard.writeText(shareUrl).then(function () {
+                showCardToast("Link copied!");
+                trackCardShare(courseId, "copy");
+            }).catch(function () {});
+            break;
+        case "whatsapp":
+            window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + shareUrl), "_blank");
+            trackCardShare(courseId, "whatsapp");
+            break;
+        case "twitter":
+            window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(shareUrl), "_blank");
+            trackCardShare(courseId, "twitter");
+            break;
+        case "facebook":
+            window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank");
+            trackCardShare(courseId, "facebook");
+            break;
+        case "telegram":
+            window.open("https://t.me/share/url?url=" + encodeURIComponent(shareUrl) + "&text=" + encodeURIComponent(text), "_blank");
+            trackCardShare(courseId, "telegram");
+            break;
+        case "linkedin":
+            window.open("https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(shareUrl), "_blank");
+            trackCardShare(courseId, "linkedin");
+            break;
+        case "native":
+            if (navigator.share) {
+                navigator.share({ title: title, text: text, url: shareUrl }).then(function () {
+                    trackCardShare(courseId, "native");
+                }).catch(function () {});
+            }
+            break;
+    }
+}
+
+function trackCardShare(courseId, platform) {
+    fetch(API_URL + "/api/course/share", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseId: courseId, platform: platform })
+    }).catch(function () {});
+}
+
+function showCardToast(message) {
+    var existing = document.querySelector(".crs-card-toast");
+    if (existing) existing.remove();
+    var toast = document.createElement("div");
+    toast.className = "crs-card-toast";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () { toast.classList.add("show"); });
+    });
+    setTimeout(function () {
+        toast.classList.remove("show");
+        setTimeout(function () { toast.remove(); }, 400);
+    }, 2500);
 }
 
 /* =========================
@@ -1200,6 +1516,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     /* ── Initialize Search Popup ── */
     initSearchPopup();
+
+    /* ── Hide premium loader ── */
+    CourseLoader.hide();
 });
 
 /* ═══════════════════════════════════════════════
@@ -2025,3 +2344,102 @@ var SearchLoader = {
         }
     }
 };
+
+/* =========================
+   IN-APP AD SYSTEM
+   HighPerformanceFormat / Adsterra
+   Each ad isolated in its own iframe (no global atOptions conflict)
+   Only shown to free (non-subscribed) users
+========================= */
+
+var AD_PUBLISHER_KEY = "1861361b791c986f9a927974e0eef766";
+
+var AD_UNITS = {
+    banner468:   { width: 468, height: 60  },
+    banner320:   { width: 320, height: 50  },
+    square300:   { width: 300, height: 250 },
+    skyscraper:  { width: 160, height: 300 },
+    largeVert:   { width: 160, height: 600 },
+    leaderboard: { width: 728, height: 90  }
+};
+
+function isUserPremium() {
+    var raw = localStorage.getItem("impactech_user");
+    if (!raw) return false;
+    try {
+        var u = JSON.parse(raw);
+        return !!(u && (u.isPro || u.isElite));
+    } catch (e) { return false; }
+}
+
+function getAdSlotType() {
+    var w = window.innerWidth;
+    if (w >= 1024) return "square300";
+    if (w >= 768)  return "banner320";
+    return "banner320";
+}
+
+/*
+  Each ad gets its own isolated iframe so atOptions never conflicts.
+  The iframe contains its own window.atOptions + invoke.js script.
+*/
+function loadAdIsolated(containerId, key, width, height) {
+    var container = document.getElementById(containerId);
+    if (!container || container.dataset.loaded) return;
+    container.dataset.loaded = "true";
+
+    /* Set exact container dimensions to match ad size */
+    container.style.width = width + "px";
+    container.style.height = height + "px";
+    container.style.maxWidth = "100%";
+    container.style.overflow = "hidden";
+    container.style.position = "relative";
+
+    var iframe = document.createElement("iframe");
+    iframe.width = width;
+    iframe.height = height;
+    iframe.style.border = "none";
+    iframe.style.borderRadius = "12px";
+    iframe.style.display = "block";
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+
+    var html = '<!DOCTYPE html><html><head></head>' +
+        '<body style="margin:0;padding:0;overflow:hidden;">' +
+        '<script>window.atOptions={"key":"' + key + '","format":"iframe","height":' + height + ',"width":' + width + ',"params":{}};</script>' +
+        '<script src="https://www.highperformanceformat.com/' + key + '/invoke.js" async></script>' +
+        '</body></html>';
+
+    iframe.srcdoc = html;
+    container.appendChild(iframe);
+}
+
+function createSponsoredAdCard(index, slotType) {
+    slotType = slotType || getAdSlotType();
+    var size = AD_UNITS[slotType];
+    var adId = "crs-ad-slot-" + index;
+
+    /* Stagger each ad load so iframes initialize independently */
+    setTimeout(function () {
+        loadAdIsolated(adId, AD_PUBLISHER_KEY, size.width, size.height);
+    }, 200 + (index * 250));
+
+    var adClass = slotType === "banner468" ? "crs-sponsored-ad-card crs-ad-banner-sm" :
+                  slotType === "banner320" ? "crs-sponsored-ad-card crs-ad-banner" :
+                  slotType === "leaderboard" ? "crs-sponsored-ad-card crs-ad-leaderboard" :
+                  "crs-sponsored-ad-card";
+
+    return '' +
+        '<article class="' + adClass + '">' +
+        '<div class="crs-sponsored-top">' +
+        '<span><i class="fa-solid fa-bullhorn"></i> Sponsored</span>' +
+        '<small>Ad</small>' +
+        '</div>' +
+        '<div class="crs-sponsored-body">' +
+        '<div class="crs-monetag-ad-slot">' +
+        '<div id="' + adId + '" class="crs-adsterra-container"></div>' +
+        '</div>' +
+        '</div>' +
+        '</article>';
+}

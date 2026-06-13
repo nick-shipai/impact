@@ -10,6 +10,44 @@
 </head>
 <body>
 
+<!-- PREMIUM LOADING OVERLAY -->
+<div class="crs-preloader" id="crsPreloader">
+    <div class="crs-preloader-inner">
+        <div class="crs-preloader-orbs">
+            <div class="crs-preloader-orb crs-preloader-orb-1"></div>
+            <div class="crs-preloader-orb crs-preloader-orb-2"></div>
+            <div class="crs-preloader-orb crs-preloader-orb-3"></div>
+        </div>
+        <div class="crs-preloader-ring">
+            <div class="crs-preloader-ring-segment"></div>
+        </div>
+        <div class="crs-preloader-core">
+            <div class="crs-preloader-pulse"></div>
+            <div class="crs-preloader-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <path d="M24 4L6 14V34L24 44L42 34V14L24 4Z" stroke="url(#crs-grad)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M24 4V44" stroke="url(#crs-grad)" stroke-width="1.5" opacity="0.4"/>
+                    <path d="M6 14L42 34" stroke="url(#crs-grad)" stroke-width="1.5" opacity="0.3"/>
+                    <path d="M42 14L6 34" stroke="url(#crs-grad)" stroke-width="1.5" opacity="0.3"/>
+                    <defs>
+                        <linearGradient id="crs-grad" x1="6" y1="4" x2="42" y2="44">
+                            <stop stop-color="#60a5fa"/>
+                            <stop offset="0.5" stop-color="#a78bfa"/>
+                            <stop offset="1" stop-color="#f472b6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        <div class="crs-preloader-dots">
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <p class="crs-preloader-text">Preparing your courses</p>
+    </div>
+    <div class="crs-preloader-grid"></div>
+    <div class="crs-preloader-particles" id="crsPreloaderParticles"></div>
+</div>
+
 <nav class="sh-navbar">
     <div class="sh-navbar-inner">
         <div class="sh-brand">
