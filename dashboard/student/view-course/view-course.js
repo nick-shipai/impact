@@ -659,20 +659,21 @@
                 e.preventDefault();
                 e.stopPropagation();
                 var title = courseData ? courseData.title : "Course";
-                var url = window.location.href;
+                /* Use backend SSR URL for social sharing (has server-rendered meta tags) */
+                var shareUrl = "https://backend.impactacademy.site/course/" + encodeURIComponent(courseId);
 
                 if (btn.querySelector(".fa-link")) {
-                    navigator.clipboard.writeText(url).then(function () {
+                    navigator.clipboard.writeText(shareUrl).then(function () {
                         showToast("Link copied!", "success");
                     }).catch(function () {
                         showToast("Failed to copy link", "error");
                     });
                 } else if (btn.querySelector(".fa-x-twitter")) {
-                    window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(url), "_blank");
+                    window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(shareUrl), "_blank");
                 } else if (btn.querySelector(".fa-facebook-f")) {
-                    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), "_blank");
+                    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank");
                 } else if (btn.querySelector(".fa-whatsapp")) {
-                    window.open("https://wa.me/?text=" + encodeURIComponent(title + " " + url), "_blank");
+                    window.open("https://wa.me/?text=" + encodeURIComponent(title + " " + shareUrl), "_blank");
                 }
             });
         });
